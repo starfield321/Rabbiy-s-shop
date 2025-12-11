@@ -1,38 +1,45 @@
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/types/supabase'; // 仮の型定義
+// src/app/page.tsx
+import { ProductCard } from '@/components/ProductCard';
 
-// 仮の商品データの型定義 (実際はSupabase CLIで生成)
-type Product = Database['public']['Tables']['products']['Row'];
+// ダミーの商品データ
+const dummyProducts = [
+  { id: 1, title: "Drummer's Set Up Vol.44 yukihiro", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-1.jpg", isNew: true, isSoldOut: false },
+  { id: 2, title: "Drummer's Set Up Vol.44 yukihiro 初回予約販売・限定カラー", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-2.jpg", isNew: true, isSoldOut: true },
+  { id: 3, title: "Oda Kogane - LT-001 (限定版)", vendor: "Oda Kogane", price: 5500, imageUrl: "/product-img-3.jpg", isNew: true, isSoldOut: false },
+  { id: 4, title: "Classic Guitar T-Shirt - Blue Notes", vendor: "Rittor Brand", price: 3850, imageUrl: "/product-img-4.jpg", isNew: false, isSoldOut: false },
+  { id: 5, title: "Vintage Synthesizer Poster", vendor: "Culture Gear", price: 2980, imageUrl: "/product-img-5.jpg", isNew: false, isSoldOut: false },
+  { id: 6, title: "Bass Day 2025 Commemorative Tee", vendor: "Event Goods", price: 4950, imageUrl: "/product-img-6.jpg", isNew: false, isSoldOut: false },
+];
 
-// データの取得と表示を行うサーバーコンポーネント (Next.js App Router の機能)
-export default async function HomePage() {
-  // データベースから 'products' テーブルのデータを取得
-  const { data: products, error } = await supabase.from('products').select('*');
+// ダミー画像ファイルを public フォルダに配置してください (例: public/product-img-1.jpg)
+// 画像がない場合は、placekittenやplacehold.itなどのプレースホルダーURLをご利用ください。
 
-  if (error) {
-    console.error('Error fetching products:', error);
-    return <div className="p-4 text-red-600">データの取得に失敗しました。</div>;
-  }
-
-  // 取得したデータをリスト表示
+export default function Home() {
   return (
-    <main className="min-h-screen p-8 bg-gray-50">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">🛍️ T-OD クローン 商品一覧</h1>
-      <p className="text-sm text-gray-500 mb-8">（このデータは、Supabaseで実際にテーブルを作成すると表示されます）</p>
+    <main className="min-h-screen pt-4">
+      
+      {/* ヒーローセクション（バナー）の代替 - ここは後で調整 */}
+      <section className="bg-gray-100 p-8 mb-8 text-center">
+        <h2 className="text-2xl font-bold">メインビジュアル / ヒーローバナー</h2>
+        <p className="text-gray-600">（スライダー機能は後ほど実装、まずは静的な表示）</p>
+      </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products && products.length > 0 ? (
-          products.map((product) => (
-            <div key={product.id} className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
-              <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-              <p className="text-lg text-green-600">¥ {product.price}</p>
-              <p className="text-sm text-gray-500 mt-2">{product.description}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-600">現在、商品データがありません。</p>
-        )}
-      </div>
+      {/* 新着商品セクション */}
+      <section className="px-4 md:px-8 max-w-7xl mx-auto">
+        <h2 className="text-center mb-6">
+          <span className="block text-sm text-gray-600">NEW ITEMS</span>
+          <span className="text-3xl font-bold">新着商品</span>
+        </h2>
+
+        {/* 商品一覧グリッド (元のHTMLのクラスをTailwindで置き換え) */}
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {dummyProducts.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))}
+        </ul>
+      </section>
+
+      {/* 今後は、ヘッダー、フッター、その他のセクションを順次構築していきます。 */}
     </main>
   );
 }
