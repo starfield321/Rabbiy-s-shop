@@ -3,7 +3,7 @@ import { ProductCard } from '@/components/ProductCard';
 
 // ダミーの商品データ
 const dummyProducts = [
-  { id: 1, title: "Drummer's Set Up Vol.44 yukihiro", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-1.jpg", isNew: true, isSoldOut: false },
+  { id: 1, title: "Drummer's Set Up Vol.44 yukihiro", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-Gemini_Generated_Image_siu9k5siu9k5siu9.jpg", isNew: true, isSoldOut: false },
   { id: 2, title: "Drummer's Set Up Vol.44 yukihiro 初回予約販売・限定カラー", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-2.jpg", isNew: true, isSoldOut: true },
   { id: 3, title: "Oda Kogane - LT-001 (限定版)", vendor: "Oda Kogane", price: 5500, imageUrl: "/product-img-3.jpg", isNew: true, isSoldOut: false },
   { id: 4, title: "Classic Guitar T-Shirt - Blue Notes", vendor: "Rittor Brand", price: 3850, imageUrl: "/product-img-4.jpg", isNew: false, isSoldOut: false },
