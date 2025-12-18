@@ -52,9 +52,9 @@ export default function Home() {
           ))}
         </section>
 
-        {/* --- 2. NEWS & ABOUT (2カラム構成) --- */}
+        {/* --- 2. NEWS & BIOGRAPHY SECTION --- */}
         <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             
             {/* 左カラム: News (8/12) */}
             <div className="lg:col-span-7">
@@ -63,41 +63,71 @@ export default function Home() {
                   <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">News</h2>
                   <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Official Information</p>
                 </div>
-                <Link href="/news" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-400 uppercase tracking-widest transition-all">View All</Link>
+                <Link href="/news" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-400 uppercase tracking-widest transition-all">
+                  View All
+                </Link>
               </div>
+              
               <div className="border-t border-gray-100">
                 {newsItems.map((news) => (
-                  <Link href={`/news/${news.id}`} key={news.id} className="group flex flex-col py-8 transition-all hover:pl-2 border-b border-gray-100">
-                    <div className="flex items-center space-x-4 mb-2">
-                      <span className="text-[9px] font-black border border-black px-2 py-0.5 uppercase">{news.category}</span>
-                      <span className="text-xs font-mono text-gray-400">{news.published_at?.replace(/-/g, '.')}</span>
+                  <Link 
+                    href={`/news/${news.id}`} 
+                    key={news.id} 
+                    className="group flex flex-col py-10 px-6 transition-all hover:bg-gray-50/80 border-b border-gray-100"
+                  >
+                    <div className="flex items-center space-x-4 mb-3">
+                      <span className="text-[9px] font-black border border-black px-2 py-0.5 uppercase tracking-tighter">
+                        {news.category}
+                      </span>
+                      <span className="text-xs font-mono text-gray-400">
+                        {news.published_at?.replace(/-/g, '.')}
+                      </span>
                     </div>
-                    <p className="text-lg font-bold leading-tight group-hover:text-red-600 transition-colors">{news.title}</p>
+                    <p className="text-lg md:text-xl font-bold leading-tight tracking-tight text-gray-900">
+                      {news.title}
+                    </p>
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* 右カラム: About Image Link (5/12) */}
-            <div className="lg:col-span-5">
-              <Link href="/about" className="group relative block aspect-[4/5] overflow-hidden bg-gray-100">
-                <Image 
-                  src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop" // アーティスト写真（仮）
-                  alt="About Rabbiy"
-                  fill
-                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
-                <div className="absolute bottom-10 left-10">
-                  <h3 className="text-white text-5xl font-black italic tracking-tighter leading-none group-hover:text-red-600 transition-colors">Biography</h3>
-                  <p className="text-white/70 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Discover the Story</p>
+            {/* 右カラム: Biography (5/12) */}
+            <div className="lg:col-span-5 relative">
+              <Link href="/about" className="group block relative w-full aspect-[4/5] lg:aspect-auto lg:h-[600px]">
+                
+                {/* 背面の巨大タイポグラフィ (写真の後ろに配置) */}
+                <div className="absolute top-0 left-0 text-[10rem] md:text-[14rem] font-black italic leading-none text-gray-100/80 select-none pointer-events-none transition-transform duration-1000 group-hover:-translate-x-8">
+                  RB
+                </div>
+                
+                {/* アーティスト写真 (rabbiy_3d.png) */}
+                <div className="relative w-full h-full z-10">
+                  <Image 
+                    src="/rabbiy_3d.png" // 公開ディレクトリ(public)に配置してください
+                    alt="Rabbiy Biography"
+                    fill
+                    className="object-contain transition-transform duration-700 group-hover:scale-105 group-hover:-translate-y-2"
+                    priority
+                  />
+                </div>
+
+                {/* 前面のテキスト装飾 (写真の手前に配置) */}
+                <div className="absolute bottom-4 right-0 z-20 text-right">
+                  <div className="bg-white/10 backdrop-blur-sm p-4 inline-block">
+                    <h3 className="text-5xl md:text-6xl font-black italic tracking-tighter leading-none text-black">
+                      Biography<span className="text-red-600 not-italic">.</span>
+                    </h3>
+                    <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">
+                      Discover the story
+                    </p>
+                  </div>
                 </div>
               </Link>
             </div>
+
           </div>
         </section>
-
+        
         {/* --- 3. VIDEO SECTION (グレー背景化) --- */}
         <section className="bg-gray-100 py-32 px-6">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
