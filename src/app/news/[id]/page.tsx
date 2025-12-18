@@ -1,17 +1,20 @@
 import { supabase } from '@/lib/supabase';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Link from 'next/link'; // ← これを忘れずに追加！
 
-export default async function NewsDetailPage({ params }: { params: { id: string } }) {
-  // Supabaseから特定のニュースを取得
+export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Promiseを解決（await）してから id を取り出す
+  const { id } = await params;
+
   const { data: news } = await supabase
     .from('news')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (!news) notFound();
 
+  // return の後にすぐ ( を書いて、中身を開始します
   return (
     <main className="max-w-3xl mx-auto px-4 py-20">
       <div className="mb-12 border-b border-gray-100 pb-8">
@@ -36,11 +39,11 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
       <div className="text-center border-t border-gray-100 pt-12">
         <Link 
           href="/news" 
-          className="text-xs font-black tracking-[0.2em] uppercase hover:underline"
+          className="text-[10px] font-black tracking-[0.2em] uppercase hover:underline"
         >
           BACK TO LIST
         </Link>
       </div>
     </main>
-  );
+  ); // ← ここで return を閉じます
 }
