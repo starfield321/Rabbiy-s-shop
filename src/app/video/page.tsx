@@ -31,7 +31,7 @@ export default function VideoPage() {
           <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
             Video<span className="text-red-600 not-italic">.</span>
           </h1>
-          <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-4">
+          <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
             Official Visual Archives / Rabbiy
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function VideoPage() {
                 <p className="text-[10px] font-mono text-gray-400 mb-1">
                   {video.published_at?.replace(/-/g, '.')}
                 </p>
-                <h2 className="text-lg font-bold leading-tight group-hover:text-red-600 transition-colors uppercase tracking-tight">
+                <h2 className="text-lg font-bold leading-tight group-hover:text-red-600 transition-colors tracking-tight">
                   {video.title}
                 </h2>
               </div>

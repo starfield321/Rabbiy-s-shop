@@ -169,9 +169,6 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="py-20 border-t border-gray-100 text-center text-[10px] font-bold tracking-[0.5em] text-gray-300 uppercase">
-          &copy; 2025 Rabbiy All Rights Reserved.
-        </footer>
       </div>
 
       {/* --- YouTube Modal --- */}
