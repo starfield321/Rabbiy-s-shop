@@ -19,10 +19,11 @@ export default async function Home() {
     .single();
 
   // 3. ニュースデータ（ここも後でSupabase化できますが、一旦そのまま）
-  const newsList = [
-    { id: 1, date: '2025.12.18', title: 'New Single "Your Name" Digital Release!', category: 'RELEASE' },
-    { id: 2, date: '2025.12.10', title: 'Winter Tour 2025 開催決定', category: 'LIVE' },
-  ];
+  const { data: newsItems } = await supabase
+    .from('news')
+    .select('*')
+    .order('published_at', { ascending: false }) // 最新順
+    .limit(3); // トップには3件だけ表示
 
   return (
     <main className="bg-white text-black">
@@ -43,17 +44,25 @@ export default async function Home() {
           <Link href="/news" className="text-[10px] font-bold hover:underline tracking-widest">VIEW ALL</Link>
         </div>
         <div className="divide-y divide-gray-200">
-          {newsList.map((news) => (
+          {/* newsList を newsItems に変更 */}
+          {newsItems?.map((news) => (
             <Link href={`/news/${news.id}`} key={news.id} className="group flex flex-col md:flex-row py-6 hover:bg-gray-50 transition-colors px-2">
               <div className="flex items-center space-x-4 mb-2 md:mb-0 md:w-1/4">
                 <span className="text-[9px] font-black border border-black px-2 py-0.5">{news.category}</span>
-                <span className="text-xs text-gray-500 font-mono">{news.date}</span>
+                {/* news.date を news.published_at に変更 */}
+                <span className="text-xs text-gray-500 font-mono">
+                  {news.published_at?.replace(/-/g, '.')}
+                </span>
               </div>
               <div className="md:w-3/4">
                 <p className="text-sm md:text-base font-bold group-hover:underline uppercase tracking-tight">{news.title}</p>
               </div>
             </Link>
           ))}
+          {/* ニュースが1件もない時の表示 */}
+          {(!newsItems || newsItems.length === 0) && (
+            <p className="py-10 text-center text-gray-400 text-xs tracking-widest uppercase">No News posted yet.</p>
+          )}
         </div>
       </section>
 
