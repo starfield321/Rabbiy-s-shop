@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
   const [latestVideo, setLatestVideo] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newsItems, setNewsItems] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -127,25 +128,70 @@ export default function Home() {
 
           </div>
         </section>
-        
-        {/* --- 3. VIDEO SECTION (グレー背景化) --- */}
-        <section className="bg-gray-100 py-32 px-6">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-            <div className="md:col-span-8 shadow-2xl">
+
+        {/* --- 3. VIDEO SECTION (サムネイル表示 & モーダル対応) --- */}
+        <section className="relative py-32 px-6 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0c] via-black to-[#0a0a0c] -z-10" />
+          
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center text-white relative z-10">
+            
+            {/* 左カラム: サムネイル (8/12) */}
+            <div className="md:col-span-8 group">
               {latestVideo && (
-                <div className="aspect-video w-full bg-black relative">
-                  <iframe src={`https://www.youtube.com/embed/${latestVideo.youtube_id}`} className="absolute inset-0 w-full h-full" allowFullScreen />
+                <div 
+                  onClick={() => setIsModalOpen(true)}
+                  className="aspect-video w-full bg-zinc-900 relative shadow-2xl border border-white/5 cursor-pointer overflow-hidden group"
+                >
+                  {/* YouTubeの高品質サムネイルを表示 */}
+                  <Image
+                    src={`https://img.youtube.com/vi/${latestVideo.youtube_id}/maxresdefault.jpg`}
+                    alt={latestVideo.title}
+                    fill
+                    className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                  />
+                  {/* 再生ボタンアイコンの演出 */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-300">
+                      <div className="w-0 h-0 border-t-[15px] border-t-transparent border-l-[25px] border-l-white border-b-[15px] border-b-transparent ml-2" />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
+            
+            {/* 右カラム: テキスト (4/12) */}
             <div className="md:col-span-4 space-y-8">
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Video</h2>
-              <div className="pt-8 border-t border-gray-300">
-                <h3 className="text-xl font-bold mb-8 text-gray-600">{latestVideo?.title || "Latest Release"}</h3>
-                <Link href="/video" className="inline-block bg-black text-white px-10 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all">Watch More</Link>
+              <div>
+                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-white">Video</h2>
+                <p className="text-[10px] text-zinc-500 font-bold tracking-[0.4em] uppercase mt-2">Latest Release</p>
+              </div>
+              <div className="pt-8 border-t border-white/10">
+                <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-10 text-zinc-200">{latestVideo?.title}</h3>
+                <Link href="/video" className="group/btn relative inline-block bg-white text-black px-10 py-5 text-[10px] font-black tracking-widest uppercase overflow-hidden transition-all">
+                  <span className="relative z-10 group-hover/btn:text-white transition-colors duration-300">Watch More</span>
+                  <div className="absolute inset-0 bg-red-600 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                </Link>
               </div>
             </div>
           </div>
+
+          {/* --- YouTube モーダルウィンドウ --- */}
+          {isModalOpen && (
+            <div 
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 md:p-10 animate-in fade-in duration-300"
+              onClick={() => setIsModalOpen(false)} // 背景クリックで閉じる
+            >
+              <button className="absolute top-10 right-10 text-white text-4xl font-light hover:text-red-600 transition-colors">×</button>
+              <div className="w-full max-w-5xl aspect-video bg-black shadow-2xl relative">
+                <iframe
+                  src={`https://www.youtube.com/embed/${latestVideo.youtube_id}?autoplay=1`}
+                  className="absolute inset-0 w-full h-full"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* --- 4. SHOP SECTION --- */}
