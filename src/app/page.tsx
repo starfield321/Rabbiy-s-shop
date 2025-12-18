@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Home() {
-  // --- 1. データ取得 (featuresを追加) ---
+  // --- データ取得 ---
   const { data: products } = await supabase.from('products').select('*').limit(4);
   const { data: latestVideo } = await supabase
     .from('videos')
@@ -16,12 +16,6 @@ export default async function Home() {
     .select('*')
     .order('published_at', { ascending: false })
     .limit(3);
-  
-  // FEATURE用のデータを取得
-  const { data: features } = await supabase
-    .from('features')
-    .select('*')
-    .order('id', { ascending: true });
 
   return (
     <main className="relative min-h-screen bg-white selection:bg-black selection:text-white overflow-x-hidden">
@@ -37,43 +31,19 @@ export default async function Home() {
       <div className="relative z-10 font-sans">
         
         {/* --- 1. HERO SECTION (Banner Image) --- */}
-        <section className="w-full h-[60vh] md:h-[80vh] relative bg-gray-100 flex items-center justify-center">
-          <div className="w-full h-full relative">
-            <Image 
-              src="https://via.placeholder.com/1920x1080?text=Rabbiy+Main+Banner" 
-              alt="Rabbiy Banner"
-              fill
-              className="object-cover"
-              priority
-              unoptimized
-            />
-          </div>
+        <section className="w-full h-[60vh] md:h-[80vh] relative bg-gray-100">
+          <Image 
+            src="https://via.placeholder.com/1920x1080?text=Rabbiy+Main+Banner" 
+            alt="Rabbiy Banner"
+            fill
+            className="object-cover"
+            priority
+            unoptimized
+          />
         </section>
 
-        {/* --- 2. FEATURE SECTION (復活) --- */}
-        <section className="max-w-7xl mx-auto px-6 py-12 md:py-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features?.map((feature) => (
-              <div key={feature.id} className="relative aspect-[16/9] overflow-hidden group bg-gray-200">
-                <Image
-                  src={feature.image_url}
-                  alt={feature.title}
-                  fill
-                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
-                  <h3 className="text-white font-black italic text-2xl tracking-tighter uppercase transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                    {feature.title}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* --- 3. NEWS SECTION (Hover Effect) --- */}
-        <section className="max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
+        {/* --- 2. NEWS SECTION --- */}
+        <section className="max-w-6xl mx-auto px-6 py-24 md:py-32">
           <div className="flex justify-between items-end mb-12">
             <div>
               <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">News</h2>
@@ -85,9 +55,9 @@ export default async function Home() {
           <div className="border-t border-gray-100">
             {newsItems?.map((news) => (
               <Link href={`/news/${news.id}`} key={news.id} 
-                className="group flex flex-col md:flex-row py-10 px-6 transition-colors hover:bg-gray-50/80 border-b border-gray-100">
+                className="group flex flex-col md:flex-row py-10 px-6 transition-all hover:bg-gray-50/80 border-b border-gray-100">
                 <div className="md:w-1/4 mb-3 md:mb-0 flex items-center space-x-6">
-                  <span className="text-[9px] font-black border border-black px-2 py-0.5 tracking-tighter">{news.category}</span>
+                  <span className="text-[9px] font-black border border-black px-2 py-0.5 tracking-tighter uppercase">{news.category}</span>
                   <span className="text-xs font-mono text-gray-400">{news.published_at?.replace(/-/g, '.')}</span>
                 </div>
                 <div className="md:w-3/4">
@@ -100,7 +70,7 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* --- 4. VIDEO SECTION (Left Video / Right Info) --- */}
+        {/* --- 3. VIDEO SECTION --- */}
         <section className="bg-black text-white py-32 px-6">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
             <div className="md:col-span-7">
@@ -131,7 +101,7 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* --- 5. SHOP SECTION --- */}
+        {/* --- 4. SHOP SECTION --- */}
         <section className="max-w-6xl mx-auto px-6 py-32">
           <div className="mb-16">
             <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Shop</h2>
@@ -157,20 +127,69 @@ export default async function Home() {
               </Link>
             ))}
           </div>
-          
           <div className="mt-20 text-center">
-            <Link href="/products" className="inline-block bg-black text-white px-16 py-5 text-[10px] font-black tracking-[0.3em] hover:bg-gray-800 transition-all shadow-xl">
-              ENTER SHOP
+            <Link href="/products" className="inline-block bg-black text-white px-16 py-5 text-[10px] font-black tracking-[0.3em] hover:bg-gray-800 transition-all shadow-xl uppercase">
+              Enter Shop
             </Link>
           </div>
         </section>
 
-        {/* --- FOOTER --- */}
-        <footer className="py-20 border-t border-gray-100 text-center">
-          <p className="text-[10px] font-bold tracking-[0.5em] text-gray-300 uppercase">
-            &copy; 2025 Rabbiy All Rights Reserved.
-          </p>
-        </footer>
+        {/* --- 5. FEATURE (EVENT) セクション --- */}
+        <section className="bg-black py-24 px-6 text-white overflow-hidden">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-end mb-12 border-b border-gray-800 pb-4">
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Feature</h2>
+              <p className="text-[10px] tracking-[0.3em] text-gray-500 uppercase">Upcoming & Projects</p>
+            </div>
+
+            {/* 横スクロールのスライド形式 */}
+            <div className="flex space-x-6 overflow-x-auto pb-8 scrollbar-hide">
+              {[
+                { 
+                  id: 1, 
+                  title: 'Rabbiy First Live "Genesis"', 
+                  date: '2026.03.15', 
+                  img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop',
+                  url: 'https://instagram.com/Rabbiy_Genesis' 
+                },
+                { 
+                  id: 2, 
+                  title: 'Limited Merch Drop', 
+                  date: 'Coming Soon', 
+                  img: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop',
+                  url: 'https://instagram.com/Rabbiy_Merch' 
+                },
+                { 
+                  id: 3, 
+                  title: 'New EP Production', 
+                  date: 'In Progress', 
+                  img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop',
+                  url: 'https://instagram.com/Rabbiy_Studio' 
+                },
+              ].map((event) => (
+                <a 
+                  key={event.id} 
+                  href={event.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] group relative aspect-[16/9] overflow-hidden bg-gray-900 shadow-2xl"
+                >
+                  <img 
+                    src={event.img} 
+                    alt={event.title} 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100" 
+                  />
+                  <div className="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/90 to-transparent">
+                    <span className="text-[10px] font-black tracking-widest text-red-600 mb-2">{event.date}</span>
+                    <h3 className="text-xl md:text-2xl font-black leading-tight tracking-tighter uppercase italic group-hover:text-red-500 transition-colors">
+                      {event.title}
+                    </h3>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
 
       </div>
     </main>
