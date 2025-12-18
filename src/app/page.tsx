@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Home() {
-  // --- データ取得 ---
+  // --- 1. データ取得 (featuresを追加) ---
   const { data: products } = await supabase.from('products').select('*').limit(4);
   const { data: latestVideo } = await supabase
     .from('videos')
@@ -16,7 +16,12 @@ export default async function Home() {
     .select('*')
     .order('published_at', { ascending: false })
     .limit(3);
-  const { data: features } = await supabase.from('features').select('*').order('id');
+  
+  // FEATURE用のデータを取得
+  const { data: features } = await supabase
+    .from('features')
+    .select('*')
+    .order('id', { ascending: true });
 
   return (
     <main className="relative min-h-screen bg-white selection:bg-black selection:text-white overflow-x-hidden">
@@ -35,29 +40,32 @@ export default async function Home() {
         <section className="w-full h-[60vh] md:h-[80vh] relative bg-gray-100 flex items-center justify-center">
           <div className="w-full h-full relative">
             <Image 
-              src="https://via.placeholder.com/1920x1080?text=Rabbiy+Main+Banner" // ダミー画像
+              src="https://via.placeholder.com/1920x1080?text=Rabbiy+Main+Banner" 
               alt="Rabbiy Banner"
               fill
               className="object-cover"
               priority
+              unoptimized
             />
           </div>
-          {/* 画像の上に文字を載せる場合はここに配置可能 */}
         </section>
 
         {/* --- 2. FEATURE SECTION (復活) --- */}
-        <section className="max-w-7xl mx-auto px-6 py-24">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <section className="max-w-7xl mx-auto px-6 py-12 md:py-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {features?.map((feature) => (
-              <div key={feature.id} className="relative aspect-video overflow-hidden group">
+              <div key={feature.id} className="relative aspect-[16/9] overflow-hidden group bg-gray-200">
                 <Image
                   src={feature.image_url}
                   alt={feature.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                  unoptimized
                 />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <h3 className="text-white font-black italic text-2xl tracking-tighter uppercase">{feature.title}</h3>
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <h3 className="text-white font-black italic text-2xl tracking-tighter uppercase transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                    {feature.title}
+                  </h3>
                 </div>
               </div>
             ))}
@@ -65,7 +73,7 @@ export default async function Home() {
         </section>
 
         {/* --- 3. NEWS SECTION (Hover Effect) --- */}
-        <section className="max-w-6xl mx-auto px-6 py-24">
+        <section className="max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
           <div className="flex justify-between items-end mb-12">
             <div>
               <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">News</h2>
@@ -77,13 +85,13 @@ export default async function Home() {
           <div className="border-t border-gray-100">
             {newsItems?.map((news) => (
               <Link href={`/news/${news.id}`} key={news.id} 
-                className="group flex flex-col md:flex-row py-10 px-4 transition-colors hover:bg-gray-50/80 border-b border-gray-100">
+                className="group flex flex-col md:flex-row py-10 px-6 transition-colors hover:bg-gray-50/80 border-b border-gray-100">
                 <div className="md:w-1/4 mb-3 md:mb-0 flex items-center space-x-6">
                   <span className="text-[9px] font-black border border-black px-2 py-0.5 tracking-tighter">{news.category}</span>
                   <span className="text-xs font-mono text-gray-400">{news.published_at?.replace(/-/g, '.')}</span>
                 </div>
                 <div className="md:w-3/4">
-                  <p className="text-lg md:text-xl font-bold leading-tight tracking-tight text-gray-900">
+                  <p className="text-lg md:text-xl font-bold leading-tight tracking-tight text-gray-900 group-hover:text-black">
                     {news.title}
                   </p>
                 </div>
@@ -95,7 +103,6 @@ export default async function Home() {
         {/* --- 4. VIDEO SECTION (Left Video / Right Info) --- */}
         <section className="bg-black text-white py-32 px-6">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-            {/* 左カラム: 動画 */}
             <div className="md:col-span-7">
               {latestVideo && (
                 <div className="aspect-video w-full bg-zinc-900 shadow-2xl relative">
@@ -107,19 +114,16 @@ export default async function Home() {
                 </div>
               )}
             </div>
-            
-            {/* 右カラム: 情報 */}
             <div className="md:col-span-5 space-y-8">
               <div>
                 <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none mb-4">Video</h2>
                 <p className="text-[10px] text-gray-500 font-bold tracking-[0.3em] uppercase">Latest Release</p>
               </div>
-              
               <div className="pt-8 border-t border-zinc-800">
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-6">
+                <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-8">
                   {latestVideo?.title || "Latest Music Video"}
                 </h3>
-                <Link href="/video" className="inline-block bg-white text-black px-8 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 hover:text-white transition-all">
+                <Link href="/video" className="inline-block bg-white text-black px-10 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 hover:text-white transition-all">
                   Watch More
                 </Link>
               </div>
@@ -160,6 +164,13 @@ export default async function Home() {
             </Link>
           </div>
         </section>
+
+        {/* --- FOOTER --- */}
+        <footer className="py-20 border-t border-gray-100 text-center">
+          <p className="text-[10px] font-bold tracking-[0.5em] text-gray-300 uppercase">
+            &copy; 2025 Rabbiy All Rights Reserved.
+          </p>
+        </footer>
 
       </div>
     </main>
