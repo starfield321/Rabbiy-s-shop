@@ -44,7 +44,7 @@ export default function AboutPage() {
               その後DTMでボーカロイドを用いた楽曲制作を始め、ロックだけでなくテクノポップやEDMに触れ、特に日本独自に発展した「kawaii future bass」に興味を持ち、サブカル系DJイベントに繰り出すようになる。
             </p>
             <p>
-              次第に一人で場を沸かせることができるDJそのものにも興味を持ち始め、TOKYO DJ部に入部。影響を受けたkawaii future bass、ボーカロイド、J-POPを中心としたDJプレイを行う。
+              次第に一人で場を沸かせることができるDJそのものにも興味を持ち始め、自身でもDJを始める。影響を受けたkawaii future bass、ボーカロイド、J-POPを中心としたDJプレイを行う。
             </p>
             <p>
               2024年4月からは、エレクトロサウンドを中心としたオリジナル楽曲のストリーミング配信・YouTube投稿をスタートし、「DJ×トラックメイカー」のポジションを目指し活動中。
@@ -65,7 +65,7 @@ export default function AboutPage() {
 
             {/* YouTube リンクボタン (追加！) */}
             <Link 
-              href="https://www.youtube.com/@あなたのチャンネルID" 
+              href="https://www.youtube.com/@Rabbiychannel" 
               target="_blank"
               className="inline-flex items-center justify-center w-full md:w-auto bg-red-600 text-white px-10 py-5 font-black uppercase tracking-[0.2em] text-xs hover:bg-black transition-all shadow-lg active:scale-[0.98]"
             >
