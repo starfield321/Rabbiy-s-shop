@@ -52,15 +52,13 @@ export default function ProductDetailPage({ params }: { params: any }) {
 
           {/* サムネイルリスト（複数枚対応） */}
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {allImages.map((img: string, index: number) => (
+            {product.image?.map((imgUrl: string, index: number) => (
               <button 
                 key={index}
-                onClick={() => setMainImage(img)}
-                className={`flex-shrink-0 w-20 h-20 border-2 rounded-md overflow-hidden transition-all ${
-                  mainImage === img ? 'border-black' : 'border-gray-200 opacity-60'
-                }`}
+                onClick={() => setMainImage(imgUrl)}
+                className="flex-shrink-0 w-20 h-20 border-2 rounded-md overflow-hidden"
               >
-                <img src={img} alt={`thumb-${index}`} className="w-full h-full object-cover" />
+                <img src={imgUrl} alt={`thumb-${index}`} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
