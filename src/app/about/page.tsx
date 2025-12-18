@@ -6,10 +6,10 @@ export default function AboutPage() {
     <main className="max-w-5xl mx-auto px-4 py-16 md:py-32">
       {/* メインタイトル */}
       <div className="mb-20 border-b-4 border-black pb-4">
-        <h1 className="text-5xl md:text-8xl font-black italic tracking-tighter uppercase leading-none">
+        <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">
           Biography
         </h1>
-        <p className="text-gray-400 text-xs tracking-[0.4em] mt-4 uppercase font-bold">
+        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2 uppercase">
           Artist Profile / Rabbiy
         </p>
       </div>
