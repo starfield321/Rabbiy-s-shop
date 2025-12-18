@@ -13,7 +13,7 @@ export async function sendEmail(formData: FormData) {
   try {
     await resend.emails.send({
       from: 'Contact Form <onboarding@resend.dev>', // 独自ドメインがない間はこのまま
-      to: 'あなたの受信用メールアドレス@gmail.com', // 自分が受け取りたいアドレス
+      to: 'starfield.business@gmail.com', // 自分が受け取りたいアドレス
       subject: `【Website Inquiry】${subject}`,
       replyTo: email,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
