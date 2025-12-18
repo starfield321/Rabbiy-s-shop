@@ -94,6 +94,59 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* --- FEATURE (EVENT) セクション --- */}
+      <section className="bg-black py-20 px-4 text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-10 border-b border-gray-800 pb-2">
+            <h2 className="text-3xl font-black italic tracking-tighter uppercase">Feature</h2>
+            <p className="text-[10px] tracking-[0.3em] text-gray-500 uppercase">Upcoming & Projects</p>
+          </div>
+
+          {/* 横スクロールのスライド形式（スマホはスワイプ、PCはスクロールバー） */}
+          <div className="flex space-x-6 overflow-x-auto pb-8 scrollbar-hide">
+            {[
+              { 
+                id: 1, 
+                title: 'Rabbiy First Live "Genesis"', 
+                date: '2026.03.15', 
+                img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop', // 仮画像
+                url: 'https://instagram.com/あなたの投稿URL' 
+              },
+              { 
+                id: 2, 
+                title: 'Limited Merch Drop', 
+                date: 'Coming Soon', 
+                img: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop', // 仮画像
+                url: 'https://instagram.com/あなたの投稿URL' 
+              },
+            ].map((event) => (
+              <a 
+                key={event.id} 
+                href={event.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="min-w-[80%] md:min-w-[45%] lg:min-w-[30%] group relative aspect-[16/9] overflow-hidden bg-gray-900"
+              >
+                {/* 画像 */}
+                <img 
+                  src={event.img} 
+                  alt={event.title} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-100" 
+                />
+                
+                {/* テキストオーバーレイ */}
+                <div className="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
+                  <span className="text-[10px] font-bold tracking-widest text-red-500 mb-1">{event.date}</span>
+                  <h3 className="text-lg font-black leading-tight uppercase group-hover:underline">
+                    {event.title}
+                  </h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
