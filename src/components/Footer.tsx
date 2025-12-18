@@ -42,7 +42,7 @@ export const Footer = () => {
           <div>
             <h3 className="text-sm font-bold mb-4">SUPPORT</h3>
             <ul className="space-y-2 text-xs text-gray-600 mb-4">
-              <li><Link href="/pages/contact" className="hover:underline">お問い合わせ</Link></li>
+              <li><Link href="/contact" className="hover:underline">お問い合わせ</Link></li>
               <li><Link href="/pages/about" className="hover:underline">運営会社</Link></li>
             </ul>
             <div className="flex space-x-4">
