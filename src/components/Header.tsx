@@ -34,6 +34,7 @@ export const Header = () => {
 
           {/* 中央：メインナビゲーション（PC用） */}
           <nav className="hidden lg:flex items-center space-x-10 text-[11px] font-black uppercase tracking-[0.15em] text-gray-500">
+            <Link href="/about" className="hover:text-black transition-colors">About</Link>
             <Link href="/news" className="hover:text-black transition-colors">News</Link>
             <Link href="/video" className="hover:text-black transition-colors">Video</Link>
             <Link href="/products" className="hover:text-black transition-colors">Shop</Link>
