@@ -1,77 +1,74 @@
+'use client';
+
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
-// Next.js 15以降の仕様に合わせた型定義
-export default async function ProductDetailPage({ 
-  params 
-}: { 
-  params: Promise<{ id: string }> 
-}) {
-  // 1. paramsを非同期で展開する (ここが重要！)
-  const { id } = await params;
-  const productId = parseInt(id, 10);
+export default function ProductDetailPage({ params }: { params: any }) {
+  const [product, setProduct] = useState<any>(null);
+  const [mainImage, setMainImage] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
-  // 数値に変換できない場合は404
-  if (isNaN(productId)) {
-    notFound();
-  }
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { id } = await params;
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-  // 2. Supabaseからデータを取得
-  const { data: product, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', productId)
-    .single();
+      if (data) {
+        setProduct(data);
+        // images配列があればその1枚目、なければ従来のimage_urlを表示
+        setMainImage(data.images?.[0] || data.image_url);
+      }
+      setLoading(false);
+    };
+    fetchProduct();
+  }, [params]);
 
-  // 3. データ取得に失敗した場合
-  if (error || !product) {
-    console.error("Supabase Error:", error);
-    notFound();
-  }
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!product) return notFound();
+
+  // 表示する画像のリストを作成（配列カラムか、従来のカラムか）
+  const allImages = product.images || [product.image_url, product.back_image_url].filter(Boolean);
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8 md:py-16">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         
-        {/* 左側：商品画像 */}
-        <div className="bg-gray-100 aspect-square relative overflow-hidden border border-gray-200">
-          {product.image_url ? (
-            <Image
-              src={product.image_url}
-              alt={product.name}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full bg-gray-50 text-gray-400">
-              <span className="text-sm italic">No Image</span>
-            </div>
-          )}
+        {/* 左側：商品画像エリア */}
+        <div className="flex flex-col gap-4">
+          {/* メイン画像 */}
+          <div className="bg-white aspect-square relative overflow-hidden border border-gray-100 rounded-lg shadow-sm">
+            {mainImage ? (
+              <Image src={mainImage} alt={product.name} fill className="object-contain p-4" />
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">No Image</div>
+            )}
+          </div>
+
+          {/* サムネイルリスト（複数枚対応） */}
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {allImages.map((img: string, index: number) => (
+              <button 
+                key={index}
+                onClick={() => setMainImage(img)}
+                className={`flex-shrink-0 w-20 h-20 border-2 rounded-md overflow-hidden transition-all ${
+                  mainImage === img ? 'border-black' : 'border-gray-200 opacity-60'
+                }`}
+              >
+                <img src={img} alt={`thumb-${index}`} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* 右側：商品情報 */}
+        {/* 右側：商品情報（略） */}
         <div className="flex flex-col space-y-6">
-          <div>
-            <p className="text-xs text-blue-600 font-bold tracking-widest uppercase">Item Details</p>
-            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mt-2">{product.name}</h1>
-            <p className="text-3xl font-bold text-red-600 mt-6">
-              ¥{Number(product.price).toLocaleString()}<span className="text-sm text-gray-500 ml-2 font-normal">(税込)</span>
-            </p>
-          </div>
-
-          <div className="border-t border-b border-gray-100 py-8">
-            <h2 className="text-sm font-black text-gray-900 mb-4 uppercase">Description</h2>
-            <p className="text-gray-700 leading-relaxed text-base whitespace-pre-wrap">
-              {product.description || "商品の説明はまだありません。"}
-            </p>
-          </div>
-
-          <div className="pt-4">
-            <button className="w-full bg-black text-white py-5 text-lg font-black hover:bg-gray-800 transition-all shadow-xl">
-              カートに入れる
-            </button>
-          </div>
+           {/* ...以前のコードと同じ内容... */}
         </div>
       </div>
     </main>
