@@ -102,32 +102,40 @@ export default async function Home() {
         <div className="flex justify-between items-end mb-10 border-b-2 border-black pb-2 w-fit pr-12">
           <h2 className="text-3xl font-black italic tracking-tighter">SHOP</h2>
         </div>
+        
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {products?.map((product) => (
             <Link key={product.id} href={`/products/${product.id}`} className="group">
-              <div className="aspect-square relative overflow-hidden bg-white border border-gray-100 shadow-sm">
+              {/* 背景を薄いグレーに、grayscaleを削除 */}
+              <div className="aspect-square relative overflow-hidden bg-[#f9f9f9] border border-gray-100 shadow-sm">
                 <Image
                   src={product.image?.[0] || product.image_url}
                   alt={product.name}
                   fill
-                  className="object-contain p-4 grayscale group-hover:grayscale-0 transition-all duration-700"
+                  /* grayscale を削除し、hoverでscaleアップするように変更 */
+                  className="object-contain p-4 transition-transform duration-700 ease-in-out group-hover:scale-110"
                   unoptimized
                 />
               </div>
               <div className="mt-4">
-                <h3 className="text-[11px] font-black uppercase tracking-tight group-hover:underline leading-tight">{product.name}</h3>
-                <p className="text-sm font-bold mt-1 tracking-tighter">¥{Number(product.price).toLocaleString()}</p>
+                <h3 className="text-[11px] font-black uppercase tracking-tight group-hover:underline leading-tight">
+                  {product.name}
+                </h3>
+                <p className="text-sm font-bold mt-1 tracking-tighter text-gray-900">
+                  ¥{Number(product.price).toLocaleString()}
+                </p>
               </div>
             </Link>
           ))}
         </div>
+        
         <div className="mt-12 text-center">
-          <Link href="/products" className="inline-block bg-black text-white px-12 py-4 text-[10px] font-black tracking-[0.2em] hover:bg-gray-800 transition-all">
+          <Link href="/products" className="inline-block bg-black text-white px-12 py-4 text-[10px] font-black tracking-[0.2em] hover:bg-gray-800 transition-all shadow-lg">
             VIEW ALL ITEMS
           </Link>
         </div>
       </section>
-
+      
       {/* --- FEATURE セクション --- */}
       <section className="bg-black py-20 px-4 text-white">
         <div className="max-w-7xl mx-auto">
