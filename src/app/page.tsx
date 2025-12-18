@@ -1,45 +1,62 @@
-// src/app/page.tsx
-import { ProductCard } from '@/components/ProductCard';
+import { supabase } from '@/lib/supabase';
+import Image from 'next/image';
+import Link from 'next/link';
 
-// ダミーの商品データ
-const dummyProducts = [
-  { id: 1, title: "Drummer's Set Up Vol.44 yukihiro", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-Gemini_Generated_Image_siu9k5siu9k5siu9.jpg", isNew: true, isSoldOut: false },
-  { id: 2, title: "Drummer's Set Up Vol.44 yukihiro 初回予約販売・限定カラー", vendor: "yukihiro", price: 4400, imageUrl: "/product-img-2.jpg", isNew: true, isSoldOut: true },
-  { id: 3, title: "Oda Kogane - LT-001 (限定版)", vendor: "Oda Kogane", price: 5500, imageUrl: "/product-img-3.jpg", isNew: true, isSoldOut: false },
-  { id: 4, title: "Classic Guitar T-Shirt - Blue Notes", vendor: "Rittor Brand", price: 3850, imageUrl: "/product-img-4.jpg", isNew: false, isSoldOut: false },
-  { id: 5, title: "Vintage Synthesizer Poster", vendor: "Culture Gear", price: 2980, imageUrl: "/product-img-5.jpg", isNew: false, isSoldOut: false },
-  { id: 6, title: "Bass Day 2025 Commemorative Tee", vendor: "Event Goods", price: 4950, imageUrl: "/product-img-6.jpg", isNew: false, isSoldOut: false },
-];
+export default async function Home() {
+  // 1. Supabaseから全商品を取得（作成日順など）
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('id', { ascending: true });
 
-// ダミー画像ファイルを public フォルダに配置してください (例: public/product-img-1.jpg)
-// 画像がない場合は、placekittenやplacehold.itなどのプレースホルダーURLをご利用ください。
+  if (error) {
+    console.error('Error fetching products:', error);
+    return <div className="p-8 text-center">商品の読み込みに失敗しました。</div>;
+  }
 
-export default function Home() {
   return (
-    <main className="min-h-screen pt-4">
-      
-      {/* ヒーローセクション（バナー）の代替 - ここは後で調整 */}
-      <section className="bg-gray-100 p-8 mb-8 text-center">
-        <h2 className="text-2xl font-bold">メインビジュアル / ヒーローバナー</h2>
-        <p className="text-gray-600">（スライダー機能は後ほど実装、まずは静的な表示）</p>
+    <main>
+      {/* ヒーローセクション（以前作成したものがあればそのまま、なければ簡易版） */}
+      <section className="bg-gray-100 py-20 text-center">
+        <h2 className="text-4xl font-black italic tracking-tighter mb-4">NEW ARRIVALS</h2>
+        <p className="text-gray-600">最新のアイテムをチェック</p>
       </section>
 
-      {/* 新着商品セクション */}
-      <section className="px-4 md:px-8 max-w-7xl mx-auto">
-        <h2 className="text-center mb-6">
-          <span className="block text-sm text-gray-600">NEW ITEMS</span>
-          <span className="text-3xl font-bold">新着商品</span>
-        </h2>
-
-        {/* 商品一覧グリッド (元のHTMLのクラスをTailwindで置き換え) */}
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {dummyProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
+      {/* 商品一覧グリッド */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {products?.map((product) => (
+            <Link 
+              key={product.id} 
+              href={`/products/${product.id}`}
+              className="group cursor-pointer"
+            >
+              <div className="relative aspect-square overflow-hidden bg-gray-100 border border-gray-100">
+                {product.image_url ? (
+                  <Image
+                    src={product.image_url}
+                    alt={product.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400 text-xs italic">
+                    No Image
+                  </div>
+                )}
+              </div>
+              <div className="mt-3">
+                <h3 className="text-sm font-bold text-gray-800 line-clamp-2 group-hover:underline">
+                  {product.name}
+                </h3>
+                <p className="text-red-600 font-bold mt-1">
+                  ¥{Number(product.price).toLocaleString()}
+                </p>
+              </div>
+            </Link>
           ))}
-        </ul>
+        </div>
       </section>
-
-      {/* 今後は、ヘッダー、フッター、その他のセクションを順次構築していきます。 */}
     </main>
   );
 }
