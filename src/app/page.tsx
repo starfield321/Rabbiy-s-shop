@@ -4,7 +4,8 @@ import Link from 'next/link';
 
 export default async function Home() {
   // --- データ取得 ---
-  const { data: products } = await supabase.from('products').select('*').limit(4);
+  // Shopを3カラムにするので、3の倍数（3または6）で取得すると綺麗です
+  const { data: products } = await supabase.from('products').select('*').limit(6);
   const { data: latestVideo } = await supabase
     .from('videos')
     .select('*')
@@ -30,7 +31,7 @@ export default async function Home() {
 
       <div className="relative z-10 font-sans">
         
-        {/* --- 1. HERO SECTION (Banner Image) --- */}
+        {/* --- 1. HERO SECTION --- */}
         <section className="w-full h-[60vh] md:h-[80vh] relative bg-gray-100">
           <Image 
             src="https://via.placeholder.com/1920x1080?text=Rabbiy+Main+Banner" 
@@ -101,14 +102,15 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* --- 4. SHOP SECTION --- */}
+        {/* --- 4. SHOP SECTION (3カラム化) --- */}
         <section className="max-w-6xl mx-auto px-6 py-32">
           <div className="mb-16">
             <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Shop</h2>
             <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+          {/* md:grid-cols-3 に変更 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
             {products?.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`} className="group">
                 <div className="aspect-square relative overflow-hidden bg-[#f9f9f9] mb-6 shadow-sm border border-gray-50">
@@ -116,14 +118,14 @@ export default async function Home() {
                     src={product.image?.[0] || product.image_url}
                     alt={product.name}
                     fill
-                    className="object-contain p-6 transition-transform duration-1000 group-hover:scale-110"
+                    className="object-contain p-8 transition-transform duration-1000 group-hover:scale-110"
                     unoptimized
                   />
                 </div>
-                <h3 className="text-[11px] font-black uppercase tracking-tight group-hover:underline leading-tight mb-1">
+                <h3 className="text-xs font-black uppercase tracking-tight group-hover:underline leading-tight mb-2">
                   {product.name}
                 </h3>
-                <p className="text-sm font-bold tracking-tighter">¥{Number(product.price).toLocaleString()}</p>
+                <p className="text-base font-bold tracking-tighter">¥{Number(product.price).toLocaleString()}</p>
               </Link>
             ))}
           </div>
@@ -134,37 +136,30 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* --- 5. FEATURE (EVENT) セクション --- */}
-        <section className="bg-black py-24 px-6 text-white overflow-hidden">
+        {/* --- 5. FEATURE SECTION (2カラム・固定配置) --- */}
+        <section className="bg-black py-32 px-6 text-white overflow-hidden">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-end mb-12 border-b border-gray-800 pb-4">
               <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Feature</h2>
               <p className="text-[10px] tracking-[0.3em] text-gray-500 uppercase">Upcoming & Projects</p>
             </div>
 
-            {/* 横スクロールのスライド形式 */}
-            <div className="flex space-x-6 overflow-x-auto pb-8 scrollbar-hide">
+            {/* md:grid-cols-2 に変更 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
                 { 
                   id: 1, 
                   title: 'Rabbiy First Live "Genesis"', 
                   date: '2026.03.15', 
                   img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop',
-                  url: 'https://instagram.com/Rabbiy_Genesis' 
+                  url: 'https://instagram.com/' 
                 },
                 { 
                   id: 2, 
                   title: 'Limited Merch Drop', 
                   date: 'Coming Soon', 
                   img: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop',
-                  url: 'https://instagram.com/Rabbiy_Merch' 
-                },
-                { 
-                  id: 3, 
-                  title: 'New EP Production', 
-                  date: 'In Progress', 
-                  img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop',
-                  url: 'https://instagram.com/Rabbiy_Studio' 
+                  url: 'https://instagram.com/' 
                 },
               ].map((event) => (
                 <a 
@@ -172,7 +167,7 @@ export default async function Home() {
                   href={event.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] group relative aspect-[16/9] overflow-hidden bg-gray-900 shadow-2xl"
+                  className="group relative aspect-[16/9] overflow-hidden bg-gray-900 shadow-2xl"
                 >
                   <img 
                     src={event.img} 
@@ -181,7 +176,7 @@ export default async function Home() {
                   />
                   <div className="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/90 to-transparent">
                     <span className="text-[10px] font-black tracking-widest text-red-600 mb-2">{event.date}</span>
-                    <h3 className="text-xl md:text-2xl font-black leading-tight tracking-tighter uppercase italic group-hover:text-red-500 transition-colors">
+                    <h3 className="text-2xl md:text-3xl font-black leading-tight tracking-tighter uppercase italic group-hover:text-red-500 transition-colors">
                       {event.title}
                     </h3>
                   </div>
@@ -190,7 +185,6 @@ export default async function Home() {
             </div>
           </div>
         </section>
-
       </div>
     </main>
   );
