@@ -85,64 +85,92 @@ export default function Home() {
         </section>
 
         {/* --- 3. VIDEO SECTION (左8:右4 / 背景色調整) --- */}
-        <section className="relative py-32 px-6 overflow-hidden bg-[#050505]">
+        <section className="relative py-32 px-6 overflow-hidden">
           
-          {/* 背景レイヤー1: 複数の動的なグラデーション（ぼんやりとした光の溜まり） */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-            {/* 左上の青白い光 */}
-            <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-blue-900/10 rounded-full blur-[120px] animate-pulse" />
-            {/* 右下の微かな赤い光 */}
-            <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-red-900/10 rounded-full blur-[120px]" />
+          {/* 背景レイヤー1: 漆黒ではなく、深い紺色から黒へのグラデーション */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0c] via-black to-[#0a0a0c] -z-10" />
+
+          {/* 背景レイヤー2: ぼんやりとした環境光（オーラ） */}
+          <div className="absolute inset-0 pointer-events-none -z-10">
+            {/* 左側の青い光の溜まり */}
+            <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[80%] bg-blue-900/10 blur-[120px] rounded-full animate-pulse" />
+            {/* 右側の赤い光の溜まり */}
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[70%] bg-red-900/10 blur-[100px] rounded-full" />
           </div>
 
-          {/* 背景レイヤー2: 走査線（スキャンライン）のような微細なストライプ */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none -z-10" 
+          {/* 背景レイヤー3: デジタルノイズ（ごく薄い砂嵐） */}
+          {/* これが「単調さ」を消す決め手になります */}
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none -z-10" 
               style={{ 
-                backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px, transparent 1px)`, 
-                backgroundSize: '100% 4px' 
+                backgroundImage: `url('https://grainy-gradients.vercel.app/noise.svg')`,
+                filter: 'contrast(150%) brightness(100%)' 
               }} />
 
-          {/* 背景レイヤー3: 極小のグリッドドット */}
-          <div className="absolute inset-0 opacity-[0.1] pointer-events-none -z-10" 
+          {/* 背景レイヤー4: スキャンライン（モニターのような横線） */}
+          <div className="absolute inset-0 opacity-[0.05] pointer-events-none -z-10" 
               style={{ 
-                backgroundImage: `radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px)`, 
-                backgroundSize: '20px 20px' 
+                backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px)`, 
+                backgroundSize: '100% 3px' 
               }} />
 
-          {/* コンテンツ本体 */}
+          {/* コンテンツ */}
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center text-white relative z-10">
-            <div className="md:col-span-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/5">
+            
+            {/* 左カラム: 動画 (比率を大きく 8/12) */}
+            <div className="md:col-span-8 group">
               {latestVideo && (
-                <div className="aspect-video w-full bg-black relative">
-                  <iframe 
-                    src={`https://www.youtube.com/embed/${latestVideo.youtube_id}`} 
-                    className="absolute inset-0 w-full h-full" 
-                    allowFullScreen 
+                <div className="aspect-video w-full bg-black relative shadow-[0_0_60px_rgba(0,0,0,0.8)] border border-white/5 transition-transform duration-700 group-hover:scale-[1.01]">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${latestVideo.youtube_id}?autoplay=0&mute=1`}
+                    className="absolute inset-0 w-full h-full opacity-90 group-hover:opacity-100 transition-opacity"
+                    allowFullScreen
                   />
                 </div>
               )}
             </div>
             
+            {/* 右カラム: テキスト (4/12) */}
             <div className="md:col-span-4 space-y-8">
-              <div className="space-y-2">
-                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-white">Video</h2>
-                <p className="text-[10px] text-zinc-500 font-bold tracking-[0.4em] uppercase">Latest Experience</p>
+              <div>
+                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-white">
+                  Video
+                </h2>
+                <p className="text-[10px] text-zinc-500 font-bold tracking-[0.4em] uppercase mt-2">Latest Release</p>
               </div>
               
               <div className="pt-8 border-t border-white/10">
-                <h3 className="text-xl font-bold mb-8 text-zinc-300 leading-tight">
-                  {latestVideo?.title || "Latest Release"}
+                <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-10 text-zinc-200">
+                  {latestVideo?.title || "Loading..."}
                 </h3>
                 <Link href="/video" 
-                      className="group/btn relative inline-block bg-white text-black px-10 py-4 text-[10px] font-black tracking-widest uppercase overflow-hidden transition-all">
-                  <span className="relative z-10 group-hover/btn:text-white">Watch More</span>
+                      className="group/btn relative inline-block bg-white text-black px-10 py-5 text-[10px] font-black tracking-widest uppercase overflow-hidden transition-all">
+                  <span className="relative z-10 group-hover/btn:text-white transition-colors duration-300">Watch More</span>
                   <div className="absolute inset-0 bg-red-600 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 </Link>
               </div>
             </div>
           </div>
-        </section>
+        </section>        
         
+        {/* --- 4. SHOP SECTION (3カラム) --- */}
+        <section className="max-w-6xl mx-auto px-6 py-32">
+          <div className="mb-16">
+            <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Shop</h2>
+            <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16">
+            {products.map((product) => (
+              <Link key={product.id} href={`/products/${product.id}`} className="group">
+                <div className="aspect-square relative overflow-hidden bg-[#f9f9f9] mb-6 border border-gray-50">
+                  <Image src={product.image?.[0] || product.image_url} alt={product.name} fill className="object-contain p-10 transition-transform duration-1000 group-hover:scale-110" unoptimized />
+                </div>
+                <h3 className="text-xs font-black uppercase tracking-tight mb-2 leading-tight group-hover:underline">{product.name}</h3>
+                <p className="text-base font-bold tracking-tighter text-gray-900">¥{Number(product.price).toLocaleString()}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* --- 5. FEATURE (2カラム) --- */}
         <section className="bg-black py-32 px-6 text-white">
           <div className="max-w-6xl mx-auto">
