@@ -3,70 +3,95 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Home() {
-  // 1. Supabaseから全商品を取得
-  const { data: products, error } = await supabase
+  // 商品データの取得
+  const { data: products } = await supabase
     .from('products')
     .select('*')
     .order('id', { ascending: true });
 
-  if (error) {
-    console.error('Error fetching products:', error);
-    return <div className="p-8 text-center">商品の読み込みに失敗しました。</div>;
-  }
+  // 仮のニュースデータ（後でSupabaseで管理することも可能です）
+  const newsList = [
+    { id: 1, date: '2025.12.18', title: 'New Single "Your Name" Digital Release!', category: 'RELEASE' },
+    { id: 2, date: '2025.12.10', title: 'Winter Tour 2025 開催決定', category: 'LIVE' },
+    { id: 3, date: '2025.12.01', title: 'オフィシャルストア オープンのお知らせ', category: 'INFO' },
+  ];
 
   return (
-    <main>
-      {/* ヒーローセクション */}
-      <section className="bg-gray-100 py-16 md:py-24 text-center">
-        <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter mb-4">NEW ARRIVALS</h2>
-        <p className="text-gray-500 text-sm md:text-base tracking-widest uppercase">最新のラインナップをチェック</p>
+    <main className="bg-white text-black">
+      {/* --- ヒーローセクション --- */}
+      <section className="relative h-[80vh] w-full bg-black flex items-center justify-center overflow-hidden">
+        {/* ここに自分の活動写真やメインビジュアルを入れるとかっこいいです */}
+        <div className="z-10 text-center">
+          <h2 className="text-white text-6xl md:text-8xl font-black italic tracking-tighter animate-pulse">
+            Rabbiy
+          </h2>
+          <p className="text-gray-400 tracking-[0.5em] mt-4 uppercase text-xs md:text-sm">Official Site & Store</p>
+        </div>
       </section>
 
-      {/* 商品一覧グリッド */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-8 md:gap-y-16">
-          {products?.map((product) => {
-            // 表示する画像を決定 (image配列の1枚目、なければ以前のimage_url、それもなければ空)
-            const displayImage = (product.image && product.image.length > 0) 
-              ? product.image[0] 
-              : product.image_url;
+      {/* --- NEWS セクション (RADWIMPS風) --- */}
+      <section className="max-w-5xl mx-auto px-4 py-20">
+        <div className="flex justify-between items-end mb-10 border-b-2 border-black pb-2">
+          <h2 className="text-3xl font-black italic tracking-tighter">NEWS</h2>
+          <Link href="/news" className="text-xs font-bold hover:underline tracking-widest">VIEW ALL</Link>
+        </div>
+        <div className="divide-y divide-gray-200">
+          {newsList.map((news) => (
+            <Link href={`/news/${news.id}`} key={news.id} className="group flex flex-col md:flex-row py-6 hover:bg-gray-50 transition-colors px-2">
+              <div className="flex items-center space-x-4 mb-2 md:mb-0 md:w-1/4">
+                <span className="text-[10px] font-bold border border-black px-2 py-0.5">{news.category}</span>
+                <span className="text-xs text-gray-500 font-mono">{news.date}</span>
+              </div>
+              <div className="md:w-3/4">
+                <p className="text-sm md:text-base font-bold group-hover:underline">{news.title}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-            return (
-              <Link 
-                key={product.id} 
-                href={`/products/${product.id}`}
-                className="group flex flex-col"
-              >
-                {/* 画像部分 */}
-                <div className="relative aspect-square overflow-hidden bg-white border border-gray-100 rounded-sm shadow-sm">
-                  {displayImage ? (
-                    <Image
-                      src={displayImage}
-                      alt={product.name}
-                      fill
-                      className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
-                      unoptimized // 外部URL表示を安定させるため
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-gray-400 text-xs italic bg-gray-50">
-                      No Image
-                    </div>
-                  )}
-                </div>
+      {/* --- VIDEO セクション --- */}
+      <section className="bg-gray-50 py-20 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-black italic tracking-tighter mb-10 border-b-2 border-black pb-2 w-fit pr-8">VIDEO</h2>
+          <div className="aspect-video w-full shadow-2xl">
+            {/* YouTubeの埋め込み。自分の動画のIDに変えてください */}
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/あなたの動画ID"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <p className="mt-4 text-xs font-bold tracking-widest text-center uppercase">Latest Music Video</p>
+        </div>
+      </section>
 
-                {/* 情報部分 */}
-                <div className="mt-4 text-center">
-                  <h3 className="text-[11px] md:text-sm font-bold text-gray-900 line-clamp-2 leading-snug group-hover:underline">
-                    {product.name}
-                  </h3>
-                  <p className="text-red-600 font-bold mt-1 text-xs md:text-base">
-                    ¥{Number(product.price).toLocaleString()}
-                    <span className="text-[10px] text-gray-500 font-normal ml-0.5">(tax in)</span>
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+      {/* --- SHOP セクション (既存の商品一覧) --- */}
+      <section className="max-w-7xl mx-auto px-4 py-20">
+        <h2 className="text-3xl font-black italic tracking-tighter mb-10 border-b-2 border-black pb-2 w-fit pr-8">SHOP</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {products?.map((product) => (
+            <Link key={product.id} href={`/products/${product.id}`} className="group">
+              <div className="aspect-square relative overflow-hidden bg-white border border-gray-100">
+                <Image
+                  src={product.image?.[0] || product.image_url}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-4 grayscale group-hover:grayscale-0 transition-all duration-500"
+                  unoptimized
+                />
+              </div>
+              <div className="mt-4">
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Merchandise</p>
+                <h3 className="text-xs font-bold mt-1 group-hover:underline">{product.name}</h3>
+                <p className="text-sm font-bold mt-1 tracking-tighter">¥{Number(product.price).toLocaleString()}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
     </main>
