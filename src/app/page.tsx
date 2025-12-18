@@ -1,4 +1,4 @@
-'use client'; // カルーセルの動きのために追加
+'use client';
 
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
@@ -11,7 +11,6 @@ export default function Home() {
   const [newsItems, setNewsItems] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // カルーセル画像（仮）
   const slides = [
     "https://images.unsplash.com/photo-1514525253361-bee8a187499b?q=80&w=1920&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop",
@@ -29,7 +28,6 @@ export default function Home() {
     };
     fetchData();
 
-    // カルーセル自動再生
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
@@ -39,129 +37,102 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-white overflow-x-hidden">
       
-      {/* 共通背景: ドットグリッド */}
+      {/* 共通ドット背景 */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.05]" 
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
 
       <div className="relative z-10">
         
-        {/* --- 1. HERO CAROUSEL (縦幅短め) --- */}
+        {/* --- 1. HERO CAROUSEL --- */}
         <section className="w-full h-[50vh] md:h-[65vh] relative overflow-hidden bg-gray-200">
           {slides.map((src, idx) => (
-            <div key={idx} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
-              <Image src={src} alt={`Slide ${idx}`} fill className="object-cover" priority unoptimized />
+            <div key={idx} className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
+              <Image src={src} alt="Hero" fill className="object-cover" priority unoptimized />
             </div>
           ))}
-          {/* インジケーター */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
-            {slides.map((_, idx) => (
-              <div key={idx} className={`h-1 transition-all ${idx === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/40'}`} />
-            ))}
-          </div>
         </section>
 
-        {/* --- 2. NEWS SECTION --- */}
-        <section className="max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-gray-900">News</h2>
-              <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Official Information</p>
-            </div>
-            <Link href="/news" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-400 transition-all uppercase">View All</Link>
-          </div>
-          <div className="border-t border-gray-100">
-            {newsItems.map((news) => (
-              <Link href={`/news/${news.id}`} key={news.id} className="group flex flex-col md:flex-row py-10 px-6 transition-all hover:bg-gray-50 border-b border-gray-100">
-                <div className="md:w-1/4 mb-3 md:mb-0 flex items-center space-x-6">
-                  <span className="text-[9px] font-black border border-black px-2 py-0.5 uppercase tracking-tighter">{news.category}</span>
-                  <span className="text-xs font-mono text-gray-400">{news.published_at?.replace(/-/g, '.')}</span>
+        {/* --- 2. NEWS & ABOUT (2カラム構成) --- */}
+        <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            
+            {/* 左カラム: News (8/12) */}
+            <div className="lg:col-span-7">
+              <div className="flex justify-between items-end mb-12">
+                <div>
+                  <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">News</h2>
+                  <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Official Information</p>
                 </div>
-                <div className="md:w-3/4">
-                  <p className="text-lg md:text-xl font-bold leading-tight tracking-tight text-gray-800 group-hover:text-black">{news.title}</p>
+                <Link href="/news" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-400 uppercase tracking-widest transition-all">View All</Link>
+              </div>
+              <div className="border-t border-gray-100">
+                {newsItems.map((news) => (
+                  <Link href={`/news/${news.id}`} key={news.id} className="group flex flex-col py-8 transition-all hover:pl-2 border-b border-gray-100">
+                    <div className="flex items-center space-x-4 mb-2">
+                      <span className="text-[9px] font-black border border-black px-2 py-0.5 uppercase">{news.category}</span>
+                      <span className="text-xs font-mono text-gray-400">{news.published_at?.replace(/-/g, '.')}</span>
+                    </div>
+                    <p className="text-lg font-bold leading-tight group-hover:text-red-600 transition-colors">{news.title}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* 右カラム: About Image Link (5/12) */}
+            <div className="lg:col-span-5">
+              <Link href="/about" className="group relative block aspect-[4/5] overflow-hidden bg-gray-100">
+                <Image 
+                  src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop" // アーティスト写真（仮）
+                  alt="About Rabbiy"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
+                <div className="absolute bottom-10 left-10">
+                  <h3 className="text-white text-5xl font-black italic tracking-tighter leading-none group-hover:text-red-600 transition-colors">Biography</h3>
+                  <p className="text-white/70 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Discover the Story</p>
                 </div>
               </Link>
-            ))}
+            </div>
           </div>
         </section>
 
-        {/* --- 3. VIDEO SECTION (左8:右4 / 背景色調整) --- */}
-        <section className="relative py-32 px-6 overflow-hidden">
-          
-          {/* 背景レイヤー1: 漆黒ではなく、深い紺色から黒へのグラデーション */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0c] via-black to-[#0a0a0c] -z-10" />
-
-          {/* 背景レイヤー2: ぼんやりとした環境光（オーラ） */}
-          <div className="absolute inset-0 pointer-events-none -z-10">
-            {/* 左側の青い光の溜まり */}
-            <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[80%] bg-blue-900/10 blur-[120px] rounded-full animate-pulse" />
-            {/* 右側の赤い光の溜まり */}
-            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[70%] bg-red-900/10 blur-[100px] rounded-full" />
-          </div>
-
-          {/* 背景レイヤー3: デジタルノイズ（ごく薄い砂嵐） */}
-          {/* これが「単調さ」を消す決め手になります */}
-          <div className="absolute inset-0 opacity-[0.02] pointer-events-none -z-10" 
-              style={{ 
-                backgroundImage: `url('https://grainy-gradients.vercel.app/noise.svg')`,
-                filter: 'contrast(150%) brightness(100%)' 
-              }} />
-
-          {/* 背景レイヤー4: スキャンライン（モニターのような横線） */}
-          <div className="absolute inset-0 opacity-[0.05] pointer-events-none -z-10" 
-              style={{ 
-                backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px)`, 
-                backgroundSize: '100% 3px' 
-              }} />
-
-          {/* コンテンツ */}
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center text-white relative z-10">
-            
-            {/* 左カラム: 動画 (比率を大きく 8/12) */}
-            <div className="md:col-span-8 group">
+        {/* --- 3. VIDEO SECTION (グレー背景化) --- */}
+        <section className="bg-gray-100 py-32 px-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+            <div className="md:col-span-8 shadow-2xl">
               {latestVideo && (
-                <div className="aspect-video w-full bg-black relative shadow-[0_0_60px_rgba(0,0,0,0.8)] border border-white/5 transition-transform duration-700 group-hover:scale-[1.01]">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${latestVideo.youtube_id}?autoplay=0&mute=1`}
-                    className="absolute inset-0 w-full h-full opacity-90 group-hover:opacity-100 transition-opacity"
-                    allowFullScreen
-                  />
+                <div className="aspect-video w-full bg-black relative">
+                  <iframe src={`https://www.youtube.com/embed/${latestVideo.youtube_id}`} className="absolute inset-0 w-full h-full" allowFullScreen />
                 </div>
               )}
             </div>
-            
-            {/* 右カラム: テキスト (4/12) */}
             <div className="md:col-span-4 space-y-8">
-              <div>
-                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-white">
-                  Video
-                </h2>
-                <p className="text-[10px] text-zinc-500 font-bold tracking-[0.4em] uppercase mt-2">Latest Release</p>
-              </div>
-              
-              <div className="pt-8 border-t border-white/10">
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-10 text-zinc-200">
-                  {latestVideo?.title || "Loading..."}
-                </h3>
-                <Link href="/video" 
-                      className="group/btn relative inline-block bg-white text-black px-10 py-5 text-[10px] font-black tracking-widest uppercase overflow-hidden transition-all">
-                  <span className="relative z-10 group-hover/btn:text-white transition-colors duration-300">Watch More</span>
-                  <div className="absolute inset-0 bg-red-600 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                </Link>
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Video</h2>
+              <div className="pt-8 border-t border-gray-300">
+                <h3 className="text-xl font-bold mb-8 text-gray-600">{latestVideo?.title || "Latest Release"}</h3>
+                <Link href="/video" className="inline-block bg-black text-white px-10 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all">Watch More</Link>
               </div>
             </div>
           </div>
-        </section>        
-        
-        {/* --- 4. SHOP SECTION (3カラム) --- */}
+        </section>
+
+        {/* --- 4. SHOP SECTION --- */}
         <section className="max-w-6xl mx-auto px-6 py-32">
-          <div className="mb-16">
-            <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Shop</h2>
-            <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
+          <div className="flex justify-between items-end mb-16">
+            <div>
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Shop</h2>
+              <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
+            </div>
+            <Link href="/products" className="bg-black text-white px-8 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all shadow-lg">
+              View All Shop
+            </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16">
             {products.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`} className="group">
-                <div className="aspect-square relative overflow-hidden bg-[#f9f9f9] mb-6 border border-gray-50">
+                <div className="aspect-square relative overflow-hidden bg-gray-50 mb-6 border border-gray-100 shadow-sm">
                   <Image src={product.image?.[0] || product.image_url} alt={product.name} fill className="object-contain p-10 transition-transform duration-1000 group-hover:scale-110" unoptimized />
                 </div>
                 <h3 className="text-xs font-black uppercase tracking-tight mb-2 leading-tight group-hover:underline">{product.name}</h3>
@@ -183,7 +154,7 @@ export default function Home() {
                 { id: 1, title: 'Rabbiy Live "Genesis"', date: '2026.03.15', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop' },
                 { id: 2, title: 'Limited Merch Drop', date: 'Coming Soon', img: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop' },
               ].map((event) => (
-                <div key={event.id} className="group relative aspect-[16/9] overflow-hidden bg-zinc-900 shadow-2xl cursor-pointer">
+                <div key={event.id} className="group relative aspect-[16/9] overflow-hidden bg-zinc-900 shadow-2xl">
                   <img src={event.img} alt={event.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-100" />
                   <div className="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-black/90 to-transparent">
                     <span className="text-[10px] font-black tracking-widest text-red-600 mb-2">{event.date}</span>
