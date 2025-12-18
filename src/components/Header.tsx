@@ -26,7 +26,7 @@ export const Header = () => {
           <h1 className="flex-1 lg:flex-none text-center lg:text-left">
             <Link href="/">
               <div className="relative w-32 h-12 mx-auto lg:mx-0">
-                <span className="font-bold text-2xl italic tracking-tighter">T-OD CLONE</span>
+                <span className="font-bold text-2xl italic tracking-tighter">Rabbiy</span>
                 {/* 実際のロゴ画像がある場合は Image タグに差し替えてください */}
               </div>
             </Link>
@@ -34,7 +34,7 @@ export const Header = () => {
 
           {/* 右側ユーティリティリンク (PC表示) */}
           <nav className="hidden lg:flex items-center space-x-6 text-xs text-gray-600">
-            <Link href="/pages/about" className="hover:text-black">T-ODとは</Link>
+            <Link href="/pages/about" className="hover:text-black">〇〇について</Link>
             <Link href="/account/login" className="hover:text-black">ログイン</Link>
             <Link href="/cart" className="flex items-center space-x-1 hover:text-black font-bold">
               <span>カート</span>
