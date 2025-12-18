@@ -1,18 +1,19 @@
+import { supabase } from '@/lib/supabase'; // すでに作成済みのsupabaseクライアント
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-// 本来はSupabaseから取得しますが、まずは表示確認用にデータを定義します
-const dummyProducts = [
-  { id: 1, name: "Drummer's Set Up Vol.44 yukihiro", price: 4400, description: "ここに商品の詳細説明が入ります。素材やサイズ感など。", imageUrl: "/product-img-1.jpg" },
-  // ...必要に応じて追加
-];
+export default async function ProductDetailPage({ params }: { params: { id: string } }) {
+  // 1. SupabaseからIDが一致する商品データを1件取得
+  const { data: product, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', params.id)
+    .single();
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  // IDに基づいて商品を検索（実際はSupabaseのクエリに置き換えます）
-  const product = dummyProducts.find(p => p.id === parseInt(params.id));
-
-  if (!product) {
-    notFound(); // 商品がない場合は404エラーを表示
+  // 2. データがない、またはエラーの場合は404を表示
+  if (error || !product) {
+    console.error(error);
+    notFound();
   }
 
   return (
@@ -21,12 +22,18 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         
         {/* 左側：商品画像 */}
         <div className="bg-gray-100 aspect-square relative overflow-hidden border border-gray-200">
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            fill
-            className="object-cover"
-          />
+          {product.image_url ? (
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-400">
+              No Image
+            </div>
+          )}
         </div>
 
         {/* 右側：商品情報 */}
@@ -40,30 +47,17 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
           <div className="border-t border-b border-gray-100 py-6">
             <h2 className="text-sm font-bold text-gray-900 mb-2">商品説明</h2>
-            <p className="text-gray-600 leading-relaxed text-sm">
-              {product.description}
+            <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
+              {product.description || "説明はありません。"}
             </p>
           </div>
 
-          {/* カート追加セクション */}
+          {/* カート追加ボタン（機能は後ほど） */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <label className="text-sm font-bold">数量</label>
-              <select className="border border-gray-300 rounded px-2 py-1">
-                {[1, 2, 3, 4, 5].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
-            </div>
-
             <button className="w-full bg-black text-white py-4 font-bold hover:bg-gray-800 transition shadow-lg">
               カートに入れる
             </button>
           </div>
-
-          <p className="text-xs text-gray-500 italic">
-            ※配送には通常3〜5営業日ほどお時間をいただいております。
-          </p>
         </div>
       </div>
     </main>
