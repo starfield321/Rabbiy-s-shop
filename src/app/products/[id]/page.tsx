@@ -85,13 +85,13 @@ export default function ProductDetailPage() {
               addToCart(product);
               alert('ADDED TO CART');
             }}
-            className="w-full bg-black text-white py-6 font-black uppercase tracking-[0.3em] text-sm hover:bg-gray-800 transition-all active:scale-[0.98] shadow-xl"
+            className="w-full bg-black text-white py-6 font-black tracking-[0.3em] text-sm hover:bg-gray-800 transition-all active:scale-[0.98] shadow-xl"
           >
             Add to Cart
           </button>
           
           <div className="mt-12 pt-8 border-t border-gray-100">
-            <Link href="/products" className="text-[10px] font-black tracking-widest uppercase hover:underline text-gray-400">
+            <Link href="/products" className="text-[10px] font-black tracking-widest hover:underline text-gray-400">
               ← Back to Shop
             </Link>
           </div>

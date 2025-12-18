@@ -11,7 +11,7 @@ export default async function NewsListPage() {
     <main className="max-w-4xl mx-auto px-4 py-20">
       <div className="mb-16 border-b-4 border-black pb-4">
         <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">News</h1>
-        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2 uppercase">Official Information</p>
+        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2">Official Information</p>
       </div>
 
       <div className="divide-y divide-gray-200">
@@ -26,7 +26,7 @@ export default async function NewsListPage() {
               </span>
             </div>
             <div className="md:w-3/4">
-              <h2 className="text-lg font-bold group-hover:underline uppercase tracking-tight">
+              <h2 className="text-lg font-bold group-hover:underline tracking-tight">
                 {news.title}
               </h2>
             </div>

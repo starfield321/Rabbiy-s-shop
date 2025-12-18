@@ -9,7 +9,7 @@ export default function AboutPage() {
         <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">
           Biography
         </h1>
-        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2 uppercase">
+        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2">
           Artist Profile / Rabbiy
         </p>
       </div>
@@ -27,7 +27,7 @@ export default function AboutPage() {
                 className="object-cover"
               />
             </div>
-            <h2 className="text-4xl font-black leading-none uppercase italic">
+            <h2 className="text-4xl font-black leading-none italic">
               Rabbiy
               <span className="block text-[10px] tracking-widest text-red-600 mt-2 not-italic">
                 DJ / TRACK MAKER
@@ -53,10 +53,10 @@ export default function AboutPage() {
 
           {/* ジャンルセクション */}
           <div className="pt-20 mt-20 border-t border-gray-100">
-            <h3 className="text-xs font-black tracking-[0.3em] uppercase mb-8 text-gray-400">
+            <h3 className="text-xs font-black tracking-[0.3em] mb-8 text-gray-400">
               Main Genres
             </h3>
-            <ul className="grid grid-cols-2 gap-4 text-sm font-black italic uppercase tracking-tighter mb-12">
+            <ul className="grid grid-cols-2 gap-4 text-sm font-black italic tracking-tighter mb-12">
               <li>- Kawaii Future Bass</li>
               <li>- Vocaloid Music</li>
               <li>- Electro Pop</li>
@@ -67,7 +67,7 @@ export default function AboutPage() {
             <Link 
               href="https://www.youtube.com/@Rabbiychannel" 
               target="_blank"
-              className="inline-flex items-center justify-center w-full md:w-auto bg-red-600 text-white px-10 py-5 font-black uppercase tracking-[0.2em] text-xs hover:bg-black transition-all shadow-lg active:scale-[0.98]"
+              className="inline-flex items-center justify-center w-full md:w-auto bg-red-600 text-white px-10 py-5 font-black tracking-[0.2em] text-xs hover:bg-black transition-all shadow-lg active:scale-[0.98]"
             >
               <span className="mr-3 text-lg">▶</span>
               Subscribe on YouTube

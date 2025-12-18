@@ -12,7 +12,7 @@ export default async function ProductsPage() {
     <main className="max-w-7xl mx-auto px-4 py-16 md:py-24">
       <div className="mb-16 border-b-4 border-black pb-4">
         <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Shop</h1>
-        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2 uppercase">Official Merchandise</p>
+        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2">Official Merchandise</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">
@@ -28,7 +28,7 @@ export default async function ProductsPage() {
               />
             </div>
             <div className="space-y-1">
-              <h3 className="text-[11px] font-black uppercase tracking-tight group-hover:underline leading-tight">
+              <h3 className="text-[11px] font-black tracking-tight group-hover:underline leading-tight">
                 {product.name}
               </h3>
               <p className="text-sm font-bold tracking-tighter text-gray-900">

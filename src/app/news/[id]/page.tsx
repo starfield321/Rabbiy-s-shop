@@ -26,7 +26,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
             {news.published_at?.replace(/-/g, '.')}
           </span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-tight">
+        <h1 className="text-2xl md:text-3xl font-black tracking-tighter leading-tight">
           {news.title}
         </h1>
       </div>
@@ -39,7 +39,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
       <div className="text-center border-t border-gray-100 pt-12">
         <Link 
           href="/news" 
-          className="text-[10px] font-black tracking-[0.2em] uppercase hover:underline"
+          className="text-[10px] font-black tracking-[0.2em] hover:underline"
         >
           BACK TO LIST
         </Link>
