@@ -189,6 +189,63 @@ export default function Home() {
           </div>
         </section>
 
+        {/* --- 6. CONTACT SECTION (難解化ボタン) --- */}
+        <section className="w-full bg-black py-10 px-0">
+          <Link href="/contact" className="group relative w-full h-48 md:h-64 flex items-center justify-center overflow-hidden border-y border-zinc-800">
+            
+            {/* 背景のデジタルノイズ・グリッチ演出 */}
+            <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat" />
+            
+            {/* 走査線（スキャンライン） */}
+            <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
+
+            {/* 背面：難解な文字列が流れる（マーキー風） */}
+            <div className="absolute inset-0 flex items-center whitespace-nowrap opacity-5 group-hover:opacity-10 transition-opacity">
+              <div className="text-[12vh] font-black italic tracking-tighter animate-marquee">
+                ERROR_0x8F22A ACCESS_DENIED CONTACT_PROTOCOL_INITIATED 01011001 ERROR_0x8F22A 
+              </div>
+            </div>
+
+            {/* メインのボタン文字（グリッチホバー） */}
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="relative">
+                <span className="text-5xl md:text-8xl font-black italic tracking-tighter text-white uppercase group-hover:animate-pulse">
+                  Contact
+                </span>
+                {/* ホバー時にズレて見える赤い影（グリッチ） */}
+                <span className="absolute inset-0 text-5xl md:text-8xl font-black italic tracking-tighter text-red-600 translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:animate-ping -z-10 transition-opacity" />
+              </div>
+              
+              <div className="mt-4 flex items-center space-x-4">
+                <div className="w-12 h-[1px] bg-red-600" />
+                <p className="text-[10px] font-mono tracking-[0.5em] text-zinc-500 uppercase group-hover:text-white transition-colors">
+                  Initialize Communication Protocol
+                </p>
+                <div className="w-12 h-[1px] bg-red-600" />
+              </div>
+            </div>
+
+            {/* 隅の装飾パーツ（システムUI風） */}
+            <div className="absolute top-6 left-6 text-[8px] font-mono text-zinc-700">
+              ID: RB-2025-SYSTEM<br />STATUS: ENCRYPTED
+            </div>
+            <div className="absolute bottom-6 right-6 text-[8px] font-mono text-zinc-700">
+              TYPE: SECURE_LINK<br />LOC: /CONTACT_US
+            </div>
+          </Link>
+        </section>
+
+        {/* マーキーアニメーション用CSSを適応 */}
+        <style jsx global>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee {
+            animation: marquee 20s linear infinite;
+          }
+        `}</style>
+        
       </div>
 
       {/* --- YouTube Modal --- */}
