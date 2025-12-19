@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingScreen from '@/components/LoadingScreen';
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -37,6 +38,8 @@ export default function Home() {
   }, []);
 
   return (
+    <>
+    <LoadingScreen />
     <main className="relative min-h-screen bg-white selection:bg-black selection:text-white overflow-x-hidden">
       
       {/* 背景装飾: ドットグリッド */}
@@ -181,5 +184,6 @@ export default function Home() {
         </div>
       )}
     </main>
+    </>
   );
 }
