@@ -10,9 +10,14 @@ export default async function ProductsPage() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-16 md:py-24">
-      <div className="mb-16 border-b-4 border-black pb-4">
-        <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Shop</h1>
-        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2">Official Merchandise</p>
+      {/* ヘッダー */}
+      <div className="mb-20 border-b-4 border-black pb-6">
+        <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
+            Goods<span className="text-red-600 not-italic">.</span>
+        </h1>
+        <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
+            Official Merchandise
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">

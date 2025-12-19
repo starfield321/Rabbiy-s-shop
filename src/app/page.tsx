@@ -147,7 +147,7 @@ export default function Home() {
         <section className="reveal max-w-6xl mx-auto px-6 py-32">
           <div className="flex justify-between items-end mb-16">
             <div>
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Shop</h2>
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Goods</h2>
               <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
             </div>
             <Link href="/products" className="bg-black text-white px-8 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all shadow-lg">View All Shop</Link>

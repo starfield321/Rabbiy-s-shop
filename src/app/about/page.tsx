@@ -4,12 +4,12 @@ import Link from 'next/link';
 export default function AboutPage() {
   return (
     <main className="max-w-5xl mx-auto px-4 py-16 md:py-32">
-      {/* メインタイトル */}
-      <div className="mb-20 border-b-4 border-black pb-4">
-        <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">
-          Biography
+      {/* ヘッダー */}
+      <div className="mb-20 border-b-4 border-black pb-6">
+        <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
+          Biography<span className="text-red-600 not-italic">.</span>
         </h1>
-        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2">
+        <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
           Artist Profile / Rabbiy
         </p>
       </div>

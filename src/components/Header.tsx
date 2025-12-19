@@ -81,7 +81,7 @@ export const Header = () => {
           <nav className="flex flex-col space-y-4 text-sm font-black uppercase tracking-widest text-gray-800">
             <Link href="/news" onClick={() => setIsMenuOpen(false)}>News</Link>
             <Link href="/video" onClick={() => setIsMenuOpen(false)}>Video</Link>
-            <Link href="/products" onClick={() => setIsMenuOpen(false)}>Shop</Link>
+            <Link href="/products" onClick={() => setIsMenuOpen(false)}>Goods</Link>
             <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
           </nav>
         </div>
