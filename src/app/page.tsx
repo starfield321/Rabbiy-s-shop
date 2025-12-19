@@ -150,7 +150,7 @@ export default function Home() {
               <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Goods</h2>
               <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
             </div>
-            <Link href="/products" className="bg-black text-white px-8 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all shadow-lg">View All Shop</Link>
+            <Link href="/products" className="bg-black text-white px-8 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all shadow-lg">View All Goods</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16">
             {products.map((product) => (
@@ -283,7 +283,7 @@ export default function Home() {
             .animate-glitch-2 { animation: glitch-2 0.2s infinite; }
           `}</style>
         </section>        
-        
+
       </div>
 
       {/* --- YouTube Modal --- */}
