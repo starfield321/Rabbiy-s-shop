@@ -189,62 +189,100 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- 6. CONTACT SECTION (難解化ボタン) --- */}
-        <section className="w-full bg-black py-10 px-0">
-          <Link href="/contact" className="group relative w-full h-48 md:h-64 flex items-center justify-center overflow-hidden border-y border-zinc-800">
+        {/* --- 6. CONTACT SECTION (Hyper Glitch Edition) --- */}
+        <section className="w-full bg-black py-0 px-0 relative overflow-hidden">
+          <Link href="/contact" className="group relative w-full h-[300px] md:h-[450px] flex items-center justify-center overflow-hidden border-y border-zinc-900">
             
-            {/* 背景のデジタルノイズ・グリッチ演出 */}
-            <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat" />
-            
-            {/* 走査線（スキャンライン） */}
-            <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
-
-            {/* 背面：難解な文字列が流れる（マーキー風） */}
-            <div className="absolute inset-0 flex items-center whitespace-nowrap opacity-5 group-hover:opacity-10 transition-opacity">
-              <div className="text-[12vh] font-black italic tracking-tighter animate-marquee">
-                ERROR_0x8F22A ACCESS_DENIED CONTACT_PROTOCOL_INITIATED 01011001 ERROR_0x8F22A 
+            {/* 背景：巨大なRabbiy（透過画像）がうっすら見える */}
+            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-40 transition-all duration-700">
+              <div className="relative w-[120%] h-[120%] group-hover:scale-110 transition-transform duration-[2s]">
+                <Image 
+                  src="/rabbiy_3d.png" 
+                  alt="" 
+                  fill 
+                  className="object-contain filter grayscale invert brightness-50 contrast-150"
+                />
               </div>
             </div>
 
-            {/* メインのボタン文字（グリッチホバー） */}
-            <div className="relative z-10 flex flex-col items-center">
-              <div className="relative">
-                <span className="text-5xl md:text-8xl font-black italic tracking-tighter text-white uppercase group-hover:animate-pulse">
-                  Contact
-                </span>
-                {/* ホバー時にズレて見える赤い影（グリッチ） */}
-                <span className="absolute inset-0 text-5xl md:text-8xl font-black italic tracking-tighter text-red-600 translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:animate-ping -z-10 transition-opacity" />
+            {/* バグ演出：赤いノイズレイヤー（ホバーで激化） */}
+            <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-30 mix-blend-screen pointer-events-none">
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat animate-pulse" />
+              <div className="absolute inset-0 bg-red-900/20 group-hover:animate-ping" />
+            </div>
+
+            {/* 背面：高速で流れる難解なシステムテキスト */}
+            <div className="absolute inset-0 z-10 flex flex-col justify-center opacity-10 group-hover:opacity-20 select-none pointer-events-none">
+              <div className="text-[15vh] font-black italic tracking-[--tight] leading-none animate-marquee-fast text-zinc-800 flex whitespace-nowrap">
+                {"SYSTEM_FAILURE_0x0001_DATA_CORRUPTED_REBOOT_REQUIRED_".repeat(5)}
+              </div>
+              <div className="text-[15vh] font-black italic tracking-[--tight] leading-none animate-marquee-slow text-zinc-900 flex whitespace-nowrap direction-reverse">
+                {"_ACCESS_KEY_INVALID_01011001_ENCRYPTED_SIGNAL_LOST_".repeat(5)}
+              </div>
+            </div>
+
+            {/* メイン：Contactボタン（グリッチ・スタック） */}
+            <div className="relative z-30 flex flex-col items-center">
+              <div className="relative group-hover:animate-shake">
+                <h2 className="text-6xl md:text-9xl font-black italic tracking-tighter text-white mix-blend-difference">
+                  CONTACT
+                </h2>
+                {/* レイヤー化されたグリッチテキスト */}
+                <span className="absolute inset-0 text-red-600 opacity-0 group-hover:opacity-100 group-hover:animate-glitch-1 -z-10">CONTACT</span>
+                <span className="absolute inset-0 text-cyan-400 opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2 -z-20">CONTACT</span>
               </div>
               
-              <div className="mt-4 flex items-center space-x-4">
-                <div className="w-12 h-[1px] bg-red-600" />
-                <p className="text-[10px] font-mono tracking-[0.5em] text-zinc-500 uppercase group-hover:text-white transition-colors">
-                  Initialize Communication Protocol
+              <div className="mt-6 py-2 px-6 border border-zinc-700 group-hover:border-red-600 group-hover:bg-red-600 transition-all">
+                <p className="text-[10px] font-mono tracking-[0.8em] text-zinc-500 group-hover:text-black font-bold uppercase transition-colors">
+                  Initialize Direct Link
                 </p>
-                <div className="w-12 h-[1px] bg-red-600" />
               </div>
             </div>
 
-            {/* 隅の装飾パーツ（システムUI風） */}
-            <div className="absolute top-6 left-6 text-[8px] font-mono text-zinc-700">
-              ID: RB-2025-SYSTEM<br />STATUS: ENCRYPTED
+            {/* 四隅のシステム装飾 */}
+            <div className="absolute top-8 left-8 z-30 font-mono text-[9px] text-zinc-600 leading-relaxed hidden md:block">
+              [LOG_01]: SIGNAL_INTERCEPTED<br />
+              [LOG_02]: DECRYPTING_MESSAGE_BUFFER...<br />
+              [LOG_03]: ORIGIN_UNKNOWN
             </div>
-            <div className="absolute bottom-6 right-6 text-[8px] font-mono text-zinc-700">
-              TYPE: SECURE_LINK<br />LOC: /CONTACT_US
+            <div className="absolute bottom-8 right-8 z-30 font-mono text-[9px] text-zinc-600 text-right leading-relaxed hidden md:block">
+              PROTOCOL: SECURE_WAVE<br />
+              ENCRYPTION: AES_256_RSA<br />
+              STATUS: <span className="text-red-900 group-hover:text-red-600 group-hover:animate-pulse">CONNECTED</span>
             </div>
-          </Link>
-        </section>
 
-        {/* マーキーアニメーション用CSSを適応 */}
-        <style jsx global>{`
-          @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-marquee {
-            animation: marquee 20s linear infinite;
-          }
-        `}</style>
+          </Link>
+
+          {/* アニメーション用CSS */}
+          <style jsx global>{`
+            @keyframes marquee-fast { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+            @keyframes marquee-slow { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+            .animate-marquee-fast { animation: marquee-fast 12s linear infinite; }
+            .animate-marquee-slow { animation: marquee-slow 30s linear infinite; }
+            
+            @keyframes shake {
+              0%, 100% { transform: translate(0,0); }
+              10% { transform: translate(-2px, 1px); }
+              30% { transform: translate(2px, -1px); }
+              50% { transform: translate(-1px, 2px); }
+              70% { transform: translate(1px, -2px); }
+            }
+            .group:hover .animate-shake { animation: shake 0.2s infinite; }
+
+            @keyframes glitch-1 {
+              0% { transform: translate(4px, -2px); }
+              50% { transform: translate(-3px, 1px); }
+              100% { transform: translate(4px, -2px); }
+            }
+            @keyframes glitch-2 {
+              0% { transform: translate(-4px, 2px); }
+              50% { transform: translate(3px, -1px); }
+              100% { transform: translate(-4px, 2px); }
+            }
+            .animate-glitch-1 { animation: glitch-1 0.15s infinite; }
+            .animate-glitch-2 { animation: glitch-2 0.2s infinite; }
+          `}</style>
+        </section>        
         
       </div>
 
