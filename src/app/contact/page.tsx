@@ -21,8 +21,11 @@ export default function ContactPage() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-16 md:py-32">
-      <div className="mb-16 border-b-4 border-black pb-4">
-        <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Contact</h1>
+      {/* ヘッダー */}
+      <div className="mb-20 border-b-4 border-black pb-6">
+        <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
+          Contact<span className="text-red-600 not-italic">.</span>
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12">

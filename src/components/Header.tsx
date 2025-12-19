@@ -37,7 +37,7 @@ export const Header = () => {
             <Link href="/about" className="hover:text-black transition-colors">About</Link>
             <Link href="/news" className="hover:text-black transition-colors">News</Link>
             <Link href="/video" className="hover:text-black transition-colors">Video</Link>
-            <Link href="/products" className="hover:text-black transition-colors">Shop</Link>
+            <Link href="/products" className="hover:text-black transition-colors">Goods</Link>
             <Link href="/contact" className="hover:text-black transition-colors">Contact</Link>
           </nav>
 

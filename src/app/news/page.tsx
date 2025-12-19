@@ -9,9 +9,14 @@ export default async function NewsListPage() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-20">
-      <div className="mb-16 border-b-4 border-black pb-4">
-        <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">News</h1>
-        <p className="text-gray-400 text-[10px] tracking-[0.3em] mt-2">Official Information</p>
+      {/* ヘッダー */}
+      <div className="mb-20 border-b-4 border-black pb-6">
+        <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
+            News<span className="text-red-600 not-italic">.</span>
+        </h1>
+        <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
+            Official Information
+        </p>
       </div>
 
       <div className="divide-y divide-gray-200">
