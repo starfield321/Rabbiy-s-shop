@@ -49,14 +49,22 @@ export default function GoodsPage() {
             <Link key={product.id} href={`/products/${product.id}`} className="group">
               <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-xl">
                 
-                {/* 画像：ホバーで少し拡大 */}
-                <Image
-                  src={product.image?.[0] || product.image_url}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-8 md:p-12 transition-transform duration-1000 group-hover:scale-110"
-                  unoptimized
-                />
+                {/* 画像：配列の1枚目を表示 */}
+                {product.image && product.image.length > 0 ? (
+                    <Image
+                    // image[0] で配列の1番目を取得
+                    src={product.image[0]}
+                    alt={product.name}
+                    fill
+                    className="object-contain p-8 md:p-12 transition-transform duration-1000 group-hover:scale-110"
+                    unoptimized // 外部URLの場合は一旦これを付けると表示が安定します
+                    />
+                ) : (
+                    // 画像がない場合のプレースホルダー（背景のみ、または代替画像）
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-zinc-300 text-[10px] font-mono uppercase tracking-widest">
+                    No Image Available
+                    </div>
+                )}
 
                 {/* SOLD OUT 表示（在庫管理がある場合を想定） */}
                 {product.stock === 0 && (
