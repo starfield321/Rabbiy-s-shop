@@ -81,9 +81,6 @@ export default function GoodsPage() {
                     <h2 className="text-xs font-black uppercase tracking-tight group-hover:text-red-600 transition-colors">
                       {product.name || 'Unnamed'}
                     </h2>
-                    <p className="text-[9px] text-zinc-400 font-mono mt-1 uppercase">
-                      ID: {String(product.id).slice(0, 8)}
-                    </p>
                   </div>
                   <p className="text-lg font-bold tracking-tighter text-gray-900 leading-none">
                     ¥{product.price ? Number(product.price).toLocaleString() : '---'}
