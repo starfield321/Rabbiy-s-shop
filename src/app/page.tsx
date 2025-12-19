@@ -37,6 +37,23 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    // スクロール監視のロジック
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 }); // 10%見えたら発火
+
+    // revealクラスがついた要素をすべて監視
+    const elements = document.querySelectorAll('.reveal');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [products, newsItems]); // データ読み込み後に再実行
+
   return (
     <>
     <LoadingScreen />
@@ -58,7 +75,7 @@ export default function Home() {
         </section>
 
         {/* --- 2. NEWS & BIOGRAPHY SECTION --- */}
-        <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+        <section className="reveal max-w-7xl mx-auto px-6 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             
             {/* 左カラム: News */}
@@ -102,7 +119,7 @@ export default function Home() {
         </section>
 
         {/* --- 3. VIDEO SECTION (Gray Background & Modal) --- */}
-        <section className="bg-gray-100 py-32 px-6">
+        <section className="reveal bg-gray-100 py-32 px-6">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
             <div className="md:col-span-8 group" onClick={() => setIsModalOpen(true)}>
               {latestVideo && (
@@ -127,7 +144,7 @@ export default function Home() {
         </section>
 
         {/* --- 4. SHOP SECTION (3 Columns) --- */}
-        <section className="max-w-6xl mx-auto px-6 py-32">
+        <section className="reveal max-w-6xl mx-auto px-6 py-32">
           <div className="flex justify-between items-end mb-16">
             <div>
               <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Shop</h2>
@@ -149,7 +166,7 @@ export default function Home() {
         </section>
 
         {/* --- 5. FEATURE (2 Columns) --- */}
-        <section className="bg-black py-32 px-6 text-white">
+        <section className="reveal bg-black py-32 px-6 text-white">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-end mb-16 border-b border-zinc-800 pb-4">
               <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Feature</h2>
