@@ -58,7 +58,7 @@ export default function LoadingScreen() {
           >
             <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-[0_0_40px_rgba(255,255,255,0.1)]">
               <Image
-                src="/rabbiy_3d.png"
+                src="/rabbiy_dash.png"
                 alt="Rabbiy"
                 fill
                 className="object-contain"
