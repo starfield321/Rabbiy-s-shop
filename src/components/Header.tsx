@@ -2,44 +2,40 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation'; // 追加
+import { usePathname } from 'next/navigation';
+import { useCart } from '@/context/CartContext'; // 追加
 
 export default function Header() {
-  const pathname = usePathname(); // 現在のパスを取得
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { totalQuantity } = useCart(); // 数字だけを取得
 
-  // トップページかどうかを判定
   const isHomePage = pathname === '/';
 
   useEffect(() => {
-    // トップページのみスクロール検知を行う
     const handleScroll = () => {
       if (isHomePage) {
         setIsScrolled(window.scrollY > 50);
       }
     };
 
-    // トップページでない場合は、常にスクロール済み（白背景）の状態にする
     if (!isHomePage) {
       setIsScrolled(true);
     } else {
-      // トップページに戻った時は現在のスクロール位置で再判定
       setIsScrolled(window.scrollY > 50);
     }
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHomePage]); // パスが変わるたびに再実行
+  }, [isHomePage]);
 
   return (
     <header className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-4' 
-        : 'bg-transparent py-6'
+      isScrolled ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-4' : 'bg-transparent py-6'
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         
-        {/* 左: ロゴ */}
+        {/* 左: ロゴ (変更なし) */}
         <Link href="/" className="group">
           <h1 className={`text-2xl font-black italic tracking-tighter transition-colors ${
             isScrolled ? 'text-black' : 'text-white'
@@ -48,7 +44,7 @@ export default function Header() {
           </h1>
         </Link>
 
-        {/* 中央: ナビゲーション (デスクトップ) */}
+        {/* 中央: ナビゲーション (変更なし) */}
         <nav className={`hidden md:flex items-center space-x-8 text-[10px] font-black uppercase tracking-[0.2em] ${
           isScrolled ? 'text-gray-900' : 'text-white/80'
         }`}>
@@ -61,8 +57,6 @@ export default function Header() {
 
         {/* 右: アクション */}
         <div className="flex items-center space-x-6">
-          
-          {/* ログインボタン */}
           <Link 
             href="/login" 
             className={`text-[10px] font-black uppercase tracking-widest hover:opacity-60 transition-all ${
@@ -72,7 +66,7 @@ export default function Header() {
             Login
           </Link>
 
-          {/* カートアイコン */}
+          {/* カートアイコン: 構造は変えず、spanタグで数字を乗せるだけ */}
           <Link href="/cart" className="relative group">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -92,6 +86,13 @@ export default function Header() {
               <circle cx="19" cy="21" r="1"/>
               <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
             </svg>
+
+            {/* 数字バッジ: 1個以上のときだけ表示 */}
+            {totalQuantity > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {totalQuantity}
+              </span>
+            )}
           </Link>
         </div>
       </div>
