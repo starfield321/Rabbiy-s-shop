@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const data = await resend.emails.send({
       from: 'Rabbiy <onboarding@resend.dev>', // 独自ドメイン認証済みならそのアドレス
       // 配列にすることで、お客さんとあなた（管理者）の両方に送ります
-      to: [email, 'starfield.business@gmail.com'], 
+      to: ['starfield.business@gmail.com'], 
       subject: `【Rabbiy】新着注文通知 - ${customerName} 様`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
