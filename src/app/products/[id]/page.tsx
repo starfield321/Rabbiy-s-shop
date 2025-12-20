@@ -91,63 +91,68 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
-        {/* --- 下部：商品概要 (米津さん風セクション) --- */}
+        {/* --- 下部：商品概要 --- */}
         <div className="border-t border-zinc-200 pt-20">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-            {/* 左：セクションタイトル */}
-            <div className="md:col-span-4">
-              <h2 className="text-2xl font-black italic tracking-tighter uppercase flex items-center">
-                <span className="w-8 h-[2px] bg-red-600 mr-4"></span>
-                Product Overview
-                <span className="ml-3 text-[10px] font-mono text-zinc-400 not-italic tracking-widest">/ 商品概要</span>
-              </h2>
-            </div>
-            
-            {/* 右：詳細コンテンツ */}
-            <div className="md:col-span-8 space-y-12">
-              {/* 商品説明メイン */}
-              <div className="text-sm leading-[2] text-zinc-700 font-medium whitespace-pre-wrap">
-                {product.description || "この商品に関する詳細な説明は現在準備中です。"}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+                <div className="md:col-span-4">
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase flex items-center">
+                    <span className="w-8 h-[2px] bg-red-600 mr-4"></span>
+                    Product Overview
+                </h2>
+                </div>
+                
+                <div className="md:col-span-8 space-y-12">
+                <div className="text-sm leading-[2] text-zinc-700 font-medium whitespace-pre-wrap">
+                    {product.description}
+                </div>
 
-              {/* スペック表（サイズ詳細や素材など） */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12 border-t border-zinc-100 pt-12">
-                <div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-zinc-400">Material / 素材</h3>
-                  <p className="text-xs font-bold">{product.material || "Cotton 100%"}</p>
-                </div>
-                <div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-zinc-400">Spec / 仕様</h3>
-                  <p className="text-xs font-bold leading-relaxed whitespace-pre-wrap">
-                    {product.spec || "MADE IN JAPAN\nORIGINAL BODY"}
-                  </p>
-                </div>
-                {isSizeRequired && (
-                  <div className="sm:col-span-2">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-zinc-400">Size Guide / サイズ表</h3>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-[11px] font-bold">
-                        <thead>
-                          <tr className="border-b border-zinc-100 text-zinc-400">
-                            <th className="py-2">SIZE</th>
-                            <th className="py-2">LENGTH (着丈)</th>
-                            <th className="py-2">WIDTH (身幅)</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-50 text-zinc-600">
-                          <tr><td className="py-3">S</td><td className="py-3">65cm</td><td className="py-3">49cm</td></tr>
-                          <tr><td className="py-3">M</td><td className="py-3">69cm</td><td className="py-3">52cm</td></tr>
-                          <tr><td className="py-3">L</td><td className="py-3">73cm</td><td className="py-3">55cm</td></tr>
-                        </tbody>
-                      </table>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12 border-t border-zinc-100 pt-12">
+                    {/* 素材がある場合のみ表示 */}
+                    {product.material && (
+                    <div>
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-zinc-400">Material / 素材</h3>
+                        <p className="text-xs font-bold">{product.material}</p>
                     </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+                    )}
 
+                    {/* 仕様がある場合のみ表示 */}
+                    {product.spec && (
+                    <div>
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-zinc-400">Spec / 仕様</h3>
+                        <p className="text-xs font-bold leading-relaxed whitespace-pre-wrap">{product.spec}</p>
+                    </div>
+                    )}
+
+                    {/* サイズ詳細(JSON)がある場合のみテーブルを表示 */}
+                    {product.size_details && (
+                    <div className="sm:col-span-2 pt-4">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-zinc-400">Size Guide / サイズ表 (cm)</h3>
+                        <div className="overflow-x-auto">
+                        <table className="w-full text-left text-[11px] font-bold">
+                            <thead>
+                            <tr className="border-b border-zinc-100 text-zinc-400 uppercase">
+                                <th className="py-2">Size</th>
+                                <th className="py-2">Length (着丈)</th>
+                                <th className="py-2">Width (身幅)</th>
+                            </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-50 text-zinc-600">
+                            {product.size_details.map((item: any, idx: number) => (
+                                <tr key={idx}>
+                                <td className="py-3">{item.name}</td>
+                                <td className="py-3">{item.length}</td>
+                                <td className="py-3">{item.width}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    )}
+                </div>
+            </div>
+        </div>
+        </div>
       </div>
     </main>
   );
