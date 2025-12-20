@@ -9,142 +9,190 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
   const { id } = use(params);
   const [product, setProduct] = useState<any>(null);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
-      setProduct(data);
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (error) throw error;
+        setProduct(data);
+      } catch (err) {
+        console.error('Fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div className="h-screen flex items-center justify-center animate-pulse font-mono text-xs">LOADING_DATA...</div>;
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-black">
+      <div className="text-white font-mono text-[10px] tracking-[0.5em] animate-pulse uppercase">
+        Initializing_Data_Stream...
+      </div>
+    </div>
+  );
 
-  const images = Array.isArray(product.image) ? product.image : [product.image_url];
+  if (!product) return <div className="h-screen flex items-center justify-center font-mono">PRODUCT_NOT_FOUND</div>;
+
+  // 画像配列の正規化
+  const images = Array.isArray(product.image) ? product.image : [product.image_url || '/placeholder.png'];
 
   return (
-    <main className="min-h-screen bg-white pt-32 pb-24 px-6 relative overflow-hidden">
-      {/* 背景のグリッド装飾 */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" 
-           style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+    <main className="min-h-screen bg-black text-white pt-32 pb-24 px-6 relative overflow-hidden">
+      {/* 背景の微細なドットグリッド */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.05]" 
+           style={{ backgroundImage: `radial-gradient(#fff 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
-        {/* パンくずリスト風ナビ */}
-        <div className="mb-12 flex items-center space-x-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">
-          <Link href="/products" className="hover:text-black transition-colors">Goods Index</Link>
+        {/* ナビゲーション */}
+        <div className="mb-12 flex items-center space-x-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+          <Link href="/products" className="hover:text-red-600 transition-colors">Goods_Index</Link>
           <span>/</span>
-          <span className="text-red-600">{product.name}</span>
+          <span className="text-zinc-200">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           
-          {/* --- 左側：画像セクション (7カラム) --- */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="relative aspect-square bg-gray-50 border border-gray-100 overflow-hidden group">
+          {/* --- 左側：画像エリア (7カラム) --- */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="relative aspect-square bg-zinc-900 border border-zinc-800 overflow-hidden group">
               <Image
                 src={images[selectedImage]}
                 alt={product.name}
                 fill
-                className="object-contain p-12 transition-transform duration-700 group-hover:scale-105"
+                className="object-contain p-12 transition-transform duration-1000 group-hover:scale-105"
                 unoptimized
               />
-              {/* 画像の隅にあるデジタル装飾 */}
-              <div className="absolute top-4 left-4 w-8 h-8 border-t border-l border-zinc-300" />
-              <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-zinc-300" />
+              {/* 四隅のシステム装飾 */}
+              <div className="absolute top-6 left-6 w-10 h-10 border-t border-l border-zinc-700" />
+              <div className="absolute bottom-6 right-6 w-10 h-10 border-b border-r border-zinc-700" />
             </div>
 
             {/* サムネイル一覧 */}
             {images.length > 1 && (
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-6 gap-3">
                 {images.map((img: string, idx: number) => (
                   <button 
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`aspect-square relative border-2 transition-all ${selectedImage === idx ? 'border-red-600' : 'border-transparent bg-gray-50 opacity-50'}`}
+                    className={`aspect-square relative border transition-all duration-300 ${
+                      selectedImage === idx ? 'border-red-600' : 'border-zinc-800 bg-zinc-900 opacity-40 hover:opacity-100'
+                    }`}
                   >
-                    <Image src={img} alt="" fill className="object-cover p-2" unoptimized />
+                    <Image src={img} alt="" fill className="object-contain p-2" unoptimized />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* --- 右側：情報セクション (5カラム) --- */}
+          {/* --- 右側：情報・購入エリア (5カラム) --- */}
           <div className="lg:col-span-5 flex flex-col">
-            <div className="border-b-4 border-black pb-6">
-              <p className="text-[10px] font-mono text-red-600 font-bold tracking-[0.5em] mb-2 uppercase">
-                {product.category || 'Archive Item'}
+            <div className="border-b border-zinc-800 pb-8">
+              <p className="text-[10px] font-mono text-red-600 font-bold tracking-[0.6em] mb-3 uppercase">
+                {product.category || 'Standard_Issue'}
               </p>
-              <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter leading-tight uppercase">
+              <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter leading-none uppercase mb-4">
                 {product.name}
               </h1>
+              <p className="text-[11px] font-mono text-zinc-500 tracking-wider">ID: {id.toUpperCase()}</p>
             </div>
 
-            <div className="py-8 space-y-6">
-              {/* 価格 */}
-              <div className="flex items-baseline space-x-4">
-                <span className="text-3xl font-black tracking-tighter">
-                  ¥{Number(product.price).toLocaleString()}
-                </span>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase">Tax included / Shipping extra</span>
-              </div>
-
+            <div className="py-10 space-y-12">
               {/* 商品説明 */}
-              <div className="text-sm leading-relaxed text-zinc-600 font-medium whitespace-pre-wrap border-l-2 border-zinc-100 pl-6">
-                {product.description || 'No description provided for this specific item. Part of the Rabbiy official collection.'}
+              <div className="text-xs leading-relaxed text-zinc-400 font-medium whitespace-pre-wrap border-l border-zinc-800 pl-6">
+                {product.description || 'No additional data found for this item.'}
               </div>
 
-              {/* スペック（難解風） */}
-              <div className="bg-zinc-50 p-6 font-mono text-[9px] text-zinc-500 space-y-2 border border-zinc-100">
-                <div className="flex justify-between border-b border-zinc-200 pb-1">
-                  <span>ITEM_ID</span>
-                  <span className="text-black font-bold">{id.toUpperCase().slice(0, 12)}</span>
+              {/* サイズ選択セクション (米津さん風の整列をRabbiy流に) */}
+              {product.sizes && product.sizes.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-end">
+                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">
+                      Size_Selection
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                    {product.sizes.map((size: string) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`h-12 flex items-center justify-center text-[11px] font-bold transition-all duration-300 border ${
+                          selectedSize === size 
+                            ? 'bg-red-600 text-white border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.4)]' 
+                            : 'bg-transparent text-zinc-500 border-zinc-800 hover:border-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex justify-between border-b border-zinc-200 pb-1">
-                  <span>AVAILABILITY</span>
-                  <span className={product.stock > 0 ? 'text-green-600' : 'text-red-600'}>
-                    {product.stock > 0 ? 'IN_STOCK' : 'OUT_OF_ORDER'}
+              )}
+
+              {/* 数量・価格セクション */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-4">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">
+                    Quantity
+                  </label>
+                  <div className="flex items-center w-40 h-12 border border-zinc-800 bg-zinc-950">
+                    <button 
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-12 h-full flex items-center justify-center hover:bg-zinc-900 transition-colors text-zinc-400"
+                    >－</button>
+                    <div className="flex-1 h-full flex items-center justify-center font-mono text-xs border-x border-zinc-800">
+                      {quantity.toString().padStart(2, '0')}
+                    </div>
+                    <button 
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-12 h-full flex items-center justify-center hover:bg-zinc-900 transition-colors text-zinc-400"
+                    >＋</button>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest mb-1">Value_Total</p>
+                  <p className="text-5xl font-black italic tracking-tighter text-white">
+                    ¥{Number(product.price * quantity).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* カート追加ボタン */}
+              <div className="pt-6">
+                <button 
+                  disabled={product.sizes && product.sizes.length > 0 && !selectedSize}
+                  className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all duration-700 flex items-center justify-center group relative overflow-hidden border ${
+                    product.sizes && product.sizes.length > 0 && !selectedSize
+                      ? 'bg-transparent border-zinc-800 text-zinc-800 cursor-not-allowed'
+                      : 'bg-white text-black hover:bg-red-600 hover:text-white hover:border-red-600'
+                  }`}
+                >
+                  <span className="relative z-10">
+                    {product.sizes && product.sizes.length > 0 && !selectedSize 
+                      ? 'Select_Size_Required' 
+                      : 'Add_to_Cart_Protocol'}
                   </span>
-                </div>
-                <div className="flex justify-between border-b border-zinc-200 pb-1">
-                  <span>PROTOCOL</span>
-                  <span className="text-black font-bold">SECURE_TRANSACTION</span>
-                </div>
+                  <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+                </button>
               </div>
             </div>
 
-            {/* カートアクション */}
-            <div className="mt-auto space-y-4">
-              <div className="flex items-center border border-black h-14">
-                <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-14 h-full flex items-center justify-center hover:bg-black hover:text-white transition-colors font-bold"
-                >-</button>
-                <div className="flex-1 h-full flex items-center justify-center font-black border-x border-black">
-                  {quantity.toString().padStart(2, '0')}
-                </div>
-                <button 
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-14 h-full flex items-center justify-center hover:bg-black hover:text-white transition-colors font-bold"
-                >+</button>
-              </div>
-
-              <button className="w-full bg-black text-white h-16 font-black italic tracking-[0.3em] uppercase hover:bg-red-600 transition-all flex items-center justify-center group relative overflow-hidden">
-                <span className="relative z-10">Add to Cart</span>
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </button>
-            </div>
-
-            {/* 下部のステータスバー */}
-            <div className="mt-12 pt-6 border-t border-zinc-100 flex justify-between items-center text-[8px] font-mono text-zinc-400">
-              <p>© RABBIY_SYSTEM_v2.0.25</p>
-              <p>ENCRYPTED_LINK_ESTABLISHED</p>
+            {/* システムステータスフッター */}
+            <div className="mt-auto pt-10 flex justify-between items-center text-[7px] font-mono text-zinc-700 tracking-widest border-t border-zinc-900">
+              <p>CONNECTION: SECURE_SSL</p>
+              <p>LOC: {id.slice(0, 16)}</p>
             </div>
           </div>
         </div>
