@@ -2,23 +2,40 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-// アイコンを使用する場合（Lucideをインストールしている場合）
-// import { ShoppingCart, User } from 'lucide-react'; 
+import { usePathname } from 'next/navigation'; // 追加
 
 export default function Header() {
+  const pathname = usePathname(); // 現在のパスを取得
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // トップページかどうかを判定
+  const isHomePage = pathname === '/';
+
   useEffect(() => {
+    // トップページのみスクロール検知を行う
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (isHomePage) {
+        setIsScrolled(window.scrollY > 50);
+      }
     };
+
+    // トップページでない場合は、常にスクロール済み（白背景）の状態にする
+    if (!isHomePage) {
+      setIsScrolled(true);
+    } else {
+      // トップページに戻った時は現在のスクロール位置で再判定
+      setIsScrolled(window.scrollY > 50);
+    }
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]); // パスが変わるたびに再実行
 
   return (
     <header className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${
-      isScrolled ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-4' : 'bg-transparent py-6'
+      isScrolled 
+        ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-4' 
+        : 'bg-transparent py-6'
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         
@@ -42,7 +59,7 @@ export default function Header() {
           <Link href="/contact" className="hover:text-red-600 transition-colors">Contact</Link>
         </nav>
 
-        {/* 右: アクション (ログイン & カート) */}
+        {/* 右: アクション */}
         <div className="flex items-center space-x-6">
           
           {/* ログインボタン */}
@@ -75,12 +92,7 @@ export default function Header() {
               <circle cx="19" cy="21" r="1"/>
               <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
             </svg>
-            {/* カート内件数バッジ (もし必要なら) */}
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full scale-0 group-hover:scale-100 transition-transform">
-              0
-            </span>
           </Link>
-
         </div>
       </div>
     </header>
