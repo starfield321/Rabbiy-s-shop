@@ -94,6 +94,26 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 {product.description}
               </div>
 
+              {/* サイズ選択 */}
+              {isSizeRequired && (
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Select_Size</label>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                    {product.sizes.map((size: string) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`h-12 flex items-center justify-center text-[11px] font-bold transition-all border ${
+                          selectedSize === size ? 'bg-black text-white border-black' : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* 数量選択（横幅いっぱい） */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
