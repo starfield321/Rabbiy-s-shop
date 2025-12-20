@@ -62,12 +62,18 @@ export default function CheckoutForm() {
       <div className="pt-6">
         <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 border-l-2 border-red-600 pl-4 mb-6">PAYMENT_METHOD</h2>
         <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 block mb-2">CARD_DETAILS</label>
-        <div className="border-b border-zinc-200 py-3 min-h-[40px]">
-          <CardElement options={{
+        <div className="border-b border-zinc-200 py-3 bg-zinc-50 min-h-[50px]">
+        <CardElement 
+            onReady={() => console.log("CardElement is Ready!")}
+            options={{
             style: {
-              base: { fontSize: '16px', color: '#000', fontFamily: 'monospace', '::placeholder': { color: '#ccc' } },
-            }
-          }} />
+                base: {
+                fontSize: '16px',
+                color: '#000',
+                },
+            },
+            }} 
+        />
         </div>
       </div>
 

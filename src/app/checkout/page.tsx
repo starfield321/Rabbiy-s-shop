@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 // Stripe公開鍵の読み込み
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe('pk_test_51Sd6sgPPRzEN929wdV7todUjsESjI5lqRaLhiyQc1JpZdQu9UsBTEUPGFkBGG5GsYcDeAR6YNEgIm1rQ8hL78oEt00CdNOVhOw');
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal } = useCart();
