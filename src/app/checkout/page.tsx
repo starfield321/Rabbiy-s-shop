@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useCart } from '@/context/CartContext';
@@ -8,7 +7,7 @@ import CheckoutForm from '@/components/CheckoutForm';
 import Image from 'next/image';
 import Link from 'next/link';
 
-// Stripeの公開鍵を設定（.env.localに記述したものを読み込み）
+// Stripe公開鍵の読み込み
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CheckoutPage() {
@@ -30,37 +29,22 @@ export default function CheckoutPage() {
     <main className="min-h-screen bg-white pt-32 pb-24 px-6">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
         
-        {/* 左側：配送情報 & 決済フォーム */}
+        {/* 左側：決済・配送フォームエリア */}
         <div className="space-y-12">
           <div className="border-b-4 border-black pb-4">
             <h1 className="text-4xl font-black italic tracking-tighter uppercase">
-              Secure_Checkout<span className="text-red-600">.</span>
+              SECURE_CHECKOUT<span className="text-red-600">.</span>
             </h1>
           </div>
           
-          {/* Stripe Elements のプロバイダーでフォームを包む */}
+          {/* Elementsで包むことで、この中にある 
+            CheckoutForm 内の CardElement が正しく表示されるようになります。
+          */}
           <Elements stripe={stripePromise}>
-            <div className="space-y-10">
-              {/* 配送先情報のガワ（デザイン維持） */}
-              <div className="space-y-6">
-                <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 border-l-2 border-black pl-4">Shipping_Destination</h2>
-                <div className="grid grid-cols-2 gap-6">
-                  <input placeholder="First Name" type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
-                  <input placeholder="Last Name" type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
-                </div>
-                <input placeholder="Email Address" type="email" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
-                <input placeholder="Shipping Address" type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
-              </div>
-
-              {/* 実際の決済処理を行うコンポーネント */}
-              <div className="pt-6">
-                <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 border-l-2 border-red-600 pl-4 mb-6">Payment_Method</h2>
-                <CheckoutForm />
-              </div>
-            </div>
+            <CheckoutForm />
           </Elements>
 
-          <p className="text-[8px] font-mono text-zinc-400 text-center tracking-widest">
+          <p className="text-[8px] font-mono text-zinc-400 text-center tracking-widest mt-12">
             ENCRYPTED_SSL_CONNECTION // POWERED_BY_STRIPE
           </p>
         </div>
@@ -68,10 +52,10 @@ export default function CheckoutPage() {
         {/* 右側：注文サマリー（デザイン維持） */}
         <div className="bg-zinc-50 p-10 h-fit border border-zinc-100 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-5 select-none pointer-events-none">
-             <span className="text-6xl font-black italic tracking-tighter">TOTAL</span>
+             <span className="text-6xl font-black italic tracking-tighter">ORDER</span>
           </div>
           
-          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-10">Order_Summary</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-10 border-l-2 border-black pl-4">Order_Summary</h2>
           
           <div className="space-y-8 mb-10">
             {cartItems.map((item) => (
@@ -82,7 +66,7 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <p className="font-black uppercase text-[12px] tracking-tight group-hover:text-red-600 transition-colors">{item.name}</p>
-                    <p className="text-[9px] text-zinc-400 font-mono mt-0.5">QTY: {item.quantity} / SIZE: {item.size || 'FREE'}</p>
+                    <p className="text-[9px] text-zinc-400 font-mono mt-0.5 tracking-tighter">QTY: {item.quantity} / SIZE: {item.size || 'FREE'}</p>
                   </div>
                 </div>
                 <p className="font-black italic text-sm tabular-nums">¥{(item.price * item.quantity).toLocaleString()}</p>
