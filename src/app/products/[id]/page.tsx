@@ -94,50 +94,64 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 {product.description}
               </div>
 
-              {/* サイズ選択 */}
-              {isSizeRequired && (
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Select_Size</label>
-                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
-                    {product.sizes.map((size: string) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`h-12 flex items-center justify-center text-[11px] font-bold transition-all border ${
-                          selectedSize === size ? 'bg-black text-white border-black' : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 数量選択 */}
+              {/* 数量選択（横幅いっぱい） */}
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Quantity</label>
-                <div className="flex items-center w-40 h-12 border border-zinc-200">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-full flex items-center justify-center hover:bg-gray-50 transition-colors">－</button>
-                  <div className="flex-1 h-full flex items-center justify-center font-mono text-xs border-x border-zinc-200">{quantity.toString().padStart(2, '0')}</div>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-full flex items-center justify-center hover:bg-gray-50 transition-colors">＋</button>
+                <div className="flex items-center justify-between">
+                <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">
+                    Quantity <span className="ml-2 opacity-50">/ 数量</span>
+                </label>
+                </div>
+                
+                <div className="flex items-center w-full h-14 border border-zinc-200">
+                <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 transition-colors text-xl border-r border-zinc-200"
+                >
+                    <span className="translate-y-[-1px]">－</span>
+                </button>
+                
+                <div className="flex-1 h-full flex items-center justify-center font-mono text-sm font-bold tabular-nums">
+                    {quantity.toString().padStart(2, '0')}
+                </div>
+                
+                <button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 transition-colors text-xl border-l border-zinc-200"
+                >
+                    <span className="translate-y-[-1px]">＋</span>
+                </button>
                 </div>
               </div>
 
-              {/* カートボタン */}
-              <div className="pt-6">
+              {/* カートボタン（フルワイド） */}
+              <div className="pt-2">
                 <button 
-                  disabled={isSizeRequired && !selectedSize}
-                  className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all flex items-center justify-center group relative overflow-hidden border ${
+                disabled={isSizeRequired && !selectedSize}
+                className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all flex items-center justify-center group relative overflow-hidden border ${
                     isSizeRequired && !selectedSize
-                      ? 'bg-zinc-50 border-zinc-100 text-zinc-300 cursor-not-allowed'
-                      : 'bg-black text-white hover:bg-red-600 hover:border-red-600'
-                  }`}
+                    ? 'bg-zinc-50 border-zinc-100 text-zinc-300 cursor-not-allowed'
+                    : 'bg-black text-white hover:bg-red-600 hover:border-red-600'
+                }`}
                 >
-                  <span className="relative z-10">
+                <span className="relative z-10 flex items-center gap-4">
                     {isSizeRequired && !selectedSize ? 'Please_Select_Size' : 'Add_to_Cart_Protocol'}
-                  </span>
+                    {/* 合計金額をボタンの中に入れるのもアリです */}
+                    {!(!selectedSize && isSizeRequired) && (
+                    <span className="text-xs opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter">
+                        ¥{Number(product.price * quantity).toLocaleString()}
+                    </span>
+                    )}
+                </span>
+                
+                {/* ホバー時の光が流れる演出 */}
+                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
                 </button>
+              </div>
+
+              {/* 下部のステータスバー（よりミニマルに） */}
+              <div className="pt-10 flex justify-between items-center text-[7px] font-mono text-zinc-300 tracking-widest border-t border-zinc-100">
+                <p>TRANSACTION_SECURE: 256_BIT</p>
+                <p>OBJECT_ID: {id.slice(0, 8)}</p>
               </div>
             </div>
           </div>
