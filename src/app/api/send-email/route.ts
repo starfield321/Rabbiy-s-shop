@@ -7,40 +7,71 @@ export async function POST(req: Request) {
   try {
     const { email, customerName, totalAmount, items } = await req.json();
 
-    // 注文された商品リストをテキスト化
+    // 管理者のメールアドレス（Resendに登録した自分のアドレス）
+    const adminEmail = 'starfield.business@gmail.com'; 
+
+    // 注文商品リストの作成
     const itemsList = items.map((item: any) => 
-      `- ${item.name} (QTY: ${item.quantity} / SIZE: ${item.size || 'FREE'})`
-    ).join('\n');
+      `<li>${item.name} (QTY: ${item.quantity} / SIZE: ${item.size || 'FREE'}) - ¥${item.price.toLocaleString()}</li>`
+    ).join('');
+
+    /**
+     * 【重要：Resendのテストモード制限対策】
+     * 独自ドメイン認証前は、Resendに登録した自分のアドレス以外には送信できません。
+     * 本番公開（ドメイン認証後）は、このロジックをシンプルに [email, adminEmail] に戻してください。
+     */
+    const recipients = [adminEmail];
+    if (email === adminEmail) {
+      // 購入者が自分の場合（テスト時など）はそのまま送信
+    } else {
+      // 購入者が他人の場合、ドメイン認証前はエラーになる可能性があるため
+      // ひとまず管理者（自分）にだけ送る、もしくは認証後に制限を解除してください
+      console.log(`Note: Customer email ${email} was skipped due to Resend sandbox restrictions.`);
+    }
 
     const data = await resend.emails.send({
-      from: 'Rabbiy <onboarding@resend.dev>', // 独自ドメイン認証済みならそのアドレス
-      // 配列にすることで、お客さんとあなた（管理者）の両方に送ります
-      to: ['starfield.business@gmail.com'], 
-      subject: `【Rabbiy】新着注文通知 - ${customerName} 様`,
+      from: 'Rabbiy <onboarding@resend.dev>', // ドメイン認証後は 'info@yourdomain.com' 等に変更可能
+      to: recipients,
+      subject: `【Rabbiy】ORDER_CONFIRMED: ${customerName} 様`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
-          <h1 style="font-style: italic; font-weight: 900;">Rabbiy<span style="color: #dc2626;">.</span></h1>
+        <div style="font-family: 'Helvetica', 'Arial', sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #000; color: #000;">
+          <h1 style="font-style: italic; font-weight: 900; font-size: 32px; letter-spacing: -1px; margin-bottom: 20px; border-bottom: 4px solid #000; pb: 10px;">
+            Rabbiy<span style="color: #dc2626;">.</span>
+          </h1>
           
-          <div style="background: #f9f9f9; padding: 15px; margin-bottom: 20px; border-left: 4px solid #000;">
-            <p style="margin: 0; font-size: 12px; font-weight: bold;">ADMIN_NOTIFICATION</p>
-            <p style="margin: 5px 0 0 0;">新しい注文が入りました。</p>
+          <div style="background: #000; color: #fff; padding: 10px 20px; font-size: 12px; font-weight: bold; letter-spacing: 0.2em; margin-bottom: 30px;">
+            ORDER_RECEIPT_NOTIFICATION
           </div>
 
-          <p><strong>顧客名:</strong> ${customerName} 様</p>
-          <p><strong>メール:</strong> ${email}</p>
-          <hr />
-          <h3>注文内容</h3>
-          <pre style="font-family: monospace; background: #eee; padding: 10px;">${itemsList}</pre>
-          <p><strong>合計金額:</strong> ¥${totalAmount.toLocaleString()}</p>
-          <hr />
-          <p style="font-size: 10px; color: #888;">System_Status: Order_Confirmed</p>
+          <p style="font-size: 14px; line-height: 1.6;">
+            <strong>CUSTOMER:</strong> ${customerName} 様<br />
+            <strong>EMAIL:</strong> ${email}
+          </p>
+
+          <div style="margin: 40px 0;">
+            <h3 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: #888; border-bottom: 1px solid #eee; padding-bottom: 8px;">Order_Items</h3>
+            <ul style="list-style: none; padding: 0; font-size: 14px;">
+              ${itemsList}
+            </ul>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; padding-top: 20px; border-top: 2px solid #000;">
+            <span style="font-size: 10px; font-weight: bold; letter-spacing: 0.2em;">TOTAL_AMOUNT</span>
+            <span style="font-size: 24px; font-weight: 900; font-style: italic; color: #dc2626;">¥${totalAmount.toLocaleString()}</span>
+          </div>
+
+          <div style="margin-top: 60px; text-align: center; border-top: 1px solid #eee; pt: 20px;">
+            <p style="font-size: 9px; color: #aaa; font-family: monospace; letter-spacing: 0.1em;">
+              ENCRYPTED_TRANSACTION_SUCCESSFUL // RABBIY_OFFICIAL_STORE
+            </p>
+          </div>
         </div>
       `,
     });
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Resend Error Detail:", error); // サーバー側のログに詳細が出ます
+    console.error("Resend API Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
