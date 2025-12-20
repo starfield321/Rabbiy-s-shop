@@ -6,12 +6,18 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export async function POST(req: Request) {
-  const { amount } = await req.json();
+  try {
+    const { amount } = await req.json();
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: amount,
-    currency: 'jpy',
-  });
+    // 自サイト内決済(Elements)用のPaymentIntentを作成
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount, // カートの合計金額
+      currency: 'jpy',
+      automatic_payment_methods: { enabled: true },
+    });
 
-  return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }

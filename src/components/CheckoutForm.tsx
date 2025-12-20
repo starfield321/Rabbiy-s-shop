@@ -7,7 +7,7 @@ import { useCart } from '@/context/CartContext';
 export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
-  const { cartItems, cartTotal } = useCart();
+  const { cartTotal } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,28 +18,34 @@ export default function CheckoutForm() {
     setLoading(true);
     setError(null);
 
-    // 1. 以前作ったAPIを呼び出して「支払い意図(PaymentIntent)」を作成
-    const res = await fetch('/api/create-payment-intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: cartTotal }),
-    });
-    
-    const { clientSecret } = await res.json();
+    try {
+      // 1. サーバーAPIを叩いて秘密の鍵(clientSecret)をもらう
+      const res = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: cartTotal }),
+      });
+      const { clientSecret, error: apiError } = await res.json();
+      
+      if (apiError) throw new Error(apiError);
 
-    // 2. Stripeで決済を実行
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement)!,
-      },
-    });
+      // 2. Stripeで決済を確定させる
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)!,
+        },
+      });
 
-    if (result.error) {
-      setError(result.error.message ?? '決済に失敗しました');
+      if (result.error) {
+        setError(result.error.message ?? '決済に失敗しました');
+      } else if (result.paymentIntent.status === 'succeeded') {
+        // 3. 成功したらSuccessページへ
+        window.location.href = '/success';
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
       setLoading(false);
-    } else {
-      // 3. 成功したらSuccessページへ
-      window.location.href = '/success';
     }
   };
 
@@ -52,7 +58,7 @@ export default function CheckoutForm() {
             style: {
               base: {
                 fontSize: '14px',
-                fontFamily: 'monospace', // Rabbiy風に等幅フォント
+                fontFamily: 'monospace',
                 color: '#000',
                 '::placeholder': { color: '#a1a1aa' },
               },
@@ -65,9 +71,9 @@ export default function CheckoutForm() {
 
       <button
         disabled={loading || !stripe}
-        className="w-full h-16 bg-black text-white font-black italic tracking-[0.4em] uppercase hover:bg-red-600 transition-all"
+        className="w-full h-16 bg-black text-white font-black italic tracking-[0.4em] uppercase hover:bg-red-600 transition-all flex items-center justify-center"
       >
-        {loading ? 'Processing_Payment...' : 'Authorize_Transaction_'}
+        {loading ? 'Processing...' : 'Authorize_Transaction_'}
       </button>
     </form>
   );
