@@ -1,9 +1,14 @@
 'use client';
 
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from '@/components/CheckoutForm';
 import { useCart } from '@/context/CartContext';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal } = useCart();
@@ -54,56 +59,15 @@ export default function CheckoutPage() {
   return (
     <main className="min-h-screen bg-white pt-32 pb-24 px-6">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-        
-        {/* 左側：配送情報入力（デザイン維持） */}
         <div className="space-y-12">
           <div className="border-b-4 border-black pb-4">
-            <h1 className="text-4xl font-black italic tracking-tighter uppercase">Shipping_Info<span className="text-red-600">.</span></h1>
+            <h1 className="text-4xl font-black italic tracking-tighter uppercase">Payment_Gateway.</h1>
           </div>
-          
-          <form onSubmit={handleStripeCheckout} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">First_Name</label>
-                <input required type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none transition-colors font-medium text-sm" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">Last_Name</label>
-                <input required type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none transition-colors font-medium text-sm" />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">Email_Address</label>
-              <input required type="email" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none transition-colors font-medium text-sm" />
-            </div>
 
-            <div className="space-y-2 pb-6">
-              <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">Shipping_Address</label>
-              <input required type="text" placeholder="Postal Code" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none transition-colors font-medium text-sm" />
-              <input required type="text" placeholder="Address" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none transition-colors font-medium text-sm mt-4" />
-            </div>
-
-            {/* 本物の決済へ繋がるボタン */}
-            <button 
-              type="submit" 
-              disabled={loading}
-              className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all relative overflow-hidden ${
-                loading ? 'bg-zinc-100 text-zinc-400' : 'bg-black text-white hover:bg-red-600'
-              }`}
-            >
-              <span className="relative z-10">
-                {loading ? 'Processing_Data...' : 'Complete_Order_Protocol'}
-              </span>
-              {/* ローディングアニメーション（オプション） */}
-              {loading && (
-                <div className="absolute inset-0 bg-zinc-200 animate-pulse" />
-              )}
-            </button>
-            <p className="text-[8px] font-mono text-zinc-400 text-center tracking-widest mt-4">
-              SECURE_STRIPE_CONNECTION_ESTABLISHED
-            </p>
-          </form>
+          {/* ここにStripeの枠組みを設置 */}
+          <Elements stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
         </div>
 
         {/* 右側：注文サマリー（デザイン維持） */}
