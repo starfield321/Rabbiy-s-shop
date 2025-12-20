@@ -1,3 +1,4 @@
+// src/components/CheckoutForm.tsx
 'use client';
 
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
@@ -12,24 +13,27 @@ export default function CheckoutForm() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
+    e.preventDefault(); // これを真っ先に実行
+    console.log("Submit button clicked!"); // ブラウザの検証画面(Console)でこれが出るか確認
+
+    if (!stripe || !elements) {
+      console.log("Stripe not loaded");
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     try {
-      // 1. サーバーAPIを叩いて秘密の鍵(clientSecret)をもらう
+      // 1. PaymentIntent作成APIを叩く
       const res = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: cartTotal }),
       });
-      const { clientSecret, error: apiError } = await res.json();
-      
-      if (apiError) throw new Error(apiError);
+      const { clientSecret } = await res.json();
 
-      // 2. Stripeで決済を確定させる
+      // 2. 決済確定
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement)!,
@@ -37,44 +41,46 @@ export default function CheckoutForm() {
       });
 
       if (result.error) {
-        setError(result.error.message ?? '決済に失敗しました');
-      } else if (result.paymentIntent.status === 'succeeded') {
-        // 3. 成功したらSuccessページへ
+        setError(result.error.message ?? '決済エラー');
+      } else {
         window.location.href = '/success';
       }
     } catch (err: any) {
-      setError(err.message);
+      setError("通信エラーが発生しました");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="space-y-2">
-        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">Card_Details</label>
-        <div className="border-b-2 border-zinc-100 py-4 focus-within:border-black transition-colors">
+    <form onSubmit={handleSubmit}>
+      <div className="mb-10">
+        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 block mb-4">CARD_DETAILS</label>
+        {/* カード入力欄を見えやすくするために一時的に高さを出す */}
+        <div className="border-b border-zinc-200 py-3">
           <CardElement options={{
             style: {
               base: {
-                fontSize: '14px',
-                fontFamily: 'monospace',
+                fontSize: '16px',
                 color: '#000',
-                '::placeholder': { color: '#a1a1aa' },
+                fontFamily: 'monospace',
+                '::placeholder': { color: '#ccc' },
               },
             }
           }} />
         </div>
       </div>
 
-      {error && <p className="text-red-600 text-[10px] font-bold uppercase">{error}</p>}
+      {error && <p className="text-red-600 text-[10px] mb-4 font-bold uppercase">{error}</p>}
 
       <button
-        type="submit"
+        type="submit" // ★ これが抜けていると絶対に反応しません
         disabled={loading || !stripe}
         className="w-full h-16 bg-black text-white font-black italic tracking-[0.4em] uppercase hover:bg-red-600 transition-all flex items-center justify-center"
       >
-        {loading ? 'Processing...' : 'Authorize_Transaction_'}
+        <span className={loading ? "animate-pulse" : ""}>
+          {loading ? 'PROCESSING...' : 'AUTHORIZE_TRANSACTION_'}
+        </span>
       </button>
     </form>
   );
