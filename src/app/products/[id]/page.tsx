@@ -32,17 +32,17 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
   return (
     <main className="min-h-screen bg-white text-black pt-32 pb-24 px-6">
       <div className="max-w-7xl mx-auto">
-        
-        {/* --- 上部：購入メインエリア --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
-            <div className="mb-20 border-b-4 border-black pb-8">
+           <div className="mb-20 border-b-4 border-black pb-8">
             <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
                 Goods<span className="text-red-600">.</span>
             </h1>
             <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
                 Official Merchandise
             </p>
-            </div>
+          </div>
+        
+        {/* --- 上部：購入メインエリア --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
           
           {/* 左：画像 */}
           <div className="lg:col-span-7 space-y-6">
@@ -78,17 +78,10 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
             </div>
 
-            {/* 商品説明：独立したブロックとして配置 */}
-            <div className="py-8 border-y border-zinc-100">
-                <div className="text-[13px] leading-relaxed text-zinc-600 font-medium whitespace-pre-wrap border-l-2 border-red-600 pl-5">
-                {product.description || "No description available."}
-                </div>
-            </div>
-
-            <div className="py-10 space-y-12">
+            <div className="space-y-12">
                 {/* サイズ選択 */}
                 {isSizeRequired && (
-                <div className="space-y-4">
+                <div className="space-y-4 pt-6 border-t border-zinc-100">
                     <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Select_Size</label>
                     <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                     {product.sizes.map((size: string) => (
@@ -97,7 +90,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                         onClick={() => setSelectedSize(size)}
                         className={`h-12 flex items-center justify-center text-[11px] font-bold transition-all border ${
                             selectedSize === size 
-                            ? 'bg-black text-white border-black shadow-[0_10px_20px_rgba(0,0,0,0.1)]' 
+                            ? 'bg-black text-white border-black shadow-lg' 
                             : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'
                         }`}
                         >
@@ -109,11 +102,11 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 )}
 
                 {/* 数量選択（横幅いっぱい） */}
-                <div className="space-y-4">
+                <div className={`space-y-4 ${!isSizeRequired ? 'pt-6 border-t border-zinc-100' : ''}`}>
                 <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">
                     Quantity <span className="ml-2 opacity-50">/ 数量</span>
                 </label>
-                <div className="flex items-center w-full h-14 border border-zinc-200 bg-white">
+                <div className="flex items-center w-full h-14 border border-zinc-200 bg-white group focus-within:border-black transition-colors">
                     <button 
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 transition-colors text-xl border-r border-zinc-200"
@@ -128,20 +121,20 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
                 </div>
 
-                {/* カートボタン */}
+                {/* カートボタン（合計金額入り） */}
                 <div className="pt-2">
                 <button 
                     disabled={isSizeRequired && !selectedSize}
                     className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all flex items-center justify-center group relative overflow-hidden border ${
                     isSizeRequired && !selectedSize
                         ? 'bg-zinc-50 border-zinc-100 text-zinc-300 cursor-not-allowed'
-                        : 'bg-black text-white hover:bg-red-600 hover:border-red-600 shadow-2xl'
+                        : 'bg-black text-white hover:bg-red-600 hover:border-red-600 shadow-xl active:scale-[0.98]'
                     }`}
                 >
                     <span className="relative z-10 flex items-center gap-4">
                     {isSizeRequired && !selectedSize ? 'Please_Select_Size' : 'Add_to_Cart_Protocol'}
                     {!(!selectedSize && isSizeRequired) && (
-                        <span className="text-xs opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter">
+                        <span className="text-xs opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter tabular-nums">
                         Total: ¥{Number(product.price * quantity).toLocaleString()}
                         </span>
                     )}
@@ -149,6 +142,12 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
                 </button>
                 </div>
+            </div>
+
+            {/* 下部ステータス */}
+            <div className="mt-auto pt-10 flex justify-between items-center text-[7px] font-mono text-zinc-300 tracking-[0.4em] border-t border-zinc-100">
+                <p>TRANSACTION_SECURE: 256_BIT</p>
+                <p>OBJ_ID: {id.slice(0, 12).toUpperCase()}</p>
             </div>
           </div>
         </div>
