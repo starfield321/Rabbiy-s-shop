@@ -39,7 +39,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error });
+  } catch (error: any) {
+    console.error("Resend Error Detail:", error); // サーバー側のログに詳細が出ます
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
