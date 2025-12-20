@@ -54,6 +54,21 @@ export default function CheckoutForm() {
         },
       });
 
+      if (result.paymentIntent?.status === 'succeeded') {
+        // --- ここでメール送信APIを呼び出す ---
+        await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+            email: (document.getElementsByName('email')[0] as HTMLInputElement).value,
+            customerName: (document.getElementsByName('first_name')[0] as HTMLInputElement).value,
+            totalAmount: cartTotal,
+            }),
+        });
+
+        window.location.href = '/success';
+      }
+
       if (result.error) {
         setError(result.error.message ?? '決済エラー');
         setLoading(false);
