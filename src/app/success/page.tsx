@@ -1,25 +1,34 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 
 export default function SuccessPage() {
+  const { cartItems } = useCart();
+
+  // 本来はここでカートをクリアする処理を入れるのが一般的です
+  
   return (
-    <main className="max-w-3xl mx-auto px-4 py-24 text-center">
-      <div className="mb-8 flex justify-center">
-        <div className="rounded-full bg-green-100 p-6">
-          <svg className="h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-          </svg>
+    <main className="h-screen flex items-center justify-center bg-white px-6 text-center">
+      <div className="space-y-8">
+        <div className="w-20 h-20 border-4 border-black flex items-center justify-center mx-auto mb-10 relative">
+          <div className="w-10 h-[4px] bg-red-600 rotate-45 translate-x-1 translate-y-1"></div>
+          <div className="w-5 h-[4px] bg-red-600 -rotate-45 -translate-x-3 translate-y-2 absolute"></div>
         </div>
+        
+        <h1 className="text-5xl font-black italic tracking-tighter uppercase leading-none">
+          Order_Received<span className="text-red-600">.</span>
+        </h1>
+        
+        <p className="text-xs font-medium text-zinc-500 max-w-sm mx-auto leading-relaxed">
+          ご注文が正常に完了しました。確認メールを送信しましたので、内容をご確認ください。
+        </p>
+
+        <Link href="/products" className="inline-block mt-8 text-[10px] font-black uppercase tracking-[0.5em] border-b-2 border-black pb-1 hover:text-red-600 hover:border-red-600 transition-all">
+          Continue_to_Goods_Index
+        </Link>
       </div>
-      <h1 className="text-3xl font-black italic tracking-tighter mb-4">PAYMENT SUCCESSFUL!</h1>
-      <p className="text-gray-500 mb-12">
-        ご購入ありがとうございます。商品の発送まで今しばらくお待ちください。
-      </p>
-      <Link 
-        href="/" 
-        className="inline-block bg-black text-white px-10 py-4 font-bold hover:bg-gray-800 transition-all"
-      >
-        トップページに戻る
-      </Link>
     </main>
   );
 }

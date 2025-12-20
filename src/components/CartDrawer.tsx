@@ -74,7 +74,7 @@ export default function CartDrawer() {
                 <span className="text-3xl font-black italic tracking-tighter text-red-600">¥{cartTotal.toLocaleString()}</span>
               </div>
               
-              <Link href="/checkout" className="block w-full h-16 bg-black text-white hover:bg-red-600 transition-all flex items-center justify-center group relative overflow-hidden shadow-xl">
+              <Link href="/cart" className="block w-full h-16 bg-black text-white hover:bg-red-600 transition-all flex items-center justify-center group relative overflow-hidden shadow-xl">
                 <span className="relative z-10 font-black italic tracking-[0.4em] uppercase text-sm">Proceed to Checkout_</span>
                 <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
               </Link>
