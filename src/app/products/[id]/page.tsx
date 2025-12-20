@@ -35,6 +35,14 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
         
         {/* --- 上部：購入メインエリア --- */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
+            <div className="mb-20 border-b-4 border-black pb-8">
+            <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
+                Goods<span className="text-red-600">.</span>
+            </h1>
+            <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
+                Official Merchandise
+            </p>
+            </div>
           
           {/* 左：画像 */}
           <div className="lg:col-span-7 space-y-6">
@@ -52,41 +60,95 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
 
           {/* 右：購入コントロール */}
           <div className="lg:col-span-5 flex flex-col">
-            <div className="border-b-4 border-black pb-8">
-              <p className="text-[10px] font-mono text-red-600 font-bold tracking-[0.6em] mb-3 uppercase">{product.category}</p>
-              <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter leading-none uppercase mb-4">{product.name}</h1>
-              <p className="text-4xl font-black tracking-tighter">¥{Number(product.price).toLocaleString()}</p>
+            
+            <div className="mb-10 group">                
+                {/* 商品名：下線をなくし、フォントの力強さで魅せる */}
+                <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter leading-[1.1] uppercase">
+                {product.name}
+                </h1>
+
+                {/* 値段：赤色に変更し、商品名のすぐ下に配置 */}
+                <div className="mt-6 flex items-baseline gap-3">
+                <p className="text-4xl font-black tracking-tighter text-red-600">
+                    ¥{Number(product.price).toLocaleString()}
+                </p>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest italic">
+                    tax in.
+                </span>
+                </div>
             </div>
 
-            <div className="py-10 space-y-10">
-              {/* サイズ選択 */}
-              {isSizeRequired && (
+            {/* 商品説明：独立したブロックとして配置 */}
+            <div className="py-8 border-y border-zinc-100">
+                <div className="text-[13px] leading-relaxed text-zinc-600 font-medium whitespace-pre-wrap border-l-2 border-red-600 pl-5">
+                {product.description || "No description available."}
+                </div>
+            </div>
+
+            <div className="py-10 space-y-12">
+                {/* サイズ選択 */}
+                {isSizeRequired && (
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Select_Size</label>
-                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Select_Size</label>
+                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                     {product.sizes.map((size: string) => (
-                      <button key={size} onClick={() => setSelectedSize(size)} className={`h-12 flex items-center justify-center text-[11px] font-bold transition-all border ${selectedSize === size ? 'bg-black text-white border-black' : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'}`}>
+                        <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`h-12 flex items-center justify-center text-[11px] font-bold transition-all border ${
+                            selectedSize === size 
+                            ? 'bg-black text-white border-black shadow-[0_10px_20px_rgba(0,0,0,0.1)]' 
+                            : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'
+                        }`}
+                        >
                         {size}
-                      </button>
+                        </button>
                     ))}
-                  </div>
+                    </div>
                 </div>
-              )}
+                )}
 
-              {/* 数量選択 */}
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Quantity / 数量</label>
-                <div className="flex items-center w-full h-14 border border-zinc-200">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 border-r border-zinc-200">－</button>
-                  <div className="flex-1 h-full flex items-center justify-center font-mono text-sm font-bold">{quantity.toString().padStart(2, '0')}</div>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 border-l border-zinc-200">＋</button>
+                {/* 数量選択（横幅いっぱい） */}
+                <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">
+                    Quantity <span className="ml-2 opacity-50">/ 数量</span>
+                </label>
+                <div className="flex items-center w-full h-14 border border-zinc-200 bg-white">
+                    <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 transition-colors text-xl border-r border-zinc-200"
+                    >－</button>
+                    <div className="flex-1 h-full flex items-center justify-center font-mono text-sm font-bold tabular-nums">
+                    {quantity.toString().padStart(2, '0')}
+                    </div>
+                    <button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-20 h-full flex items-center justify-center hover:bg-zinc-50 transition-colors text-xl border-l border-zinc-200"
+                    >＋</button>
                 </div>
-              </div>
+                </div>
 
-              {/* カートボタン */}
-              <button disabled={isSizeRequired && !selectedSize} className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all flex items-center justify-center border ${isSizeRequired && !selectedSize ? 'bg-zinc-50 text-zinc-300 border-zinc-100' : 'bg-black text-white hover:bg-red-600 border-black hover:border-red-600'}`}>
-                {isSizeRequired && !selectedSize ? 'Please_Select_Size' : 'Add_to_Cart'}
-              </button>
+                {/* カートボタン */}
+                <div className="pt-2">
+                <button 
+                    disabled={isSizeRequired && !selectedSize}
+                    className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all flex items-center justify-center group relative overflow-hidden border ${
+                    isSizeRequired && !selectedSize
+                        ? 'bg-zinc-50 border-zinc-100 text-zinc-300 cursor-not-allowed'
+                        : 'bg-black text-white hover:bg-red-600 hover:border-red-600 shadow-2xl'
+                    }`}
+                >
+                    <span className="relative z-10 flex items-center gap-4">
+                    {isSizeRequired && !selectedSize ? 'Please_Select_Size' : 'Add_to_Cart_Protocol'}
+                    {!(!selectedSize && isSizeRequired) && (
+                        <span className="text-xs opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter">
+                        Total: ¥{Number(product.price * quantity).toLocaleString()}
+                        </span>
+                    )}
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+                </button>
+                </div>
             </div>
           </div>
         </div>
