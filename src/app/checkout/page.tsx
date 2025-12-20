@@ -1,48 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-import CheckoutForm from '@/components/CheckoutForm';
 import { useCart } from '@/context/CartContext';
-import { useState } from 'react';
+import CheckoutForm from '@/components/CheckoutForm';
 import Image from 'next/image';
 import Link from 'next/link';
 
+// Stripeの公開鍵を設定（.env.localに記述したものを読み込み）
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal } = useCart();
-  const [loading, setLoading] = useState(false);
-
-  // --- Stripe決済実行関数 ---
-  const handleStripeCheckout = async (e: React.FormEvent) => {
-    e.preventDefault(); // フォームのデフォルト送信を防止
-    setLoading(true);
-
-    try {
-      // 以前作成した api/checkout/route.ts を呼び出す
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: cartItems }), // カートの中身をStripe用APIに送る
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        // Stripeの安全な決済ページへリダイレクト
-        window.location.href = data.url;
-      } else {
-        console.error('Checkout error:', data.error);
-        alert('決済セッションの作成に失敗しました。');
-      }
-    } catch (err) {
-      console.error('Network error:', err);
-      alert('通信エラーが発生しました。');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // カートが空の場合の表示
   if (cartItems.length === 0) {
@@ -59,24 +29,49 @@ export default function CheckoutPage() {
   return (
     <main className="min-h-screen bg-white pt-32 pb-24 px-6">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+        
+        {/* 左側：配送情報 & 決済フォーム */}
         <div className="space-y-12">
           <div className="border-b-4 border-black pb-4">
-            <h1 className="text-4xl font-black italic tracking-tighter uppercase">Payment_Gateway.</h1>
+            <h1 className="text-4xl font-black italic tracking-tighter uppercase">
+              Secure_Checkout<span className="text-red-600">.</span>
+            </h1>
           </div>
-
-          {/* ここにStripeの枠組みを設置 */}
+          
+          {/* Stripe Elements のプロバイダーでフォームを包む */}
           <Elements stripe={stripePromise}>
-            <CheckoutForm />
+            <div className="space-y-10">
+              {/* 配送先情報のガワ（デザイン維持） */}
+              <div className="space-y-6">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 border-l-2 border-black pl-4">Shipping_Destination</h2>
+                <div className="grid grid-cols-2 gap-6">
+                  <input placeholder="First Name" type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
+                  <input placeholder="Last Name" type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
+                </div>
+                <input placeholder="Email Address" type="email" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
+                <input placeholder="Shipping Address" type="text" className="w-full border-b border-zinc-200 p-2 focus:border-black outline-none font-medium text-sm" />
+              </div>
+
+              {/* 実際の決済処理を行うコンポーネント */}
+              <div className="pt-6">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 border-l-2 border-red-600 pl-4 mb-6">Payment_Method</h2>
+                <CheckoutForm />
+              </div>
+            </div>
           </Elements>
+
+          <p className="text-[8px] font-mono text-zinc-400 text-center tracking-widest">
+            ENCRYPTED_SSL_CONNECTION // POWERED_BY_STRIPE
+          </p>
         </div>
 
         {/* 右側：注文サマリー（デザイン維持） */}
         <div className="bg-zinc-50 p-10 h-fit border border-zinc-100 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-5 select-none pointer-events-none">
-             <span className="text-6xl font-black italic tracking-tighter">ORDER</span>
+             <span className="text-6xl font-black italic tracking-tighter">TOTAL</span>
           </div>
           
-          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-10 border-l-2 border-red-600 pl-4">Order_Summary</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-10">Order_Summary</h2>
           
           <div className="space-y-8 mb-10">
             {cartItems.map((item) => (
@@ -87,7 +82,7 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <p className="font-black uppercase text-[12px] tracking-tight group-hover:text-red-600 transition-colors">{item.name}</p>
-                    <p className="text-[9px] text-zinc-400 font-mono mt-0.5 tracking-tighter">QTY: {item.quantity} / SIZE: {item.size || 'FREE'}</p>
+                    <p className="text-[9px] text-zinc-400 font-mono mt-0.5">QTY: {item.quantity} / SIZE: {item.size || 'FREE'}</p>
                   </div>
                 </div>
                 <p className="font-black italic text-sm tabular-nums">¥{(item.price * item.quantity).toLocaleString()}</p>
