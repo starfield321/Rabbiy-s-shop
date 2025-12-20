@@ -45,6 +45,9 @@ export default function GoodsPage() {
           <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
             Goods<span className="text-red-600">.</span>
           </h1>
+          <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-4">
+            Official Merchandise
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
