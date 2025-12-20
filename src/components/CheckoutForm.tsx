@@ -70,6 +70,7 @@ export default function CheckoutForm() {
       {error && <p className="text-red-600 text-[10px] font-bold uppercase">{error}</p>}
 
       <button
+        type="submit"
         disabled={loading || !stripe}
         className="w-full h-16 bg-black text-white font-black italic tracking-[0.4em] uppercase hover:bg-red-600 transition-all flex items-center justify-center"
       >
