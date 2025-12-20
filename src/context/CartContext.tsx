@@ -1,55 +1,57 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type CartItem = {
-  id: number;
+  id: string;
   name: string;
   price: number;
   image: string;
+  size?: string | null;
   quantity: number;
 };
 
-type CartContextType = {
-  cart: CartItem[];
-  addToCart: (product: any) => void;
-  removeFromCart: (id: number) => void;
-  clearCart: () => void;
-};
+interface CartContextType {
+  cartItems: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: string, size?: string | null) => void;
+  isCartOpen: boolean;
+  setIsCartOpen: (open: boolean) => void;
+  cartTotal: number;
+}
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // カートへ追加
-  const addToCart = (product: any) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
+  const addToCart = (newItem: CartItem) => {
+    setCartItems((prev) => {
+      // すでに同じ商品（同じサイズ）があるか確認
+      const existingItem = prev.find(
+        (item) => item.id === newItem.id && item.size === newItem.size
+      );
       if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        return prev.map((item) =>
+          item.id === newItem.id && item.size === newItem.size
+            ? { ...item, quantity: item.quantity + newItem.quantity }
+            : item
         );
       }
-      return [...prevCart, { 
-        id: product.id, 
-        name: product.name, 
-        price: product.price, 
-        image: product.image?.[0] || '', 
-        quantity: 1 
-      }];
+      return [...prev, newItem];
     });
-    alert('カートに追加しました！');
+    setIsCartOpen(true); // 追加したらカートを開く
   };
 
-  const removeFromCart = (id: number) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = (id: string, size?: string | null) => {
+    setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size)));
   };
 
-  const clearCart = () => setCart([]);
+  const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, isCartOpen, setIsCartOpen, cartTotal }}>
       {children}
     </CartContext.Provider>
   );

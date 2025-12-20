@@ -2,11 +2,13 @@
 
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState, use } from 'react';
+import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function GoodsDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { addToCart } = useCart();
   const [product, setProduct] = useState<any>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -28,6 +30,16 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
 
   const images = Array.isArray(product.image) ? product.image : [product.image_url || '/placeholder.png'];
   const isSizeRequired = Array.isArray(product.sizes) && product.sizes.length > 0;
+  const handleAddToCart = () => {
+  addToCart({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    image: images[0],
+    size: selectedSize,
+    quantity: quantity,
+  });
+};
 
   return (
     <main className="min-h-screen bg-white text-black pt-32 pb-24 px-6">
@@ -124,6 +136,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 {/* カートボタン（合計金額入り） */}
                 <div className="pt-2">
                 <button 
+                    onClick={handleAddToCart}
                     disabled={isSizeRequired && !selectedSize}
                     className={`w-full h-16 font-black italic tracking-[0.4em] uppercase transition-all flex items-center justify-center group relative overflow-hidden border ${
                     isSizeRequired && !selectedSize
@@ -132,7 +145,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                     }`}
                 >
                     <span className="relative z-10 flex items-center gap-4">
-                    {isSizeRequired && !selectedSize ? 'Please_Select_Size' : 'Add_to_Cart_Protocol'}
+                    {isSizeRequired && !selectedSize ? 'Please_Select_Size' : 'Add to Cart'}
                     {!(!selectedSize && isSizeRequired) && (
                         <span className="text-xs opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter tabular-nums">
                         Total: ¥{Number(product.price * quantity).toLocaleString()}
