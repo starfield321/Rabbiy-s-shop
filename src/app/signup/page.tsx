@@ -1,18 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react'; // Suspenseを追加
 import { supabase } from '@/lib/supabase';
 import { signIn } from 'next-auth/react';
 import { ArrowLeft, UserPlus, CheckCircle, AlertTriangle } from "lucide-react";
 import Link from 'next/link';
 import bcrypt from 'bcryptjs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Image from "next/image"; // Imageをインポート
+import Image from "next/image";
 
-export default function SignUpPage() {
+// 1. もともとのデザインとロジックをこの関数にまとめます
+function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'; // デフォルトはダッシュボード
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,9 +61,9 @@ export default function SignUpPage() {
     }
   };
 
+  // デザイン部分は、あなたが送ってくれたファイルをそのまま使用しています
   return (
     <div className="h-screen bg-white text-black flex flex-col overflow-hidden">
-      
       <nav className="p-6 flex justify-between items-center z-30 shrink-0">
         <Link href="/login" className="flex items-center gap-2 text-[11px] font-bold group">
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
@@ -72,11 +73,7 @@ export default function SignUpPage() {
       </nav>
 
       <main className="flex-grow flex flex-col md:flex-row items-stretch overflow-hidden">
-        
-        {/* 左側デザインエリア：透かし画像を追加 */}
         <div className="hidden md:flex md:w-1/2 p-12 flex-col justify-end relative bg-zinc-50 border-r border-zinc-100 overflow-hidden group">
-          
-          {/* 透かし画像レイヤー */}
           <div className="absolute inset-0 z-0 pointer-events-none transition-transform duration-[2000ms] flex items-center justify-center">
             <div className="relative w-[150%] h-[150%] opacity-40 grayscale mix-blend-multiply">
               <Image 
@@ -89,7 +86,6 @@ export default function SignUpPage() {
               />
             </div>
           </div>
-
           <div className="space-y-4 relative z-10">
             <h1 className="text-6xl lg:text-[7rem] font-black italic tracking-tighter leading-[0.9] mix-blend-difference font-sans">
               Create<br/>Account<span className="text-red-600 animate-pulse">.</span>
@@ -97,7 +93,6 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        {/* 右側：登録フォーム */}
         <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white relative overflow-y-auto z-20">
           <div className="max-w-sm w-full mx-auto">
             {isRegistered ? (
@@ -115,7 +110,6 @@ export default function SignUpPage() {
             ) : (
               <div className="space-y-10">
                 <div className="space-y-2 relative">
-                    {/* 縦赤線の追加 */}
                     <div className="flex items-start">
                     <div className="w-[6px] h-10 bg-red-600 mr-4 flex-shrink-0" />
                     <div>
@@ -160,7 +154,6 @@ export default function SignUpPage() {
                     <UserPlus size={20} className="group-hover:rotate-12 transition-transform" />
                   </button>
                 </form>
-
                 <p className="text-center text-[10px] font-bold text-zinc-300 tracking-widest">
                   Secure Database Sync
                 </p>
@@ -170,5 +163,14 @@ export default function SignUpPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// 2. この SignUpPage を最終的に書き出すことでビルドエラーを防ぎます
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="h-screen flex items-center justify-center font-bold italic">LOADING...</div>}>
+      <SignUpForm />
+    </Suspense>
   );
 }
