@@ -3,85 +3,160 @@
 import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import Link from 'next/link';
+import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 export default function CartDrawer() {
-  const { cartItems, isCartOpen, setIsCartOpen, removeFromCart, cartTotal } = useCart();
+  const { cartItems, isCartOpen, setIsCartOpen, removeFromCart, cartTotal, updateQuantity } = useCart();
 
   return (
     <>
       {/* 背景オーバーレイ */}
       <div 
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[200] transition-opacity duration-500 ${
+        className={`fixed inset-0 bg-black/80 backdrop-blur-md z-[200] transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
           isCartOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsCartOpen(false)}
       />
 
       {/* カートパネル本体 */}
-      <div className={`fixed top-0 right-0 h-full w-full md:w-[450px] bg-white z-[201] shadow-2xl transition-transform duration-500 ease-in-out transform ${
+      <div className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white z-[201] shadow-[ -20px_0_60px_-15px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] transform ${
         isCartOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full relative">
           
-          {/* ヘッダー：システムチックな装飾 */}
-          <div className="p-6 border-b-4 border-black flex justify-between items-center">
+          {/* パネル内装飾 */}
+          <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.02]" 
+               style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
+
+          {/* ヘッダー：日本語メインに変更 */}
+          <div className="relative z-10 p-8 border-b-[10px] border-black flex justify-between items-end bg-white">
             <div>
-              <h2 className="text-2xl font-black italic tracking-tighter">CART_LIST.</h2>
-              <p className="text-[9px] font-mono text-zinc-400 uppercase tracking-widest mt-1">Status: Secure_Connection</p>
+              <h2 className="text-4xl font-black italic tracking-tighter leading-none text-black">
+                Cart<span className="text-red-600 not-italic">.</span>
+              </h2>
+              <p className="text-[11px] font-bold text-black tracking-[0.2em] mt-4 leading-none">
+                現在のカートの中身 <span className="text-zinc-300 font-mono ml-2 uppercase tracking-[0.4em]">/ Selected Items</span>
+              </p>
             </div>
-            <button onClick={() => setIsCartOpen(false)} className="group p-2">
-              <span className="text-xs font-black uppercase tracking-widest group-hover:text-red-600 transition-colors">Close[×]</span>
+            <button 
+              onClick={() => setIsCartOpen(false)} 
+              className="group flex items-center gap-2 text-zinc-300 hover:text-red-600 transition-all duration-300"
+            >
+              <span className="text-[10px] font-black tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">閉じる</span>
+              <X size={24} strokeWidth={3} />
             </button>
           </div>
 
-          {/* カートアイテムリスト */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-8">
+          {/* アイテムリスト */}
+          <div className="relative z-10 flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide">
             {cartItems.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-zinc-300">
-                <p className="font-mono text-[10px] tracking-[0.5em] uppercase">No_Items_Found</p>
+              <div className="h-full flex flex-col items-center justify-center space-y-6">
+                <ShoppingBag size={48} className="text-zinc-100" strokeWidth={1} />
+                <p className="text-[10px] font-bold text-zinc-300 tracking-[0.5em] uppercase">カートに商品が入っていません</p>
               </div>
             ) : (
               cartItems.map((item) => (
-                <div key={`${item.id}-${item.size}`} className="flex gap-4 group relative">
-                  <div className="relative w-24 aspect-square bg-zinc-50 border border-zinc-100 shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="object-contain p-2" unoptimized />
-                  </div>
+                <div key={`${item.id}-${item.size}`} className="flex gap-6 group relative border-b border-zinc-100 pb-10 last:border-0">
+                  
+                  {/* 商品画像 */}
+                  <div className="relative w-28 aspect-square bg-zinc-50 border border-zinc-100 shrink-0 overflow-hidden shadow-sm">
+                    {(() => {
+                      let displayImage = "";
+                      if (Array.isArray(item.image) && item.image.length > 0) {
+                        displayImage = item.image[0];
+                      } else if (typeof item.image === 'string') {
+                        displayImage = item.image;
+                      }
+
+                      return displayImage && displayImage.trim() !== "" ? (
+                        <Image 
+                          src={displayImage} 
+                          alt={item.name} 
+                          fill 
+                          className="object-contain p-2 group-hover:scale-110 transition-transform duration-700 ease-out" 
+                          unoptimized 
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-zinc-50 text-zinc-200 text-[10px] font-mono">NO_IMAGE</div>
+                      );
+                    })()}
+                  </div>                  
+
                   <div className="flex-1 flex flex-col justify-between py-1">
                     <div>
-                      <h3 className="text-xs font-black uppercase tracking-tight group-hover:text-red-600 transition-colors">{item.name}</h3>
-                      <div className="flex gap-4 mt-1">
-                        {item.size && <p className="text-[9px] font-mono text-zinc-400 underline decoration-red-600/30">SIZE: {item.size}</p>}
-                        <p className="text-[9px] font-mono text-zinc-400 tracking-tighter uppercase">QTY: {item.quantity.toString().padStart(2, '0')}</p>
+                      <div className="flex justify-between items-start gap-4">
+                        <h3 className="text-sm font-black uppercase tracking-tight group-hover:text-red-600 transition-colors leading-tight">
+                          {item.name}
+                        </h3>
+                        <button 
+                        onClick={() => removeFromCart(item.id, item.size)}
+                        className="p-2 text-zinc-300 hover:text-red-600 hover:bg-red-50 transition-all rounded-md group/trash"
+                        aria-label="削除"
+                        >
+                        <Trash2 size={18} strokeWidth={2.5} className="group-hover/trash:scale-110 transition-transform" />
+                        </button>
+                      </div>
+                      
+                      <div className="mt-5 flex items-center gap-8">
+                        {item.size && (
+                          <div className="space-y-1">
+                            <p className="text-[9px] font-bold text-zinc-300 tracking-widest uppercase">サイズ</p>
+                            <p className="text-xs font-black font-mono border-b border-red-600/20 pb-1">{item.size}</p>
+                          </div>
+                        )}
+                        
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-bold text-zinc-300 tracking-widest uppercase">数量</p>
+                          <div className="flex items-center border border-zinc-200 bg-white">
+                            <button onClick={() => updateQuantity(item.id, item.size, -1)} className="w-8 h-8 flex items-center justify-center hover:bg-zinc-50 transition-colors"><Minus size={12} /></button>
+                            <span className="w-8 text-[11px] font-black font-mono text-center tabular-nums">{item.quantity.toString().padStart(2, '0')}</span>
+                            <button onClick={() => updateQuantity(item.id, item.size, 1)} className="w-8 h-8 flex items-center justify-center hover:bg-zinc-50 transition-colors"><Plus size={12} /></button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <p className="text-sm font-black tracking-tighter italic">¥{item.price.toLocaleString()}</p>
+                    
+                    <p className="mt-4 text-xl font-black italic tracking-tighter text-black">
+                      ¥{item.price.toLocaleString()}
+                    </p>
                   </div>
-                  {/* 削除ボタン */}
-                  <button 
-                    onClick={() => removeFromCart(item.id, item.size)}
-                    className="text-[9px] font-mono text-zinc-300 hover:text-red-600 uppercase tracking-tighter underline pt-1"
-                  >Remove</button>
                 </div>
               ))
             )}
           </div>
 
-          {/* フッター：合計と決済 */}
+          {/* フッター */}
           {cartItems.length > 0 && (
-            <div className="p-6 bg-zinc-50 border-t border-zinc-200 space-y-6">
-              <div className="flex justify-between items-end">
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Total_Amount</span>
-                <span className="text-3xl font-black italic tracking-tighter text-red-600">¥{cartTotal.toLocaleString()}</span>
+            <div className="relative z-10 p-8 bg-zinc-50 border-t-2 border-zinc-200 space-y-8">
+              <div className="flex justify-between items-end border-l-4 border-red-600 pl-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black tracking-[0.4em] text-zinc-400 block leading-none">Total Amount</span>
+                  <span className="text-[11px] font-black text-black tracking-[0.1em]">合計金額（税込）</span>
+                </div>
+                <span className="text-4xl font-black italic tracking-tighter text-red-600 leading-none">
+                  ¥{cartTotal.toLocaleString()}
+                </span>
               </div>
               
-              <Link href="/checkout" className="block w-full h-16 bg-black text-white hover:bg-red-600 transition-all flex items-center justify-center group relative overflow-hidden shadow-xl">
-                <span className="relative z-10 font-black italic tracking-[0.4em] uppercase text-sm">Proceed to Checkout_</span>
-                <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+              <Link 
+                href="/checkout" 
+                onClick={() => setIsCartOpen(false)}
+                className="block w-full h-20 bg-black text-white hover:bg-red-600 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex items-center justify-center group relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)]"
+              >
+                <span className="relative z-10 font-black italic tracking-[0.3em] text-sm flex items-center gap-4">
+                  ご購入手続きへ
+                  <span className="text-[10px] font-bold not-italic tracking-[0.2em] opacity-40 border-l border-white/30 pl-4">Proceed to Checkout</span>
+                </span>
+                <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.2s] ease-in-out" />
               </Link>
               
-              <p className="text-[7px] font-mono text-zinc-400 text-center tracking-widest leading-relaxed">
-                ENCRYPTED_TRANSACTION_ESTABLISHED // RABBIY_SECURE_PAY
-              </p>
+              <div className="space-y-2 text-center">
+                <div className="h-[1px] w-12 bg-zinc-200 mx-auto" />
+                <p className="text-[8px] font-bold text-zinc-300 tracking-[0.2em] uppercase">
+                  安全な決済システムが適用されています
+                </p>
+              </div>
             </div>
           )}
         </div>

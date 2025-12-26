@@ -6,9 +6,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import YouTubeThumbnail from '@/components/YouTubeThumbnail';
+import { ChevronRight } from 'lucide-react'; 
 
 export default function Home() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [goods, setProducts] = useState<any[]>([]);
   const [latestVideo, setLatestVideo] = useState<any>(null);
   const [newsItems, setNewsItems] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -22,7 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: p } = await supabase.from('products').select('*').limit(6);
+      const { data: p } = await supabase.from('goods').select('*').limit(6);
       const { data: v } = await supabase.from('videos').select('*').order('published_at', { ascending: false }).limit(1).single();
       const { data: n } = await supabase.from('news').select('*').order('published_at', { ascending: false }).limit(3);
       setProducts(p || []);
@@ -38,28 +39,25 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // スクロール監視のロジック
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
         }
       });
-    }, { threshold: 0.1 }); // 10%見えたら発火
+    }, { threshold: 0.1 });
 
-    // revealクラスがついた要素をすべて監視
     const elements = document.querySelectorAll('.reveal');
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [products, newsItems]); // データ読み込み後に再実行
+  }, [goods, newsItems]);
 
   return (
     <>
     <LoadingScreen />
     <main className="relative min-h-screen bg-white selection:bg-black selection:text-white overflow-x-hidden">
       
-      {/* 背景装飾: ドットグリッド */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.05]" 
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
 
@@ -74,35 +72,51 @@ export default function Home() {
           ))}
         </section>
 
-        {/* --- 2. NEWS & BIOGRAPHY SECTION --- */}
+{/* --- 2. NEWS & BIOGRAPHY SECTION --- */}
         <section className="reveal max-w-7xl mx-auto px-6 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-            
-            {/* 左カラム: News */}
             <div className="lg:col-span-7">
-              <div className="flex justify-between items-end mb-12">
+              <div className="flex justify-between items-start mb-12">
                 <div>
-                  <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">News</h2>
-                  <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Official Information</p>
+                  <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">News<span className="text-red-600 not-italic">.</span></h2>
+                  <div className="h-[6px] w-24 bg-red-600 mt-4 relative">
+                    <div className="absolute right-0 top-0 h-full w-2 bg-black" />
+                  </div>
                 </div>
-                <Link href="/news" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-400 uppercase tracking-widest transition-all">View All</Link>
+                <Link href="/news" className="inline-flex h-12 px-6 border-2 border-black flex items-center justify-center gap-2 group hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none font-black italic text-[11px] tracking-[0.2em] bg-white text-black mt-2">
+                  View All
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
               <div className="border-t border-gray-100">
                 {newsItems.map((news) => (
-                  <Link href={`/news/${news.id}`} key={news.id} className="group flex flex-col py-10 px-6 transition-all hover:bg-gray-50/80 border-b border-gray-100">
+                  <Link 
+                    href={`/news/${news.id}`} 
+                    key={news.id} 
+                    className="group flex flex-col py-10 px-6 transition-all hover:bg-gray-50/80 border-b border-gray-100"
+                  >
                     <div className="flex items-center space-x-4 mb-3">
-                      <span className="text-[9px] font-black border border-black px-2 py-0.5 uppercase tracking-tighter">{news.category}</span>
-                      <span className="text-xs font-mono text-gray-400">{news.published_at?.replace(/-/g, '.')}</span>
+                      {/* 日付：先に配置 */}
+                      <span className="text-xs font-mono text-gray-400">
+                        {news.published_at?.replace(/-/g, '.')}
+                      </span>
+                      {/* カテゴリー：デザイン維持 */}
+                      <span className="text-[9px] font-black border border-black px-2 py-0.5 uppercase tracking-tighter text-black bg-white">
+                        {news.category}
+                      </span>
                     </div>
-                    <p className="text-lg md:text-xl font-bold leading-tight tracking-tight text-gray-900">{news.title}</p>
+                    {/* タイトル：ホバー時に赤色へ変化 */}
+                    <p className="text-lg md:text-xl font-bold leading-tight tracking-tight text-gray-900 group-hover:text-red-600 transition-colors">
+                      {news.title}
+                    </p>
                   </Link>
                 ))}
               </div>
             </div>
-
-            {/* 右カラム: Biography (rabbiy_3d.png) */}
+            
+            {/* Biography セクション（変更なし） */}
             <div className="lg:col-span-5 relative group">
-              <Link href="/about" className="block relative w-full aspect-[4/5] lg:aspect-auto lg:h-[600px]">
+              <Link href="/biography" className="block relative w-full aspect-[4/5] lg:aspect-auto lg:h-[600px]">
                 <div className="absolute top-0 left-0 text-[10rem] md:text-[14rem] font-black italic leading-none text-gray-100/80 select-none pointer-events-none transition-transform duration-1000 group-hover:-translate-x-8">RB</div>
                 <div className="relative w-full h-full z-10">
                   <Image src="/rabbiy_3d.png" alt="Rabbiy Biography" fill className="object-contain transition-transform duration-700 group-hover:scale-105 group-hover:-translate-y-2" priority />
@@ -110,7 +124,7 @@ export default function Home() {
                 <div className="absolute bottom-4 right-0 z-20 text-right">
                   <div className="bg-white/10 backdrop-blur-sm p-4 inline-block">
                     <h3 className="text-5xl md:text-6xl font-black italic tracking-tighter leading-none text-black">Biography<span className="text-red-600 not-italic">.</span></h3>
-                    <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Discover the story</p>
+                    <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-2">Discover the story</p>
                   </div>
                 </div>
               </Link>
@@ -118,59 +132,118 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- 3. VIDEO SECTION (Gray Background & Modal) --- */}
+{/* --- 3. VIDEO SECTION --- */}
         <section className="reveal bg-gray-100 py-32 px-6">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-            <div className="md:col-span-8 group" onClick={() => setIsModalOpen(true)}>
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            
+            {/* 動画メインパネル：一覧ページのデザインを継承 */}
+            <div className="lg:col-span-8 group relative" onClick={() => setIsModalOpen(true)}>
               {latestVideo && (
-                <div className="aspect-video w-full bg-black relative shadow-2xl cursor-pointer overflow-hidden border border-white/5">
-                  <YouTubeThumbnail videoId={latestVideo.youtube_id} alt={latestVideo.title} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-300">
-                      <div className="w-0 h-0 border-t-[15px] border-t-transparent border-l-[25px] border-l-white border-b-[15px] border-b-transparent ml-2" />
+                <div className="relative aspect-video w-full bg-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] cursor-pointer overflow-hidden border border-white/5 group-hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]">
+                  
+                  {/* サムネイル：ゆっくりズーム */}
+                  <div className="transition-transform duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110 opacity-90 group-hover:opacity-100 h-full w-full">
+                    <YouTubeThumbnail videoId={latestVideo.youtube_id} alt={latestVideo.title} />
+                  </div>
+                  
+                  {/* ぬるっと出てくる黒フェード・オーバーレイ */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex items-center justify-center z-10 pointer-events-none group-hover:pointer-events-auto">
+                    {/* 枠線 */}
+                    <div className="absolute inset-0 border border-white/0 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:inset-6 group-hover:border-white/20" />
+                    
+                    {/* 中央コンテンツ */}
+                    <div className="relative overflow-hidden px-4 text-center">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 scale-90 group-hover:scale-100 transition-transform duration-700 delay-100 shadow-2xl">
+                        <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-black border-b-[8px] border-b-transparent ml-1" />
+                      </div>
+                      <span className="inline-block text-white text-[11px] font-bold tracking-[0.1em] group-hover:tracking-[0.5em] translate-y-full group-hover:translate-y-0 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]">
+                        View Project
+                      </span>
+                      <div className="w-0 group-hover:w-24 h-[1px] bg-red-600 mt-2 transition-all duration-1000 delay-300 ease-out mx-auto" />
                     </div>
                   </div>
                 </div>
               )}
             </div>
-            <div className="md:col-span-4 space-y-8">
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Video</h2>
-              <div className="pt-8 border-t border-gray-300">
-                <h3 className="text-xl font-bold mb-8 text-gray-600 leading-tight">{latestVideo?.title}</h3>
-                <Link href="/video" className="inline-block bg-black text-white px-10 py-4 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all">Watch More</Link>
+
+            {/* テキストエリア：一覧ページのスタイルに合わせる */}
+            <div className="lg:col-span-4 space-y-10">
+              <div className="overflow-hidden">
+                <h2 className="text-5xl md:text-8xl font-black italic tracking-tighter leading-none text-black animate-in slide-in-from-bottom duration-700">
+                  Video<span className="text-red-600 not-italic">.</span>
+                </h2>
+                <div className="h-[6px] w-24 bg-red-600 mt-4 relative">
+                  <div className="absolute right-0 top-0 h-full w-2 bg-black" />
+                </div>
+              </div>
+
+              <div className="border-l-2 border-gray-200 pl-6 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-red-600 text-[11px] font-black italic tracking-widest animate-pulse">New Release</span>
+                    <span className="text-gray-300 text-[10px] font-mono">{latestVideo?.published_at?.replace(/-/g, '.')}</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black italic tracking-tighter text-gray-900 leading-tight">
+                    {latestVideo?.title}
+                  </h3>
+                </div>
+
+                <Link href="/video" className="inline-flex h-16 px-10 border-2 border-black bg-white text-black flex items-center justify-center gap-4 group hover:bg-black hover:text-white transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none font-black italic text-[12px] tracking-[0.2em]">
+                  Explore Archives
+                  <ChevronRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
+                </Link>
               </div>
             </div>
+
           </div>
         </section>
 
-        {/* --- 4. SHOP SECTION (3 Columns) --- */}
-        <section className="reveal max-w-6xl mx-auto px-6 py-32">
-          <div className="flex justify-between items-end mb-16">
-            <div>
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Goods</h2>
-              <p className="text-[10px] text-gray-400 font-bold tracking-[0.3em] mt-3 uppercase">Merchandise</p>
-            </div>
-            <Link href="/products" className="bg-black text-white px-8 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-red-600 transition-all shadow-lg">View All Goods</Link>
+        {/* --- 4. SHOP SECTION --- */}
+        <section className="reveal relative max-w-7xl mx-auto px-6 py-32 overflow-hidden">
+          <div className="absolute top-1/2 -right-[30%] -translate-y-1/2 w-[1300px] h-[1300px] opacity-[0.08] pointer-events-none select-none z-0">
+            <Image src="/goods.png" alt="" fill className="object-contain grayscale" unoptimized />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16">
-            {products.map((product) => (
-              <Link key={product.id} href={`/products/${product.id}`} className="group">
-                <div className="aspect-square relative overflow-hidden bg-gray-50 mb-6 border border-gray-100 shadow-sm">
-                  <Image src={product.image?.[0] || product.image_url} alt={product.name} fill className="object-contain p-10 transition-transform duration-1000 group-hover:scale-110" unoptimized />
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-16">
+              <div>
+                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none text-black">Goods<span className="text-red-600 not-italic">.</span></h2>
+                <div className="h-[6px] w-24 bg-red-600 mt-4 relative">
+                  <div className="absolute right-0 top-0 h-full w-2 bg-black" />
                 </div>
-                <h3 className="text-xs font-black uppercase tracking-tight mb-2 leading-tight group-hover:underline">{product.name}</h3>
-                <p className="text-base font-bold tracking-tighter text-gray-900">¥{Number(product.price).toLocaleString()}</p>
+              </div>
+              <Link href="/goods" className="inline-flex h-14 px-8 border-2 border-black bg-white text-black flex items-center justify-center gap-3 group hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none font-black italic text-[11px] tracking-[0.2em] mt-2">
+                View All Goods
+                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </Link>
-            ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16 md:gap-20">
+              {goods.map((item) => (
+                <Link key={item.id} href={`/goods/${item.id}`} className="group">
+                  <div className="aspect-square relative overflow-hidden bg-white mb-8 border-2 border-zinc-100 shadow-[20px_20px_60px_#bebebe,-20px_-20px_60px_#ffffff] transition-all duration-500 group-hover:shadow-none group-hover:border-black">
+                    <Image src={item.image?.[0] || item.image_url} alt={item.name} fill className="object-contain p-8 transition-transform duration-1000 group-hover:scale-110" unoptimized />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-black tracking-widest leading-tight group-hover:text-red-600 transition-colors">{item.name}</h3>
+                    <p className="text-sm text-red-600 font-black italic">¥{Number(item.price).toLocaleString()}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* --- 5. FEATURE (2 Columns) --- */}
+        {/* --- 5. FEATURE SECTION --- */}
         <section className="reveal bg-black py-32 px-6 text-white">
           <div className="max-w-6xl mx-auto">
-            <div className="flex justify-between items-end mb-16 border-b border-zinc-800 pb-4">
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Feature</h2>
-              <p className="text-[10px] tracking-[0.3em] text-zinc-500 uppercase">Projects</p>
+            <div className="flex justify-between items-start mb-16 border-zinc-800 pb-8">
+              <div>
+                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Feature<span className="text-red-600 not-italic">.</span></h2>
+                <div className="h-[6px] w-24 bg-red-600 mt-4 relative">
+                  <div className="absolute right-0 top-0 h-full w-2 bg-white" />
+                </div>
+              </div>
+              <p className="text-[10px] tracking-[0.3em] text-zinc-500 uppercase mt-2">Projects</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
@@ -189,76 +262,51 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- 6. CONTACT SECTION (Hyper Glitch Edition) --- */}
-        <section className="w-full bg-black py-0 px-0 relative overflow-hidden">
-          <Link href="/contact" className="group relative w-full h-[300px] md:h-[450px] flex items-center justify-center overflow-hidden border-y border-zinc-900">
+        {/* --- 6. CONTACT SECTION --- */}
+        <section className="w-full bg-black py-0 px-0 relative overflow-hidden group/contact">
+          <Link href="/contact" className="relative w-full h-[300px] md:h-[450px] flex items-center justify-center overflow-hidden border-y border-zinc-900">
             
-            {/* 背景：巨大なRabbiy（透過画像）がうっすら見える */}
-            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-40 transition-all duration-700">
-              <div className="relative w-[120%] h-[120%] group-hover:scale-110 transition-transform duration-[2s]">
-                <Image 
-                  src="/rabbiy_3d.png" 
-                  alt="" 
-                  fill 
-                  className="object-contain filter grayscale invert brightness-50 contrast-150"
-                />
+            {/* デフォルトで表示される巨大シルエット */}
+            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-20 group-hover/contact:opacity-40 transition-all duration-700">
+              <div className="relative w-[120%] h-[120%] group-hover/contact:scale-110 transition-transform duration-[3s]">
+                <Image src="/rabbiy_3d.png" alt="" fill className="object-contain filter grayscale invert brightness-50 contrast-150" />
               </div>
             </div>
 
-            {/* バグ演出：赤いノイズレイヤー（ホバーで激化） */}
-            <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-30 mix-blend-screen pointer-events-none">
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat animate-pulse" />
-              <div className="absolute inset-0 bg-red-900/20 group-hover:animate-ping" />
-            </div>
-
-            {/* 背面：高速で流れる難解なシステムテキスト */}
-            <div className="absolute inset-0 z-10 flex flex-col justify-center opacity-10 group-hover:opacity-20 select-none pointer-events-none">
-              <div className="text-[15vh] font-black italic tracking-[--tight] leading-none animate-marquee-fast text-zinc-800 flex whitespace-nowrap">
-                {"SYSTEM_FAILURE_0x0001_DATA_CORRUPTED_REBOOT_REQUIRED_".repeat(5)}
-              </div>
-              <div className="text-[15vh] font-black italic tracking-[--tight] leading-none animate-marquee-slow text-zinc-900 flex whitespace-nowrap direction-reverse">
-                {"_ACCESS_KEY_INVALID_01011001_ENCRYPTED_SIGNAL_LOST_".repeat(5)}
+            {/* ホバー時に現れて流れるシステムテキスト */}
+            <div className="absolute inset-0 z-10 flex flex-col justify-center pointer-events-none overflow-hidden">
+              <div className="opacity-0 group-hover/contact:opacity-10 transition-opacity duration-500">
+                <div className="text-[12vh] md:text-[15vh] font-black italic tracking-tighter leading-none animate-marquee-fast text-white flex whitespace-nowrap">
+                  {"SYSTEM_FAILURE_0x0001_DATA_CORRUPTED_REBOOT_REQUIRED_".repeat(5)}
+                </div>
+                <div className="text-[12vh] md:text-[15vh] font-black italic tracking-tighter leading-none animate-marquee-slow text-white flex whitespace-nowrap direction-reverse">
+                  {"_ACCESS_KEY_INVALID_01011001_ENCRYPTED_SIGNAL_LOST_".repeat(5)}
+                </div>
               </div>
             </div>
 
-            {/* メイン：Contactボタン（グリッチ・スタック） */}
             <div className="relative z-30 flex flex-col items-center">
-              <div className="relative group-hover:animate-shake">
-                <h2 className="text-6xl md:text-9xl font-black italic tracking-tighter text-white mix-blend-difference">
+              <div className="relative group-hover/contact:animate-shake">
+                <h2 className="text-6xl md:text-9xl font-black italic tracking-tighter text-white mix-blend-difference group-hover/contact:text-red-600 group-hover/contact:mix-blend-normal transition-colors duration-100">
                   CONTACT
                 </h2>
-                {/* レイヤー化されたグリッチテキスト */}
-                <span className="absolute inset-0 text-red-600 opacity-0 group-hover:opacity-100 group-hover:animate-glitch-1 -z-10">CONTACT</span>
-                <span className="absolute inset-0 text-cyan-400 opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2 -z-20">CONTACT</span>
               </div>
-              
-              <div className="mt-6 py-2 px-6 border border-zinc-700 group-hover:border-red-600 group-hover:bg-red-600 transition-all">
-                <p className="text-[10px] font-mono tracking-[0.8em] text-zinc-500 group-hover:text-black font-bold uppercase transition-colors">
-                  Initialize Direct Link
-                </p>
+              {/* セクションホバーで連動して沈み込むボタン */}
+              <div className="mt-8 inline-flex h-16 px-10 border-2 border-black bg-white text-black flex items-center justify-center gap-4 transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(220,38,38,1)] group-hover/contact:bg-black group-hover/contact:text-white group-hover/contact:border-white group-hover/contact:shadow-none group-hover/contact:translate-x-1 group-hover/contact:translate-y-1 font-black italic text-[13px] tracking-[0.2em]">
+                Initialize Direct Link
+                <ChevronRight size={18} className="group-hover/contact:translate-x-1 transition-transform" />
               </div>
             </div>
-
-            {/* 四隅のシステム装飾 */}
-            <div className="absolute top-8 left-8 z-30 font-mono text-[9px] text-zinc-600 leading-relaxed hidden md:block">
-              [LOG_01]: SIGNAL_INTERCEPTED<br />
-              [LOG_02]: DECRYPTING_MESSAGE_BUFFER...<br />
-              [LOG_03]: ORIGIN_UNKNOWN
-            </div>
-            <div className="absolute bottom-8 right-8 z-30 font-mono text-[9px] text-zinc-600 text-right leading-relaxed hidden md:block">
-              PROTOCOL: SECURE_WAVE<br />
-              ENCRYPTION: AES_256_RSA<br />
-              STATUS: <span className="text-red-900 group-hover:text-red-600 group-hover:animate-pulse">CONNECTED</span>
-            </div>
-
           </Link>
 
-          {/* アニメーション用CSS */}
           <style jsx global>{`
             @keyframes marquee-fast { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
             @keyframes marquee-slow { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-            .animate-marquee-fast { animation: marquee-fast 12s linear infinite; }
-            .animate-marquee-slow { animation: marquee-slow 30s linear infinite; }
+            
+            .animate-marquee-fast { animation: marquee-fast 15s linear infinite; animation-play-state: paused; }
+            .animate-marquee-slow { animation: marquee-slow 25s linear infinite; animation-play-state: paused; }
+            .group\/contact:hover .animate-marquee-fast,
+            .group\/contact:hover .animate-marquee-slow { animation-play-state: running; }
             
             @keyframes shake {
               0%, 100% { transform: translate(0,0); }
@@ -267,26 +315,11 @@ export default function Home() {
               50% { transform: translate(-1px, 2px); }
               70% { transform: translate(1px, -2px); }
             }
-            .group:hover .animate-shake { animation: shake 0.2s infinite; }
-
-            @keyframes glitch-1 {
-              0% { transform: translate(4px, -2px); }
-              50% { transform: translate(-3px, 1px); }
-              100% { transform: translate(4px, -2px); }
-            }
-            @keyframes glitch-2 {
-              0% { transform: translate(-4px, 2px); }
-              50% { transform: translate(3px, -1px); }
-              100% { transform: translate(-4px, 2px); }
-            }
-            .animate-glitch-1 { animation: glitch-1 0.15s infinite; }
-            .animate-glitch-2 { animation: glitch-2 0.2s infinite; }
+            .group\/contact:hover .animate-shake { animation: shake 0.2s infinite; }
           `}</style>
         </section>        
-
       </div>
 
-      {/* --- YouTube Modal --- */}
       {isModalOpen && latestVideo && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 animate-in fade-in duration-300" onClick={() => setIsModalOpen(false)}>
           <button className="absolute top-10 right-10 text-white text-4xl hover:text-red-600">×</button>

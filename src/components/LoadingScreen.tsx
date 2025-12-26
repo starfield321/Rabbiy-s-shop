@@ -78,7 +78,7 @@ export default function LoadingScreen() {
 
         {/* --- ステータス表示 --- */}
         <div className="mt-8 w-full flex justify-between items-baseline font-black italic">
-          <span className="text-[10px] tracking-[0.6em] text-zinc-600 uppercase">System Loading...</span>
+          <span className="text-[10px] tracking-[0.6em] text-zinc-600">Loading...</span>
           <span className="text-4xl text-white tracking-tighter tabular-nums">
             {Math.floor(progress)}<span className="text-xs ml-1 not-italic opacity-40">%</span>
           </span>

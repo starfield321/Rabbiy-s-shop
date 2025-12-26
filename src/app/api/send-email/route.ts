@@ -5,73 +5,71 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
-    const { email, customerName, totalAmount, items } = await req.json();
+    const { email, customerName, totalAmount, items, address, orderId } = await req.json();
 
-    // 管理者のメールアドレス（Resendに登録した自分のアドレス）
+    // ★管理者（あなた）のメールアドレス
     const adminEmail = 'starfield.business@gmail.com'; 
 
-    // 注文商品リストの作成
     const itemsList = items.map((item: any) => 
-      `<li>${item.name} (QTY: ${item.quantity} / SIZE: ${item.size || 'FREE'}) - ¥${item.price.toLocaleString()}</li>`
+      `<li style="padding: 10px 0; border-bottom: 1px solid #f4f4f5; display: flex; justify-content: space-between;">
+        <span>${item.name} (x${item.quantity}${item.size ? ` / ${item.size}` : ''})</span>
+        <span style="font-weight: bold;">¥${(item.price * item.quantity).toLocaleString()}</span>
+      </li>`
     ).join('');
 
-    /**
-     * 【重要：Resendのテストモード制限対策】
-     * 独自ドメイン認証前は、Resendに登録した自分のアドレス以外には送信できません。
-     * 本番公開（ドメイン認証後）は、このロジックをシンプルに [email, adminEmail] に戻してください。
-     */
-    const recipients = [adminEmail];
-    if (email === adminEmail) {
-      // 購入者が自分の場合（テスト時など）はそのまま送信
-    } else {
-      // 購入者が他人の場合、ドメイン認証前はエラーになる可能性があるため
-      // ひとまず管理者（自分）にだけ送る、もしくは認証後に制限を解除してください
-      console.log(`Note: Customer email ${email} was skipped due to Resend sandbox restrictions.`);
-    }
+    // ★送信先に「お客様」と「自分」の両方を指定
+    const recipients = [email, adminEmail];
 
-    const data = await resend.emails.send({
-      from: 'Rabbiy <onboarding@resend.dev>', // ドメイン認証後は 'info@yourdomain.com' 等に変更可能
+    const { data, error } = await resend.emails.send({
+      from: 'Rabbiy <onboarding@resend.dev>', // ドメイン取得後は変更可能
       to: recipients,
-      subject: `【Rabbiy】ORDER_CONFIRMED: ${customerName} 様`,
+      subject: `【Rabbiy】ORDER_CONFIRMED: ${orderId}`,
       html: `
-        <div style="font-family: 'Helvetica', 'Arial', sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #000; color: #000;">
-          <h1 style="font-style: italic; font-weight: 900; font-size: 32px; letter-spacing: -1px; margin-bottom: 20px; border-bottom: 4px solid #000; pb: 10px;">
-            Rabbiy<span style="color: #dc2626;">.</span>
+        <div style="font-family: 'Helvetica', sans-serif; background-color: #ffffff; color: #000000; padding: 40px; max-width: 600px; margin: auto; border: 10px solid #000000;">
+          <h1 style="font-size: 48px; font-weight: 900; font-style: italic; letter-spacing: -2px; text-transform: uppercase; line-height: 0.9; margin-bottom: 30px;">
+            Order<br/>Confirmed<span style="color: #dc2626;">.</span>
           </h1>
           
-          <div style="background: #000; color: #fff; padding: 10px 20px; font-size: 12px; font-weight: bold; letter-spacing: 0.2em; margin-bottom: 30px;">
-            ORDER_RECEIPT_NOTIFICATION
+          <div style="background-color: #000; color: #fff; padding: 5px 10px; font-size: 10px; font-weight: 900; display: inline-block; margin-bottom: 20px;">
+            OFFICIAL_RECEIPT_NOTIFICATION
           </div>
 
-          <p style="font-size: 14px; line-height: 1.6;">
-            <strong>CUSTOMER:</strong> ${customerName} 様<br />
-            <strong>EMAIL:</strong> ${email}
+          <p style="font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+            Customer: ${customerName} 様
           </p>
 
-          <div style="margin: 40px 0;">
-            <h3 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: #888; border-bottom: 1px solid #eee; padding-bottom: 8px;">Order_Items</h3>
-            <ul style="list-style: none; padding: 0; font-size: 14px;">
+          <div style="margin-bottom: 30px;">
+            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; margin-bottom: 5px;">Order_ID</p>
+            <p style="font-size: 16px; font-weight: 900; font-family: monospace;">#${orderId}</p>
+          </div>
+
+          <div style="margin-bottom: 30px;">
+            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; margin-bottom: 10px;">Purchased_Items</p>
+            <ul style="list-style: none; padding: 0; margin: 0;">
               ${itemsList}
             </ul>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; padding-top: 20px; border-top: 2px solid #000;">
-            <span style="font-size: 10px; font-weight: bold; letter-spacing: 0.2em;">TOTAL_AMOUNT</span>
-            <span style="font-size: 24px; font-weight: 900; font-style: italic; color: #dc2626;">¥${totalAmount.toLocaleString()}</span>
+          <div style="background-color: #f4f4f5; padding: 20px; margin-bottom: 30px;">
+            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; margin-bottom: 5px;">Shipping_Address</p>
+            <p style="font-size: 12px; font-weight: 900; text-transform: uppercase;">${address}</p>
           </div>
 
-          <div style="margin-top: 60px; text-align: center; border-top: 1px solid #eee; pt: 20px;">
-            <p style="font-size: 9px; color: #aaa; font-family: monospace; letter-spacing: 0.1em;">
-              ENCRYPTED_TRANSACTION_SUCCESSFUL // RABBIY_OFFICIAL_STORE
-            </p>
+          <div style="text-align: right; border-top: 4px solid #000; padding-top: 20px;">
+            <p style="font-size: 12px; font-weight: 900; text-transform: uppercase; color: #a1a1aa;">Total_Amount</p>
+            <p style="font-size: 32px; font-weight: 900; font-style: italic; color: #dc2626;">¥${totalAmount.toLocaleString()}</p>
           </div>
+
+          <p style="font-size: 8px; font-family: monospace; color: #d4d4d8; text-align: center; margin-top: 40px; letter-spacing: 1px;">
+            AUTHORIZED_TRANSACTION // RABBIY_OFFICIAL_STORE
+          </p>
         </div>
       `,
     });
 
+    if (error) return NextResponse.json({ error }, { status: 400 });
     return NextResponse.json(data);
-  } catch (error: any) {
-    console.error("Resend API Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
