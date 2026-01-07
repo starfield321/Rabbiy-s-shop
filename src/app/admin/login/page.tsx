@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
-import { useRouter } from 'next/navigation';
+import { ShieldCheck, Lock, Mail, ArrowRight } from 'lucide-react';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,19 +25,27 @@ export default function AdminLogin() {
       });
 
       if (error) {
-        alert('LOGIN_ERROR: ' + error.message);
+        alert('ログインエラー: ' + error.message);
         setLoading(false);
         return;
       }
 
-      if (data.session) {
-        // セッションをブラウザに反映
-        router.refresh(); 
+      if (data.user && data.session) {
+        const ADMIN_UID = '39bfee29-e299-4174-ac74-d99c284c53ac';
+
+        if (data.user.id !== ADMIN_UID) {
+          await supabase.auth.signOut();
+          alert('管理者権限がありません。');
+          setLoading(false);
+          return;
+        }
+
+        // 重要: セッションをブラウザに確実に刻み込む
+        await supabase.auth.setSession(data.session);
         
-        // クッキーの書き込み時間を確保してから遷移
-        setTimeout(() => {
-          router.push('/admin/products');
-        }, 800);
+        // 重要: router.push ではなく、window.location.href で強制リロード遷移
+        // これにより、管理画面側で「ログイン情報が見つからない」現象を回避します
+        window.location.href = '/admin/orders';
       }
     } catch (err) {
       console.error(err);
@@ -46,58 +53,57 @@ export default function AdminLogin() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      // 1. Supabase側でセッションを破棄
-      await supabase.auth.signOut();
-
-      // 2. ブラウザのクッキーとキャッシュを完全にクリアしてトップへ飛ばす
-      // router.push ではなく window.location.href を使うことで
-      // ページを完全に再読み込みさせ、Middleware を強制的に走らせます
-      window.location.href = '/';
-      
-    } catch (err: any) {
-      console.error('Logout failed:', err.message);
-      // エラーが起きても強制的に飛ばす
-      window.location.href = '/';
-    }
-  };
   return (
-    <main className="min-h-screen bg-black flex items-center justify-center p-6 text-white font-mono">
-      <div className="w-full max-w-sm space-y-12">
-        <div className="text-center">
-          <h1 className="text-5xl font-black italic tracking-tighter uppercase underline decoration-red-600">Admin_Portal.</h1>
-          <p className="text-[10px] text-zinc-500 mt-4 tracking-[0.3em]">SECURE_ACCESS_REQUIRED</p>
+    <main className="min-h-screen bg-white flex items-center justify-center p-6 text-black font-sans">
+      <div className="w-full max-w-sm space-y-10">
+        <div className="space-y-2">
+            <div className="flex items-center gap-2 text-red-600 mb-2">
+                <ShieldCheck size={20} />
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Administrator Only</span>
+            </div>
+            <h1 className="text-5xl font-black italic tracking-tighter leading-none">
+                Admin<br/>Portal<span className="text-red-600">.</span>
+            </h1>
+            <p className="text-[10px] font-bold text-zinc-400 tracking-[0.2em] italic uppercase">
+                管理画面へのアクセス
+            </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input 
-            type="email" 
-            placeholder="EMAIL_ADDRESS" 
-            value={email} 
-            onChange={e => setEmail(e.target.value)}
-            className="w-full bg-zinc-900 border-2 border-zinc-800 p-4 font-black text-xs outline-none focus:border-white transition-all uppercase text-white"
-            required 
-          />
-          <input 
-            type="password" 
-            placeholder="PASSWORD" 
-            value={password} 
-            onChange={e => setPassword(e.target.value)}
-            className="w-full bg-zinc-900 border-2 border-zinc-800 p-4 font-black text-xs outline-none focus:border-white transition-all uppercase text-white"
-            required 
-          />
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-px border border-zinc-100 rounded overflow-hidden shadow-sm">
+            <div className="relative border-b border-zinc-100">
+                <Mail className="absolute left-4 top-5 text-zinc-300" size={16} />
+                <input 
+                    type="email" 
+                    placeholder="メールアドレス" 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)}
+                    className="w-full bg-white p-5 pl-12 text-sm font-medium outline-none text-black focus:bg-zinc-50 transition-colors"
+                    required 
+                />
+            </div>
+            <div className="relative">
+                <Lock className="absolute left-4 top-5 text-zinc-300" size={16} />
+                <input 
+                    type="password" 
+                    placeholder="パスワード" 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)}
+                    className="w-full bg-white p-5 pl-12 text-sm font-medium outline-none text-black focus:bg-zinc-50 transition-colors"
+                    required 
+                />
+            </div>
+          </div>
+
           <button 
+            type="submit"
             disabled={loading}
-            className="w-full bg-white text-black py-5 font-black italic uppercase hover:bg-red-600 hover:text-white transition-all text-sm tracking-widest disabled:opacity-50"
+            className="w-full h-16 bg-black text-white px-8 font-bold italic text-lg hover:bg-red-600 transition-all flex items-center justify-between group shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] disabled:bg-zinc-400"
           >
-            {loading ? 'Authenticating...' : 'Establish_Session_'}
+            <span>{loading ? '認証中...' : 'ログイン'}</span>
+            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </form>
-
-        <p className="text-center text-[8px] text-zinc-600 uppercase tracking-widest leading-loose">
-          Unauthorized access to this system is prohibited by RLS policies. // Secure connection established via Supabase Auth.
-        </p>
       </div>
     </main>
   );

@@ -76,7 +76,7 @@ export default function Header() {
           {status === "authenticated" ? (
             <div className="flex items-center gap-4 md:gap-6">
               {session.user?.email === 'starfield.business@gmail.com' && (
-                <Link href="/admin" className="hidden md:block text-[9px] font-black uppercase tracking-widest bg-black text-white px-3 py-1 hover:bg-red-600 transition-all">ADMIN_PORTAL</Link>
+                <Link href="/admin/login" className="hidden md:block text-[9px] font-black uppercase tracking-widest bg-black text-white px-3 py-1 hover:bg-red-600 transition-all">ADMIN_PORTAL</Link>
               )}
               <Link href="/dashboard" className={`${themeColor} hover:text-red-600 transition-colors hidden md:block`} title="MY PAGE">
                 <User size={20} strokeWidth={2.5} />

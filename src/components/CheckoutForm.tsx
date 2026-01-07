@@ -88,7 +88,8 @@ export default function CheckoutForm({
             items: cartItems,
             address: `〒${initialPostalCode} ${initialAddress}`,
             status: 'paid',
-            stripe_payment_id: paymentIntent.id
+            stripe_payment_id: paymentIntent.id,
+            user_id: '39bfee29-e299-4174-ac74-d99c284c53ac'
           }]);
 
         if (supabaseError) throw new Error("注文は完了しましたが、データベースへの保存に失敗しました。");

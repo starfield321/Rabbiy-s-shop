@@ -4,7 +4,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import YouTubeThumbnail from '@/components/YouTubeThumbnail';
 import { ChevronRight } from 'lucide-react'; 
 
@@ -14,6 +14,7 @@ export default function Home() {
   const [newsItems, setNewsItems] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [features, setFeatures] = useState<any[]>([]);
 
   const slides = [
     "https://images.unsplash.com/photo-1514525253361-bee8a187499b?q=80&w=1920&auto=format&fit=crop",
@@ -26,9 +27,11 @@ export default function Home() {
       const { data: p } = await supabase.from('goods').select('*').limit(6);
       const { data: v } = await supabase.from('videos').select('*').order('published_at', { ascending: false }).limit(1).single();
       const { data: n } = await supabase.from('news').select('*').order('published_at', { ascending: false }).limit(3);
+      const { data: f } = await supabase.from('features').select('*').order('created_at', { ascending: false });
       setProducts(p || []);
       setLatestVideo(v);
       setNewsItems(n || []);
+      setFeatures(f || []);
     };
     fetchData();
 
@@ -72,7 +75,7 @@ export default function Home() {
           ))}
         </section>
 
-{/* --- 2. NEWS & BIOGRAPHY SECTION --- */}
+        {/* --- 2. NEWS & BIOGRAPHY SECTION --- */}
         <section className="reveal max-w-7xl mx-auto px-6 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             <div className="lg:col-span-7">
@@ -132,7 +135,7 @@ export default function Home() {
           </div>
         </section>
 
-{/* --- 3. VIDEO SECTION --- */}
+        {/* --- 3. VIDEO SECTION --- */}
         <section className="reveal bg-gray-100 py-32 px-6">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
@@ -143,7 +146,7 @@ export default function Home() {
                   
                   {/* サムネイル：ゆっくりズーム */}
                   <div className="transition-transform duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-110 opacity-90 group-hover:opacity-100 h-full w-full">
-                    <YouTubeThumbnail videoId={latestVideo.youtube_id} alt={latestVideo.title} />
+                    <YouTubeThumbnail videoId={latestVideo.youtube_id} alt={latestVideo.title || "Latest Video"} />
                   </div>
                   
                   {/* ぬるっと出てくる黒フェード・オーバーレイ */}
@@ -233,34 +236,108 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- 5. FEATURE SECTION --- */}
-        <section className="reveal bg-black py-32 px-6 text-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex justify-between items-start mb-16 border-zinc-800 pb-8">
-              <div>
-                <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">Feature<span className="text-red-600 not-italic">.</span></h2>
-                <div className="h-[6px] w-24 bg-red-600 mt-4 relative">
-                  <div className="absolute right-0 top-0 h-full w-2 bg-white" />
-                </div>
-              </div>
-              <p className="text-[10px] tracking-[0.3em] text-zinc-500 uppercase mt-2">Projects</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {[
-                { id: 1, title: 'Rabbiy Live "Genesis"', date: '2026.03.15', img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop' },
-                { id: 2, title: 'Limited Merch Drop', date: 'Coming Soon', img: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop' },
-              ].map((event) => (
-                <div key={event.id} className="group relative aspect-[16/9] overflow-hidden bg-zinc-900 shadow-2xl cursor-pointer">
-                  <img src={event.img} alt={event.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-100" />
-                  <div className="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-black/90 to-transparent">
-                    <span className="text-[10px] font-black tracking-widest text-red-600 mb-2">{event.date}</span>
-                    <h3 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter group-hover:text-red-500 transition-colors">{event.title}</h3>
+{/* --- 5. FEATURE SECTION (デザイン微調整版) --- */}
+        {features && features.length > 0 && (
+          <section className="reveal bg-black py-40 text-white overflow-hidden border-y border-zinc-900">
+            <div className="max-w-7xl mx-auto px-6 md:px-10">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                
+                {/* 左カラム：見出しとボタンのデザインをよりシャープに */}
+                <div className="lg:col-span-4 lg:sticky lg:top-40 h-fit z-20 bg-black pb-10 lg:pb-0">
+                  <div className="space-y-12">
+                    <div className="space-y-6">
+                      <h2 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
+                        Feature<span className="text-red-600 not-italic">.</span>
+                      </h2>
+                      <div className="h-[6px] w-24 bg-red-600 relative">
+                        <div className="absolute right-0 top-0 h-full w-2 bg-white" />
+                      </div>
+                    </div>
+
+                    <div className="hidden lg:block pt-10">
+                      <p className="font-bold italic">
+                        Select Project to view details
+                      </p>
+                    </div>
+
+                    {/* スクロールボタン：サイズとホバーアニメーションの強化 */}
+                    <div className="flex gap-3">
+                      <button 
+                        onClick={() => {
+                          const el = document.getElementById('feature-scroll-container');
+                          el?.scrollBy({ left: -500, behavior: 'smooth' });
+                        }}
+                        className="w-16 h-16 border border-zinc-700 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-300 group rounded-full"
+                        aria-label="Previous"
+                      >
+                        <ChevronRight size={24} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
+                      </button>
+                      <button 
+                        onClick={() => {
+                          const el = document.getElementById('feature-scroll-container');
+                          el?.scrollBy({ left: 500, behavior: 'smooth' });
+                        }}
+                        className="w-16 h-16 border border-zinc-700 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-300 group rounded-full"
+                        aria-label="Next"
+                      >
+                        <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))}
+
+                {/* 右カラム：画像のインパクトと情報の視認性を向上 */}
+                <div className="lg:col-span-8 relative">
+                  <div 
+                    id="feature-scroll-container"
+                    className="flex overflow-x-auto gap-8 no-scrollbar snap-x snap-mandatory scroll-smooth pb-10"
+                  >
+                    {features.map((feature) => (
+                      <a 
+                        key={feature.id} 
+                        href={feature.link_url} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative flex-none w-[85vw] md:w-[540px] aspect-[16/9] overflow-hidden bg-zinc-950 snap-start"
+                      >
+                        {/* 画像：デフォルトの透明度を少し下げ、奥行き感を演出 */}
+                        <Image 
+                          src={feature.image_url} 
+                          alt={feature.title || "Feature"} 
+                          fill 
+                          className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 opacity-40 group-hover:opacity-100 grayscale-[0.5] group-hover:grayscale-0" 
+                          unoptimized
+                        />
+                        
+                        {/* テキスト：グラデーションをより深くし、文字を立たせる */}
+                        <div className="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-black via-black/20 to-transparent">
+                          <div className="translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                            <span className="inline-block text-[10px] font-black tracking-[0.3em] text-red-600 mb-2 italic uppercase">
+                              {feature.label}
+                            </span>
+                            <h3 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter leading-none group-hover:text-white transition-colors">
+                              {feature.title}
+                            </h3>
+                          </div>
+                        </div>
+
+                        {/* ホバー時のアクセント枠：白ではなく赤の細線で洗練させる */}
+                        <div className="absolute inset-0 border-0 group-hover:border-[1px] border-red-600/50 transition-all duration-500 pointer-events-none" />
+                      </a>
+                    ))}
+                    <div className="flex-none w-10 md:w-20" />
+                  </div>
+                </div>
+
+              </div>
             </div>
-          </div>
-        </section>
+
+            <style jsx>{`
+              .no-scrollbar::-webkit-scrollbar { display: none; }
+              .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            `}</style>
+          </section>
+        )}
 
         {/* --- 6. CONTACT SECTION --- */}
         <section className="w-full bg-black py-0 px-0 relative overflow-hidden group/contact">

@@ -8,7 +8,6 @@ import { ArrowRight, ChevronLeft, Save, AlertTriangle, ShieldCheck, Key } from '
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
-// 都道府県リスト
 const PREFECTURES = [
   "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
   "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県",
@@ -26,7 +25,6 @@ export default function EditProfilePage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // ステートを分割された住所項目に更新
   const [profile, setProfile] = useState({
     name: '',
     phone: '',
@@ -36,7 +34,6 @@ export default function EditProfilePage() {
     address2: '',
   });
 
-  // 郵便番号から住所を検索する関数
   const fetchAddressFromPostalCode = async (code: string) => {
     const cleanCode = code.replace(/[^0-9]/g, '');
     if (cleanCode.length === 7) {
@@ -60,11 +57,14 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (session?.user?.email) {
+      // 修正ポイント：sessionからidを取得
+      const userId = (session?.user as any)?.id;
+
+      if (userId) {
         const { data } = await supabase
           .from('users')
           .select('name, phone, postal_code, prefecture, address1, address2')
-          .eq('email', session.user.email)
+          .eq('id', userId) // emailではなくidで検索
           .maybeSingle();
         
         if (data) {
@@ -82,23 +82,19 @@ export default function EditProfilePage() {
     if (status === "authenticated") fetchProfile();
   }, [session, status]);
 
-  // --- アカウント削除用関数 ---
   const handleDeleteAccount = async () => {
-    if (!session?.user?.email) return;
+    const userId = (session?.user as any)?.id;
+    if (!userId) return;
     
     setIsDeleting(true);
     try {
-      // 1. Supabaseからユーザーを削除
       const { error } = await supabase
         .from('users')
         .delete()
-        .eq('email', session.user.email);
+        .eq('id', userId); // idで指定して削除
 
       if (error) throw error;
-
-      // 2. 成功したらログアウトしてトップへリダイレクト
       await signOut({ callbackUrl: '/' });
-      
     } catch (err) {
       console.error('Delete error:', err);
       alert('アカウントの削除に失敗しました。');
@@ -109,6 +105,8 @@ export default function EditProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    const userId = (session?.user as any)?.id;
+
     try {
       const { error } = await supabase
         .from('users')
@@ -120,9 +118,10 @@ export default function EditProfilePage() {
           address1: profile.address1,
           address2: profile.address2,
         })
-        .eq('email', session?.user?.email);
+        .eq('id', userId); // 修正ポイント：emailではなくidで更新
 
       if (error) throw error;
+      
       router.push('/dashboard');
       router.refresh();
     } catch (err) {
@@ -141,32 +140,26 @@ export default function EditProfilePage() {
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        
-        {/* パンくずリストを配置 */}
         <div className="mb-8">
           <Breadcrumbs />
         </div>
         
-        {/* ヘッダーデザイン */}
         <div className="relative mb-24 group">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
               Setting<span className="text-red-600 animate-pulse">.</span>
             </h1>
-
             <div className="absolute right-0 bottom-1 md:bottom-2 z-0 pointer-events-none">
               <span className="text-xl md:text-4xl font-black italic tracking-[0.2em] text-zinc-100 select-none whitespace-nowrap">
                   Profile Update
               </span>
             </div>
           </div>
-
           <div className="h-[6px] w-full bg-black mt-4 flex">
             <div className="h-full w-32 bg-red-600"></div>
           </div>
         </div>
 
-        {/* 導入メッセージ */}
         <div className="flex items-start mb-20">
           <div className="w-[8px] h-16 bg-red-600 mr-8 flex-shrink-0" />
           <div className="space-y-2 pt-1">
@@ -177,9 +170,7 @@ export default function EditProfilePage() {
           </div>
         </div>
 
-        {/* 編集フォーム */}
         <form onSubmit={handleSubmit} className="space-y-12">
-          
           <div className="space-y-4 group">
             <label className="text-[11px] font-black tracking-[0.2em] text-zinc-400 group-focus-within:text-red-600 transition-colors italic font-mono">Name / お名前</label>
             <input 
@@ -200,7 +191,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* 郵便番号 */}
           <div className="space-y-4 group">
             <label className="text-[11px] font-black tracking-[0.2em] text-zinc-400 group-focus-within:text-red-600 transition-colors italic font-mono">Postal Code / 郵便番号</label>
             <input 
@@ -214,7 +204,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* 都道府県 */}
           <div className="space-y-4 group">
             <label className="text-[11px] font-black tracking-[0.2em] text-zinc-400 group-focus-within:text-red-600 transition-colors italic font-mono">Prefecture / 都道府県</label>
             <div className="relative">
@@ -231,7 +220,6 @@ export default function EditProfilePage() {
             </div>
           </div>
 
-          {/* 住所1 */}
           <div className="space-y-4 group">
             <label className="text-[11px] font-black tracking-[0.2em] text-zinc-400 group-focus-within:text-red-600 transition-colors italic font-mono">Address 1 / 市区町村・番地</label>
             <input 
@@ -242,7 +230,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* 住所2 */}
           <div className="space-y-4 group">
             <label className="text-[11px] font-black tracking-[0.2em] text-zinc-400 group-focus-within:text-red-600 transition-colors italic font-mono">Address 2 / 建物名・部屋番号</label>
             <input 
@@ -253,7 +240,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* --- パスワードリセットセクション --- */}
           <div className="mt-32 pt-24 border-t-2 border-zinc-100">
             <div className="flex items-start mb-12">
               <div className="w-[8px] h-12 bg-black mr-8 flex-shrink-0" />
@@ -272,7 +258,6 @@ export default function EditProfilePage() {
                   ご登録のメールアドレスへ再設定用のリンクを送信します。
                 </p>
               </div>
-              
               <Link 
                 href="reset-password" 
                 className="h-16 px-10 bg-black text-white font-black italic text-xs tracking-[0.2em] flex items-center gap-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all group"
@@ -306,7 +291,6 @@ export default function EditProfilePage() {
           </button>
         </form>
 
-        {/* アカウント削除セクション */}
         <div className="mt-40 pt-24 border-t-2 border-zinc-100">
             <div className="bg-red-50/20 border-2 border-dashed border-red-100 p-12 text-center space-y-6">
                 <div className="flex items-center justify-center gap-4 text-red-600 font-black italic">
@@ -316,7 +300,6 @@ export default function EditProfilePage() {
                 <p className="text-[11px] font-bold text-red-800/60 leading-relaxed italic mx-auto">
                 アカウントを削除すると、これまでの全てのデータが消去され、復元することはできません。
                 </p>
-                
                 <div className="pt-4 flex flex-col items-center">
                 {!showDeleteConfirm ? (
                     <button 

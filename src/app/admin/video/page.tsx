@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import AdminNav from '@/components/AdminNav';
+import { Megaphone, Save, X, Edit2, Trash2, Calendar, Youtube, PlayCircle } from 'lucide-react';
 
 export default function AdminVideoPage() {
   const [videos, setVideos] = useState<any[]>([]);
@@ -71,45 +72,114 @@ export default function AdminVideoPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-white pt-20 pb-40 px-6 md:px-10 text-black font-sans pb-20">
       <AdminNav />
-      <div className="min-h-screen bg-white pt-32 pb-20 px-10 text-black">
-        <div className="max-w-4xl mx-auto space-y-12">
-          <h1 className="text-6xl font-black italic tracking-tighter uppercase border-b-8 border-black pb-8">Video_Manager.</h1>
-          
-          <form onSubmit={handleSubmit} className="bg-zinc-50 border-4 border-black p-10 space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <input type="date" value={publishedAt} onChange={e => setPublishedAt(e.target.value)} className="border-2 border-black p-4 font-black text-xs" required />
-              <input placeholder="YOUTUBE_URL_OR_ID" value={youtubeId} onChange={e => setYoutubeId(e.target.value)} className="border-2 border-black p-4 font-black text-xs" required />
+      
+      {/* メインコンテンツの幅を max-w-7xl に変更 */}
+      <main className="max-w-7xl mx-auto p-6 md:p-12 space-y-16 mt-20">
+        
+        {/* ヘッダーデザイン */}
+        <div className="relative mb-20 group">
+          <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
+            <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
+              {editingId ? 'Edit_Video' : 'Video Manager'}<span className="text-red-600 animate-pulse">.</span>
+            </h1>
+            <div className="absolute right-0 bottom-1 md:bottom-2 z-0 pointer-events-none text-zinc-100 text-xl md:text-4xl font-black italic tracking-[0.2em] whitespace-nowrap">
+              {editingId ? 'Update Content' : 'Publish Video'}
             </div>
-            <input placeholder="VIDEO_TITLE" value={title} onChange={e => setTitle(e.target.value)} className="w-full border-2 border-black p-4 font-black uppercase text-xs" required />
-            <button className="w-full bg-black text-white py-6 font-black italic uppercase hover:bg-red-600 transition-all">
-              {loading ? 'Processing...' : editingId ? 'Update_Video_' : 'Add_New_Video_'}
-            </button>
-            {editingId && <button type="button" onClick={resetForm} className="w-full text-[10px] font-black uppercase underline">Cancel_Edit</button>}
-          </form>
+          </div>
+          <div className="h-[6px] w-full bg-black mt-4 flex">
+            <div className="h-full w-32 bg-red-600"></div>
+          </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 入力フォーム */}
+        <section className="bg-zinc-50 border border-zinc-100 p-8 md:p-12 rounded-sm shadow-sm mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-zinc-400 tracking-widest flex items-center gap-2">
+                  <Calendar size={12} /> Published Date / 公開日
+                </label>
+                <input 
+                  type="date" value={publishedAt} onChange={e => setPublishedAt(e.target.value)} 
+                  className="w-full bg-white border-b-2 border-zinc-200 p-4 font-bold outline-none focus:border-black transition-all"
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-zinc-400 tracking-widest flex items-center gap-2">
+                  <Youtube size={12} /> YouTube URL / ID
+                </label>
+                <input 
+                  placeholder="URL or ID..." value={youtubeId} onChange={e => setYoutubeId(e.target.value)} 
+                  className="w-full bg-white border-b-2 border-zinc-200 p-4 font-bold outline-none focus:border-black transition-all"
+                  required 
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-zinc-400 tracking-widest">Video Title / 動画タイトル</label>
+              <input 
+                placeholder="動画のタイトルを入力" value={title} onChange={e => setTitle(e.target.value)} 
+                className="w-full bg-white border-b-2 border-zinc-200 p-4 text-lg font-bold outline-none focus:border-black transition-all"
+                required 
+              />
+            </div>
+
+            <div className="flex gap-4 pt-6 border-t border-zinc-200">
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="flex-1 md:flex-none h-16 bg-black text-white px-12 font-bold italic text-lg hover:bg-red-600 transition-all flex items-center justify-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] disabled:bg-zinc-300"
+              >
+                <PlayCircle size={20} />
+                <span>{loading ? 'Processing...' : editingId ? 'Update_Video' : 'Publish Video'}</span>
+              </button>
+              
+              {editingId && (
+                <button 
+                  type="button" onClick={resetForm} 
+                  className="h-16 border-2 border-zinc-200 px-8 font-bold text-zinc-400 hover:border-black hover:text-black transition-all"
+                >
+                  <X size={20} />
+                </button>
+              )}
+            </div>
+          </form>
+        </section>
+
+        {/* 動画一覧アーカイブ：グリッドを3つに変更 */}
+        <div className="space-y-8">
+          <h2 className="text-3xl font-black italic tracking-tighter border-l-4 border-black pl-4">Archive List</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {videos.map(v => (
-              <div key={v.id} className="border-4 border-black p-4 space-y-4">
-                <div className="aspect-video bg-black relative">
-                  <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${v.youtube_id}`} frameBorder="0" allowFullScreen></iframe>
+              <div key={v.id} className="group border border-zinc-100 bg-white p-6 space-y-4 hover:border-black transition-all shadow-sm">
+                <div className="aspect-video bg-zinc-100 relative border border-zinc-200 overflow-hidden">
+                  <iframe 
+                    width="100%" height="100%" 
+                    src={`https://www.youtube.com/embed/${v.youtube_id}`} 
+                    frameBorder="0" allowFullScreen
+                    className="transition-all duration-700" 
+                  ></iframe>
+                  {/* ↑ className から grayscale を削除しました */}
                 </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-[8px] font-mono text-zinc-400 mb-1">{v.published_at}</p>
-                    <p className="font-black uppercase text-[10px] leading-tight italic">{v.title}</p>
+                <div className="flex justify-between items-end">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-zinc-400 italic tabular-nums">{v.published_at}</p>
+                    <h3 className="font-black text-xs italic tracking-tight group-hover:text-red-600 transition-colors line-clamp-1">{v.title}</h3>
                   </div>
                   <div className="flex gap-4">
-                    <button onClick={() => startEdit(v)} className="text-black font-black text-[9px] uppercase underline">Edit</button>
-                    <button onClick={() => handleDelete(v.id)} className="text-zinc-300 hover:text-red-600 font-black text-[9px] uppercase underline">Remove</button>
+                    <button onClick={() => startEdit(v)} className="flex items-center gap-1 text-[9px] font-black hover:underline italic"><Edit2 size={12} /> EDIT</button>
+                    <button onClick={() => handleDelete(v.id)} className="flex items-center gap-1 text-[9px] font-black text-zinc-300 hover:text-red-600 hover:underline italic"><Trash2 size={12} /> REMOVE</button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

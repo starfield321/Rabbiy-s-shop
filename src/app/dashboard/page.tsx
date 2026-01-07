@@ -22,12 +22,16 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (session?.user?.email) {
+      // ログインユーザーのIDをNextAuthセッションから取得
+      const userId = (session?.user as any)?.id;
+
+      if (userId) {
         const { data } = await supabase
           .from('users')
           .select('name, phone, postal_code, prefecture, address1, address2')
-          .eq('email', session.user.email)
+          .eq('id', userId) // email指定からid指定に変更
           .maybeSingle();
+        
         if (data) setProfile(data);
       }
     };

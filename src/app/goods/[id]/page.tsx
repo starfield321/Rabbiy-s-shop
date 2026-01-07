@@ -80,18 +80,12 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
 
       <div className="max-w-7xl mx-auto relative z-10">
         
-      {/* パンくずリストを配置 */}
-      <div className="mb-8">
-        <Breadcrumbs />
-      </div>
+        {/* パンくずリスト */}
+        <div className="mb-8">
+          <Breadcrumbs />
+        </div>
 
-      {/* 共通ドット背景 */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" 
-           style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* ヘッダーデザイン：最新のトンマナ */}
+        {/* ヘッダーデザイン */}
         <div className="relative mb-24 group">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
@@ -99,8 +93,8 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
             </h1>
 
             <div className="absolute right-0 bottom-1 md:bottom-2 z-0 pointer-events-none">
-              <span className="text-xl md:text-4xl font-black italic tracking-[0.2em] text-zinc-100 select-none font-['Geist',_'Geist_Fallback'] whitespace-nowrap">
-                  Merchandise List
+              <span className="text-xl md:text-4xl font-black italic tracking-[0.2em] text-zinc-100 select-none whitespace-nowrap">
+                  Merchandise Detail
               </span>
             </div>
           </div>
@@ -109,11 +103,10 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
             <div className="h-full w-32 bg-red-600"></div>
           </div>
         </div>
-        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-32">
           
-          {/* --- 左：スライドギャラリー --- */}
+          {/* 左：スライドギャラリー */}
           <div className="lg:col-span-7 space-y-12">
             <div className="relative group bg-zinc-50 border border-zinc-100 overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]">
               
@@ -136,7 +129,6 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 ))}
               </div>
 
-              {/* 矢印ボタン：1枚目と最後で非表示にするロジックを追加 */}
               {images.length > 1 && (
                 <>
                   {selectedImage > 0 && (
@@ -181,10 +173,10 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
             )}
           </div>
 
-          {/* --- 右：購入コントロール --- */}
+          {/* 右：購入コントロール */}
           <div className="lg:col-span-5 flex flex-col">
             <div className="mb-12 border-b-2 border-zinc-100 pb-10">                
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-[0.9] break-words">
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-[0.9] break-words uppercase">
                 {product.name}
               </h2>
               <div className="mt-10 flex items-end gap-4">
@@ -200,27 +192,31 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
             <div className="space-y-12 font-mono">
               {isSizeRequired && (
                 <div className="space-y-6">
-                  <label className="text-[11px] font-black tracking-[0.4em] text-black">Select Size / サイズ選択</label>
+                  <label className="text-[11px] font-black tracking-[0.4em] text-black uppercase">Select Size / サイズ選択</label>
                   <div className="grid grid-cols-5 gap-2 mt-2">
-                    {product.sizes.map((size: string) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`h-12 flex items-center justify-center text-[12px] font-bold transition-all duration-500 border-2 ${
-                          selectedSize === size 
-                            ? 'bg-black text-white border-black scale-95' 
-                            : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
+                    {product.sizes.map((s: any, idx: number) => {
+                      // 文字列でもオブジェクトでもサイズ名を表示できるようにガード
+                      const label = typeof s === 'object' ? s.size : s;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedSize(label)}
+                          className={`h-12 flex items-center justify-center text-[12px] font-bold transition-all duration-500 border-2 uppercase ${
+                            selectedSize === label 
+                              ? 'bg-black text-white border-black scale-95' 
+                              : 'bg-transparent text-zinc-400 border-zinc-200 hover:border-black hover:text-black'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
               <div className="space-y-6 pt-10 border-t border-zinc-100">
-                <label className="text-[11px] font-black tracking-[0.4em] text-black">Quantity / 数量</label>
+                <label className="text-[11px] font-black tracking-[0.4em] text-black uppercase">Quantity / 数量</label>
                 <div className="flex items-center w-full h-16 border-2 border-zinc-200 bg-white focus-within:border-black transition-all mt-2">
                   <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-24 h-full flex items-center justify-center hover:bg-zinc-50 text-2xl font-light">－</button>
                   <div className="flex-1 h-full flex items-center justify-center text-xl font-bold italic tabular-nums">{quantity.toString().padStart(2, '0')}</div>
@@ -265,13 +261,73 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter leading-none text-black">
                   Details<span className="text-red-600 not-italic">.</span>
                 </h2>
-                <p className="text-[10px] font-bold text-zinc-400 tracking-[0.5em] leading-none font-mono">Description_Manual</p>
+                <p className="text-[10px] font-bold text-zinc-400 tracking-[0.5em] leading-none font-mono uppercase">Information</p>
               </div>
             </div>
-            <div className="md:col-span-8">
-              <div className="text-base leading-[2.2] text-zinc-800 font-medium whitespace-pre-wrap py-1 pl-0 md:pl-12 border-l-0 md:border-l border-zinc-100">
-                {product.description || '詳細な商品説明はありません。'}
+            <div className="md:col-span-8 space-y-16">
+              {/* DESCRIPTION */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-[2px] w-8 bg-red-600"></div>
+                  <h3 className="text-sm font-black italic tracking-widest text-zinc-400">Description</h3>
+                </div>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium text-zinc-800">
+                  {product.description}
+                </p>
               </div>
+
+              {/* SIZE GUIDE テーブル */}
+              {isSizeRequired && (
+                <div className="pt-8 border-t border-zinc-100">
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <div className="h-[2px] w-8 bg-red-600"></div>
+                      <h3 className="text-sm font-black italic tracking-widest text-zinc-400">
+                        Size Guide<span className="text-red-600">.</span>
+                      </h3>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse min-w-[450px]">
+                        <thead>
+                          <tr className="border-b-2 border-black">
+                            <th className="py-4 text-[9px] font-black italic tracking-widest text-zinc-400">Size</th>
+                            <th className="py-4 text-[9px] font-black italic tracking-widest text-zinc-400">身丈 (Length)</th>
+                            <th className="py-4 text-[9px] font-black italic tracking-widest text-zinc-400">身幅 (Width)</th>
+                            <th className="py-4 text-[9px] font-black italic tracking-widest text-zinc-400">肩幅 (Shoulder)</th>
+                            <th className="py-4 text-[9px] font-black italic tracking-widest text-zinc-400">袖丈 (Sleeve)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-100">
+                          {product.sizes.map((s: any, i: number) => {
+                            // 文字列として保存されている場合の最終ガード
+                            let obj = s;
+                            if (typeof s === 'string') {
+                              try { 
+                                // 二重にシリアル化されている可能性への対処
+                                const cleanStr = s.replace(/\\"/g, '"').replace(/^"/, '').replace(/"$/, '');
+                                obj = JSON.parse(cleanStr); 
+                              } catch (e) { obj = { size: s }; }
+                            }
+                            return (
+                              <tr key={i} className="group hover:bg-zinc-50 transition-colors font-black italic">
+                                <td className="py-4 text-base uppercase">{obj.size || '-'}</td>
+                                <td className="py-4 text-xs font-medium text-zinc-500">{obj.length ? `${obj.length} cm` : '-'}</td>
+                                <td className="py-4 text-xs font-medium text-zinc-500">{obj.width ? `${obj.width} cm` : '-'}</td>
+                                <td className="py-4 text-xs font-medium text-zinc-500">{obj.shoulder ? `${obj.shoulder} cm` : '-'}</td>
+                                <td className="py-4 text-xs font-medium text-zinc-500">{obj.sleeve ? `${obj.sleeve} cm` : '-'}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-[9px] font-bold text-zinc-400 italic">
+                      * 全て平置きでの採寸となります。若干の誤差が生じる場合がございます。
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

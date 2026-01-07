@@ -62,11 +62,14 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
       </div>
 
       {/* ニュース本文 */}
-      <div className="prose prose-sm max-w-none mb-20 whitespace-pre-wrap leading-relaxed text-gray-800">
-        {news.content}
-      </div>
+      <div 
+        className="prose prose-zinc max-w-none 
+               prose-headings:font-black prose-headings:italic 
+               prose-a:text-red-600 prose-img:rounded-sm"
+        dangerouslySetInnerHTML={{ __html: news.content }} 
+      />
 
-      <div className="text-center border-t border-gray-100 pt-12">
+      <div className="text-center border-t border-gray-100 pt-12 mt-12">
         <Link 
           href="/news" 
           className="text-[10px] font-black tracking-[0.2em] hover:underline"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react'; // Suspenseを追加
+import { useState, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { signIn } from 'next-auth/react';
 import { ArrowLeft, UserPlus, CheckCircle, AlertTriangle } from "lucide-react";
@@ -9,7 +9,6 @@ import bcrypt from 'bcryptjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
 
-// 1. もともとのデザインとロジックをこの関数にまとめます
 function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,6 +29,8 @@ function SignUpForm() {
       const hashedPassword = await bcrypt.hash(password, 10);
       const normalizedEmail = email.toLowerCase().trim();
 
+      // ロジック修正：RLSポリシー (auth.uid() = id) との整合性を保つため、
+      // 登録時に email を小文字に正規化し、確実にインサートします。
       const { error } = await supabase
         .from('users')
         .insert([{ 
@@ -40,13 +41,19 @@ function SignUpForm() {
         }]);
 
       if (error) {
-        if (error.message.includes('unique constraint') || error.code === '23505') {
+        // RLS違反エラーや重複エラーのハンドリング
+        if (error.code === '23505') {
           throw new Error('このメールアドレスは既に登録されています。');
+        } else if (error.message.includes('row-level security')) {
+          throw new Error('セキュリティ設定により登録がブロックされました。INSERTポリシーを確認してください。');
         }
         throw error;
       }
 
       setIsRegistered(true);
+
+      // 自動ログインの実行。ここでログインすることでセッションにIDが乗り、
+      // その後のプロフィール編集でIDベースの更新が可能になります。
       setTimeout(() => {
         signIn('credentials', { 
           email: normalizedEmail, 
@@ -61,7 +68,6 @@ function SignUpForm() {
     }
   };
 
-  // デザイン部分は、あなたが送ってくれたファイルをそのまま使用しています
   return (
     <div className="h-screen bg-white text-black flex flex-col overflow-hidden">
       <nav className="p-6 flex justify-between items-center z-30 shrink-0">
@@ -103,7 +109,7 @@ function SignUpForm() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-black italic italic tracking-tighter font-sans">Welcome</h2>
+                  <h2 className="text-3xl font-black italic tracking-tighter font-sans">Welcome</h2>
                   <p className="text-sm font-bold text-zinc-400 italic">アカウントを作成しました。自動でログインします。</p>
                 </div>
               </div>
@@ -166,7 +172,6 @@ function SignUpForm() {
   );
 }
 
-// 2. この SignUpPage を最終的に書き出すことでビルドエラーを防ぎます
 export default function SignUpPage() {
   return (
     <Suspense fallback={<div className="h-screen flex items-center justify-center font-bold italic">LOADING...</div>}>
