@@ -17,9 +17,9 @@ export default function Home() {
   const [features, setFeatures] = useState<any[]>([]);
 
   const slides = [
-    "https://images.unsplash.com/photo-1514525253361-bee8a187499b?q=80&w=1920&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1920&auto=format&fit=crop"
+    { pc: "/banner/20260101_pc.jpg", sp: "/banner/20260101_sp.jpg", alt: "Rabbiy Official Goods", url: "/goods", isBlank: false },
+    { pc: "/banner/20250601_pc.webp", sp: "/banner/20250601_sp.webp", alt: "Your too Peer", url: "https://big-up.style/BzECwGfowx", isBlank: true },
+    { pc: "/banner/hero_rabbiy_pc.webp", sp: "/banner/hero_rabbiy_sp.webp", alt: "Rabbiy", url: "", isBlank: false }
   ];
 
   useEffect(() => {
@@ -67,12 +67,59 @@ export default function Home() {
       <div className="relative z-10 font-sans">
         
         {/* --- 1. HERO CAROUSEL --- */}
-        <section className="w-full h-[50vh] md:h-[65vh] relative overflow-hidden bg-gray-200">
-          {slides.map((src, idx) => (
-            <div key={idx} className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
-              <Image src={src} alt="Hero" fill className="object-cover" priority unoptimized />
+        <section className="w-full relative overflow-hidden bg-black aspect-[4/5] md:aspect-[5/2]">
+        {slides.map((slide, idx) => {
+          // 1. スライドの中身（画像部分）を定義
+          const SlideContent = (
+          <div className="relative w-full h-full">
+            {/* PC用バナー */}
+            <div className="hidden md:block h-full w-full">
+              <Image src={slide.pc} alt={slide.alt} fill className="object-cover" priority unoptimized />
             </div>
+            {/* スマホ用バナー */}
+            <div className="block md:hidden h-full w-full">
+              <Image src={slide.sp} alt={slide.alt} fill className="object-cover" priority unoptimized />
+            </div>
+          </div>
+          );
+
+          return (
+            <div 
+              key={idx} 
+              className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+            >
+              {/* 2. url がある時だけ Link で囲む。なければそのまま画像を表示 */}
+              {slide.url ? (
+                <Link 
+                  href={slide.url} 
+                  target={slide.isBlank ? "_blank" : undefined}
+                  rel={slide.isBlank ? "noopener noreferrer" : undefined}
+                  className="block w-full h-full"
+                >
+                  {SlideContent}
+                </Link>
+              ) : (
+                SlideContent
+              )}
+            </div>
+          );
+        })}
+
+        {/* 追加：ドットナビゲーション */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                idx === currentSlide 
+                  ? 'bg-white w-6' // アクティブな時は横長にする（アパレルサイトでよくあるお洒落な表現）
+                  : 'bg-white/40 hover:bg-white/70'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
           ))}
+        </div>
         </section>
 
         {/* --- 2. NEWS & BIOGRAPHY SECTION --- */}

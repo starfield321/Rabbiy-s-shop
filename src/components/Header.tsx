@@ -45,43 +45,43 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
-      isTransparent ? 'bg-transparent py-10' : 'bg-white py-6 shadow-sm border-b border-zinc-100'
+      isTransparent ? 'bg-transparent py-6 md:py-10' : 'bg-white py-4 md:py-6 shadow-sm border-b border-zinc-100'
     }`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between relative">
         
         {/* LEFT AREA */}
         <div className="flex items-center">
-          <button className={`md:hidden p-2 -ml-2 z-[160] ${themeColor}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className={`lg:hidden p-2 -ml-2 z-[160] ${themeColor}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <Link href="/" className="hidden md:block">
+          <Link href="/" className="hidden lg:block">
             <img src={logoSrc} alt="Rabbiy." className="h-8 w-auto" />
           </Link>
         </div>
 
         {/* CENTER AREA */}
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none w-full">
-          <nav className="hidden md:flex items-center gap-10 pointer-events-auto">
+          <nav className="hidden lg:flex items-center gap-10 pointer-events-auto">
             {navLinks.map((link) => (
               <Link key={link.label} href={link.href} className={linkBaseStyle}>{link.label}</Link>
             ))}
           </nav>
-          <Link href="/" className="md:hidden pointer-events-auto">
+          <Link href="/" className="lg:hidden pointer-events-auto">
             <img src={logoSrc} alt="Rabbiy." className="h-7 w-auto" />
           </Link>
         </div>
 
         {/* RIGHT AREA */}
-        <div className="flex items-center gap-4 md:gap-8">
+        <div className="flex items-center gap-4 lg:gap-8">
           {status === "authenticated" ? (
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex items-center gap-4 lg:gap-6">
               {session.user?.email === 'starfield.business@gmail.com' && (
-                <Link href="/admin/login" className="hidden md:block text-[9px] font-black uppercase tracking-widest bg-black text-white px-3 py-1 hover:bg-red-600 transition-all">ADMIN_PORTAL</Link>
+                <Link href="/admin/login" className="hidden lg:block text-[9px] font-black uppercase tracking-widest bg-black text-white px-3 py-1 hover:bg-red-600 transition-all">ADMIN_PORTAL</Link>
               )}
-              <Link href="/dashboard" className={`${themeColor} hover:text-red-600 transition-colors hidden md:block`} title="MY PAGE">
+              <Link href="/dashboard" className={`${themeColor} hover:text-red-600 transition-colors hidden lg:block`} title="MY PAGE">
                 <User size={20} strokeWidth={2.5} />
               </Link>
-              <button onClick={() => signOut({ callbackUrl: '/' , redirect: true})} className={`${themeColor} hover:text-red-600 transition-all hidden md:block`} title="LOGOUT">
+              <button onClick={() => signOut({ callbackUrl: '/' , redirect: true})} className={`${themeColor} hover:text-red-600 transition-all hidden lg:block`} title="LOGOUT">
                 <LogOut size={20} strokeWidth={2.5} />
               </button>
             </div>
@@ -101,7 +101,7 @@ export default function Header() {
       </div>
 
       {/* MOBILE MENU OVERLAY */}
-      <div className={`fixed inset-0 bg-white z-[140] transition-transform duration-500 ease-in-out md:hidden ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`} style={{ top: 0 }}>
+      <div className={`fixed inset-0 bg-white z-[140] transition-transform duration-500 ease-in-out lg:hidden ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`} style={{ top: 0 }}>
         <nav className="flex flex-col h-full pt-32 px-10 gap-6">
           {navLinks.map((link) => (
             <Link key={link.label} href={link.href} onClick={() => setIsMenuOpen(false)} className="text-5xl font-black italic tracking-tighter uppercase border-b border-zinc-100 pb-4 flex justify-between items-center group text-black">

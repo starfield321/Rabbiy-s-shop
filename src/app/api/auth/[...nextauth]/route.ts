@@ -1,15 +1,14 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
-import CredentialsProvider from "next-auth/providers/credentials"; // 追加
+import CredentialsProvider from "next-auth/providers/credentials";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { Resend } from 'resend';
-import { createClient } from "@supabase/supabase-js"; // クライアントが必要
+import { createClient } from "@supabase/supabase-js";
 import bcrypt from 'bcryptjs';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// 認証用のSupabaseクライアント
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -22,7 +21,6 @@ const handler = NextAuth({
   }),
 
   providers: [
-    // 1. パスワード認証 (Credentials) - 追加
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -40,10 +38,9 @@ const handler = NextAuth({
 
         if (error || !user) return null;
 
-        // ★ここでパスワードを照合
         const isValid = await bcrypt.compare(credentials.password, user.password);
         
-        if (!isValid) return null; // 違えばログイン拒否
+        if (!isValid) return null;
 
         return {
           id: user.id,
@@ -77,7 +74,7 @@ const handler = NextAuth({
   ],
 
   session: {
-    strategy: "jwt", // Credentialsを使う場合はJWTが推奨されます
+    strategy: "jwt",
   },
 
   pages: {
@@ -85,14 +82,49 @@ const handler = NextAuth({
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    // ★追加：Googleログイン時に既存ユーザーと紐付け、または新規作成するロジック
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const normalizedEmail = user.email.toLowerCase();
+        
+        // 既存のユーザーをチェック
+        const { data: existingUser } = await supabaseAdmin
+          .from('users')
+          .select('id')
+          .eq('email', normalizedEmail)
+          .maybeSingle();
+
+        if (!existingUser) {
+          // ユーザーが存在しない場合、usersテーブルに新規作成
+          await supabaseAdmin.from('users').insert([{
+            name: user.name,
+            email: normalizedEmail,
+            role: 'user'
+          }]);
+        }
+      }
+      return true;
+    },
+
+    async jwt({ token, user, account }) {
+      // 初回ログイン時、DBから最新のIDを取得してトークンにセットする
       if (user) {
-        token.id = user.id;
-        // @ts-ignore
-        token.role = user.role;
+        const { data: dbUser } = await supabaseAdmin
+          .from('users')
+          .select('id, role')
+          .eq('email', user.email?.toLowerCase())
+          .maybeSingle();
+
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        } else {
+          token.id = user.id;
+        }
       }
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
         // @ts-ignore

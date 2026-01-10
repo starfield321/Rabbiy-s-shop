@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { email, customerName, totalAmount, items, address, orderId } = await req.json();
 
     // ★管理者（あなた）のメールアドレス
-    const adminEmail = 'starfield.business@gmail.com'; 
+    const adminEmail = 'order@dotcreation.jp'; 
 
     const itemsList = items.map((item: any) => 
       `<li style="padding: 12px 0; border-bottom: 1px solid #f4f4f5; display: flex; justify-content: space-between; align-items: center;">
@@ -24,21 +24,21 @@ export async function POST(req: Request) {
 
     const { data, error } = await resend.emails.send({
       // 独自ドメイン info@rabbiy.jp を使用
-      from: 'Rabbiy <info@rabbiy.jp>', 
+      from: 'Rabbiy <order@dotcreation.jp>', 
       to: recipients,
-      subject: `【Rabbiy】ORDER_CONFIRMED: ${orderId}`,
+      subject: `【Rabbiy】ご注文ありがとうございます: ${orderId}`,
       html: `
         <div style="font-family: 'Helvetica', sans-serif; background-color: #ffffff; color: #000000; padding: 40px; max-width: 600px; margin: auto; border: 10px solid #000000;">
           <div style="margin-bottom: 40px;">
             <p style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5em; color: #a1a1aa; margin-bottom: 5px;">Order_Receipt_v2.5</p>
             <h1 style="font-size: 56px; font-weight: 900; font-style: italic; letter-spacing: -3px; text-transform: uppercase; line-height: 0.8; margin: 0;">
-              Confirmed<span style="color: #dc2626;">.</span>
+              ご注文内容
             </h1>
           </div>
           
           <div style="border-left: 8px solid #dc2626; padding-left: 20px; margin-bottom: 40px;">
             <p style="font-size: 14px; font-weight: 900; text-transform: uppercase;">
-              Thank you, ${customerName} 様
+              ${customerName} 様、ご注文ありがとうございます。
             </p>
             <p style="font-size: 11px; font-weight: bold; color: #71717a; margin-top: 5px; line-height: 1.6;">
               Rabbiyでのご注文を承りました。<br/>
@@ -72,12 +72,12 @@ export async function POST(req: Request) {
               ご不明な点は、以下の公式ターミナルよりご連絡ください。
             </p>
             <a href="https://rabbiy.jp/contact" style="display: inline-block; background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;">
-              Contact_Support_
+              Contact Support
             </a>
           </div>
 
           <p style="font-size: 8px; font-family: monospace; color: #d4d4d8; text-align: center; margin-top: 40px; letter-spacing: 2px;">
-            AUTHORIZED_TRANSACTION // RABBIY_OFFICIAL_STORE
+            AUTHORIZED TRANSACTION // Rabbiy Official Store
           </p>
         </div>
       `,
