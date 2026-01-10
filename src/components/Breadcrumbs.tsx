@@ -55,7 +55,7 @@ export default function Breadcrumbs() {
   if (pathname === '/' || pathSegments.length === 0) return null;
 
   return (
-    <nav className="relative z-50 flex items-center gap-4 py-6 font-mono" aria-label="Breadcrumb">
+    <nav className="relative z-50 flex flex-wrap items-center gap-4 py-6 font-mono" aria-label="Breadcrumb">
       <Link 
         href="/" 
         className="text-[10px] font-black italic tracking-[0.2em] text-zinc-300 hover:text-black transition-colors"

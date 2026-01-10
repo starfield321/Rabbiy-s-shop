@@ -18,14 +18,14 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
   // return の後にすぐ ( を書いて、中身を開始します
   return (
-    <main className="max-w-5xl mx-auto min-h-screen bg-white pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-hidden">
+    <main className="max-w-5xl mx-auto min-h-screen bg-white pt-24 lg:pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-hidden">
         {/* パンくずリストを配置 */}
         <div className="mb-8">
           <Breadcrumbs />
         </div>
         <div className="relative z-10">
             {/* ヘッダー：赤いブロック付き */}
-            <div className="relative mb-24 group">
+            <div className="relative mb-16 lg:mb-24 group">
                 {/* ベースとなる見出しエリア */}
                 <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
                 {/* 左側：h1 見出し (前面・背景白で重なりをカット) */}

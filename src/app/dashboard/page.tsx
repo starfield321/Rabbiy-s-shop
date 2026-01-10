@@ -45,7 +45,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-x-hidden">
+    <main className="min-h-screen bg-white pt-24 lg:pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-x-hidden">
       {/* 共通ドット背景 */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.05]" 
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
@@ -58,7 +58,7 @@ export default function DashboardPage() {
         </div>
         
         {/* ヘッダーデザイン：最新のトンマナ */}
-        <div className="relative mb-24 group">
+        <div className="relative mb-16 lg:mb-24 group">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
               Dashboard<span className="text-red-600 animate-pulse">.</span>

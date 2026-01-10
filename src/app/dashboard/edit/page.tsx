@@ -135,7 +135,7 @@ export default function EditProfilePage() {
   if (status === "loading") return null;
 
   return (
-    <main className="max-w-4xl mx-auto min-h-screen bg-white pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-hidden">
+    <main className="max-w-4xl mx-auto min-h-screen bg-white pt-24 lg:pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" 
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
 
@@ -144,7 +144,7 @@ export default function EditProfilePage() {
           <Breadcrumbs />
         </div>
         
-        <div className="relative mb-24 group">
+        <div className="relative mb-16 lg:mb-24 group">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
               Setting<span className="text-red-600 animate-pulse">.</span>
@@ -240,7 +240,7 @@ export default function EditProfilePage() {
             />
           </div>
 
-          <div className="mt-32 pt-24 border-t-2 border-zinc-100">
+          <div className="mt-24 lg:mt-32 pt-16 lg:pt-24 border-t-2 border-zinc-100">
             <div className="flex items-start mb-12">
               <div className="w-[8px] h-12 bg-black mr-8 flex-shrink-0" />
               <div className="space-y-2 pt-1">
@@ -291,7 +291,7 @@ export default function EditProfilePage() {
           </button>
         </form>
 
-        <div className="mt-40 pt-24 border-t-2 border-zinc-100">
+        <div className="mt-32 lg:mt-40 pt-16 lg:pt-24 border-t-2 border-zinc-100">
             <div className="bg-red-50/20 border-2 border-dashed border-red-100 p-12 text-center space-y-6">
                 <div className="flex items-center justify-center gap-4 text-red-600 font-black italic">
                   <AlertTriangle size={24} />

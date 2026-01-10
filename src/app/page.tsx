@@ -261,7 +261,8 @@ export default function Home() {
                   <div className="absolute right-0 top-0 h-full w-2 bg-black" />
                 </div>
               </div>
-              <Link href="/goods" className="inline-flex h-14 px-8 border-2 border-black bg-white text-black flex items-center justify-center gap-3 group hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none font-black italic text-[11px] tracking-[0.2em] mt-2">
+              {/* 【PC用ボタン】 md:inline-flex でPCのみ表示 */}
+              <Link href="/goods" className="hidden md:inline-flex h-14 px-8 border-2 border-black bg-white text-black flex items-center justify-center gap-3 group hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none font-black italic text-[11px] tracking-[0.2em] mt-2">
                 View All Goods
                 <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -280,10 +281,17 @@ export default function Home() {
                 </Link>
               ))}
             </div>
+            {/* 【スマホ用ボタン】 md:hidden でスマホのみ、一覧の下に表示 */}
+            <div className="mt-16 md:hidden flex justify-center">
+              <Link href="/goods" className="flex h-16 border-2 border-black bg-white text-black items-center justify-center gap-4 group active:bg-black active:text-white transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] font-black italic tracking-[0.2em] w-full sm:w-auto sm:px-16 text-sm">
+                View All Goods
+                <ChevronRight size={20} className="group-active:translate-x-2 transition-transform" />
+              </Link>
+            </div>
           </div>
         </section>
 
-{/* --- 5. FEATURE SECTION (デザイン微調整版) --- */}
+        {/* --- 5. FEATURE SECTION (デザイン微調整版) --- */}
         {features && features.length > 0 && (
           <section className="reveal bg-black py-40 text-white overflow-hidden border-y border-zinc-900">
             <div className="max-w-7xl mx-auto px-6 md:px-10">

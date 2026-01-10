@@ -74,7 +74,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
   };
 
   return (
-    <main className="min-h-screen bg-white pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-x-hidden">
+    <main className="min-h-screen bg-white pt-24 lg:pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-x-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" 
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
 
@@ -86,7 +86,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* ヘッダーデザイン */}
-        <div className="relative mb-24 group">
+        <div className="relative mb-16 lg:mb-24 group">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
               Goods<span className="text-red-600 animate-pulse">.</span>
@@ -104,7 +104,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-24 lg:mb-32">
           
           {/* 左：スライドギャラリー */}
           <div className="lg:col-span-7 space-y-12">
@@ -253,7 +253,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* --- 下部：商品概要 --- */}
-        <div className="border-t-[1px] border-zinc-200 pt-32">
+        <div className="border-t-[1px] border-zinc-200 pt-24 lg:pt-32">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-4 flex items-start">
               <div className="w-[8px] h-20 bg-red-600 mr-8 flex-shrink-0" />

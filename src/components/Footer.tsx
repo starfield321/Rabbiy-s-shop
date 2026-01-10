@@ -33,7 +33,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-2 lg:gap-8">
             <div className="space-y-4">
               <p className="text-[10px] font-black tracking-widest text-zinc-600">Navigation</p>
               <nav className="flex flex-col gap-2">
@@ -85,10 +85,10 @@ export default function Footer() {
           <p className="text-[9px] font-bold text-zinc-600 tracking-[0.3em]">
             &copy; 2026 Rabbiy Official. All Rights Reserved.
           </p>
-          <div className="flex gap-8">
-            <Link href="/privacy" className="text-[9px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-widest">Privacy Policy</Link>
-            <Link href="/terms" className="text-[9px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-widest">Terms of Service</Link>
-            <Link href="/legal" className="text-[9px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-widest">Legal of Service</Link>
+          <div className="flex gap-6 lg:gap-8">
+            <Link href="/privacy" className="text-[9px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-widest">プライバシーポリシー</Link>
+            <Link href="/terms" className="text-[9px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-widest">利用規約</Link>
+            <Link href="/legal" className="text-[9px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-widest">特定商取引法に基づく表記</Link>
           </div>
         </div>
 

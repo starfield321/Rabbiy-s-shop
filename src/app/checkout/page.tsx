@@ -96,14 +96,14 @@ export default function CheckoutPage() {
   if (status === "loading") return null;
 
   return (
-    <main className="min-h-screen bg-white pt-40 pb-40 px-6 md:px-10 text-black font-sans relative">
+    <main className="min-h-screen bg-white pt-24 lg:pt-40 pb-40 px-6 md:px-10 text-black font-sans relative">
       <div className="max-w-6xl mx-auto relative z-10">
 
         <div className="mb-8">
           <Breadcrumbs />
         </div>
         
-        <div className="relative mb-24 group">
+        <div className="relative mb-16 lg:mb-24 group">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
               Checkout<span className="text-red-600 animate-pulse">.</span>
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="space-y-4">
                   <h2 className="text-3xl font-black italic tracking-tighter uppercase font-['Geist',_'Geist_Fallback']">
-                    Authentication Required_
+                    Authentication Required
                   </h2>
                   <p className="text-sm font-bold text-zinc-400 italic tracking-widest leading-relaxed">
                     ご購入手続きを続けるには、アカウントへのログインが必要です。
