@@ -136,7 +136,7 @@ export default function CartPage() {
 
             {/* --- 右カラム：サマリー (送料込み) --- */}
             <div className="lg:col-span-5 lg:sticky lg:top-40">
-              <div className="border border-black p-10 bg-white">
+              <div className="border border-black px-6 py-10 md:p-10 bg-white">
                 <div className="flex items-start mb-12">
                   <div className="w-[8px] h-20 bg-red-600 mr-6 flex-shrink-0" />
                   <div className="space-y-3 pt-1">
@@ -147,7 +147,7 @@ export default function CartPage() {
 
                 <div className="space-y-8 mb-12 font-mono px-2">
                   <div className="flex justify-between items-center text-sm font-bold italic text-zinc-400 tracking-widest">
-                    <span>Item Total / 商品合計</span>
+                    <span>Item Total /<br className="inline-block md:hidden"></br> 商品合計</span>
                     <span className="tabular-nums text-black font-black font-['Geist'] italic">¥{cartTotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm font-bold italic text-zinc-400 tracking-widest">
@@ -162,12 +162,12 @@ export default function CartPage() {
                 </div>
 
                 <div className="border-t-2 border-zinc-100 pt-10 mb-12">
-                  <div className="flex justify-between items-end pl-2 pr-2">
+                  <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-y-4 md:gap-y-0 pl-2 pr-2">
                     <div className="space-y-1">
                       <span className="text-[10px] font-black italic tracking-[0.4em] text-zinc-300 block leading-none">Final Total</span>
                       <span className="text-[11px] font-black text-black tracking-[0.1em]">合計金額（税込）</span>
                     </div>
-                    <span className="text-6xl font-black italic text-red-600 leading-none tabular-nums tracking-tighter font-['Geist']">
+                    <span className="text-5xl md:text-6xl font-black italic text-red-600 leading-none tabular-nums tracking-tighter font-['Geist']">
                       ¥{finalTotal.toLocaleString()}
                     </span>
                   </div>

@@ -154,18 +154,21 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
             {/* サムネイル */}
             {images.length > 1 && (
               <div className="relative">
-                <div className="flex gap-6 overflow-x-auto py-6 px-2 scrollbar-hide">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-6 py-6 px-2">
                   {images.map((img: string, idx: number) => (
                     <button 
                       key={idx} 
                       onClick={() => scrollToImage(idx)} 
-                      className={`relative flex-shrink-0 w-24 md:w-28 aspect-square transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] bg-white border-2 ${
+                      className={`relative w-full aspect-square transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                         selectedImage === idx 
-                          ? 'border-red-600 shadow-[0_10px_20px_-5px_rgba(220,38,38,0.3)] scale-110 z-10' 
-                          : 'border-zinc-200 opacity-40 hover:opacity-100'
+                          ? 'border-red-600 border-1 shadow-[0_10px_20px_-5px_rgba(220,38,38,0.3)] scale-105 z-10' 
+                          : 'border-zinc-200 opacity-60 hover:opacity-100 hover:border-black'
                       }`}
                     >
-                      <Image src={img} alt="" fill className="object-contain p-2" unoptimized />
+                      <Image src={img} alt={`Thumbnail ${idx + 1}`} fill className="object-contain p-2" unoptimized />
+                      {selectedImage === idx && (
+                        <div className="absolute top-0 right-0 w-3 h-3 bg-red-600" />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -176,11 +179,11 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
           {/* 右：購入コントロール */}
           <div className="lg:col-span-5 flex flex-col">
             <div className="mb-12 border-b-2 border-zinc-100 pb-10">                
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-[0.9] break-words uppercase">
+              <h2 className="text-4xl md:text-7xl font-black italic tracking-tighter leading-[0.9] break-words uppercase">
                 {product.name}
               </h2>
-              <div className="mt-10 flex items-end gap-4">
-                <p className="text-6xl font-black tracking-tighter text-red-600 leading-none">
+              <div className="mt-6 lg:mt-10 flex items-end gap-4">
+                <p className="text-5xl font-black tracking-tighter text-red-600 leading-none">
                   ¥{Number(product.price).toLocaleString()}
                 </p>
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest italic mb-1">
@@ -240,7 +243,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                       {isSizeRequired && !selectedSize ? 'サイズを選択してください' : 'カートに入れる'}
                     </span>
                     {!(!selectedSize && isSizeRequired) && (
-                        <span className="text-[11px] opacity-50 border-l border-white/30 pl-6 not-italic tabular-nums font-mono">
+                        <span className="hidden lg:inline text-[11px] opacity-50 border-l border-white/30 pl-6 not-italic tabular-nums font-mono">
                           合計: ¥{Number(product.price * quantity).toLocaleString()}
                         </span>
                     )}

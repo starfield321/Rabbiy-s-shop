@@ -16,7 +16,7 @@ export default function ThanksPage() {
   }, []);
 
   return (
-    <div className="h-screen bg-white text-black flex flex-col overflow-hidden font-sans">
+    <div className="h-screen bg-white text-black flex flex-col md:overflow-hidden font-sans">
       {/* ナビゲーション */}
       <nav className="p-6 flex justify-between items-center z-30 shrink-0">
         <div className="text-[10px] font-mono text-zinc-400 font-bold tracking-wider">
@@ -29,7 +29,7 @@ export default function ThanksPage() {
         </Link>
       </nav>
 
-      <main className="flex-grow flex flex-col md:flex-row items-stretch overflow-hidden">
+      <main className="flex-grow flex flex-col md:flex-row items-stretch md:overflow-hidden">
         
         {/* 左側：コンテンツエリア */}
         <div className="w-full md:w-1/2 px-8 py-10 md:px-20 flex flex-col justify-center bg-white relative z-20">

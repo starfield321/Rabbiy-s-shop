@@ -228,7 +228,7 @@ export default function CheckoutPage() {
 
           {/* 右側：Sticky機能の適用 */}
           <div className="lg:col-span-5 h-fit lg:sticky lg:top-32 space-y-12">
-            <div className="border border-black p-10 bg-white">
+            <div className="border border-black px-6 py-10 md:p-10 bg-white">
               <div className="mb-12 flex items-center">
                 {/* 下線を削除し、左横の縦線に変更 */}
                 <div className="w-[6px] h-8 bg-red-600 mr-4" />
@@ -238,25 +238,43 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-10 mb-12 max-h-[400px] overflow-y-auto pr-4 scrollbar-hide">
-                {cartItems.map((item) => (
-                  <div key={`${item.id}-${item.size}`} className="flex justify-between items-start gap-6 border-b border-zinc-100 pb-8 last:border-0 last:pb-0">
-                    <div className="flex gap-6">
-                      <div className="w-24 h-24 bg-zinc-50 border border-zinc-100 shrink-0 relative overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]">
-                        {item.image && <Image src={Array.isArray(item.image) ? item.image[0] : item.image.split(',')[0]} alt={item.name} fill className="object-cover" unoptimized />}
-                      </div>
-                      <div className="space-y-3">
+              {cartItems.map((item) => (
+                <div key={`${item.id}-${item.size}`} className="flex justify-between items-start gap-6 border-b border-zinc-100 pb-8 last:border-0 last:pb-0">
+                  <div className="flex gap-6 w-full">
+                    {/* 商品画像 */}
+                    <div className="w-24 h-24 bg-zinc-50 border border-zinc-100 shrink-0 relative overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,0.05)]">
+                      {item.image && <Image src={Array.isArray(item.image) ? item.image[0] : item.image.split(',')[0]} alt={item.name} fill className="object-cover" unoptimized />}
+                    </div>
+                    
+                    {/* 商品詳細テキストエリア */}
+                    <div className="space-y-3 flex-grow">
+                      <div className="flex justify-between items-start gap-2">
+                        {/* 商品名 */}
                         <p className="font-black text-sm italic leading-tight">{item.name}</p>
-                        <p className="text-[9px] font-bold text-zinc-400 tracking-widest italic uppercase">SIZE: {item.size || 'FREE'}</p>
-                        <div className="flex items-center border border-black w-fit bg-white">
-                          <button onClick={() => updateQuantity(item.id, item.size, -1)} className="px-2 py-1 hover:bg-zinc-100 transition-colors"><Minus size={10}/></button>
-                          <span className="text-xs font-black px-3 border-x border-black tabular-nums">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.size, 1)} className="px-2 py-1 hover:bg-zinc-100 transition-colors"><Plus size={10}/></button>
-                        </div>
+                        
+                        {/* 【PC用価格】 md以上で右端に表示 */}
+                        <p className="hidden md:block font-black italic text-lg tabular-nums shrink-0">
+                          ¥{(item.price * item.quantity).toLocaleString()}
+                        </p>
+                      </div>
+
+                      {/* 【スマホ用価格】 md未満で商品名のすぐ下に赤文字で表示 */}
+                      <p className="md:hidden font-black italic text-base text-red-600 leading-none">
+                        ¥{(item.price * item.quantity).toLocaleString()}
+                      </p>
+
+                      <p className="text-[9px] font-bold text-zinc-400 tracking-widest italic uppercase">SIZE: {item.size || 'FREE'}</p>
+                      
+                      {/* 数量コントロール */}
+                      <div className="flex items-center border border-black w-fit bg-white">
+                        <button onClick={() => updateQuantity(item.id, item.size, -1)} className="px-2 py-1 hover:bg-zinc-100 transition-colors"><Minus size={10}/></button>
+                        <span className="text-xs font-black px-3 border-x border-black tabular-nums">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, item.size, 1)} className="px-2 py-1 hover:bg-zinc-100 transition-colors"><Plus size={10}/></button>
                       </div>
                     </div>
-                    <p className="font-black italic text-lg tabular-nums">¥{(item.price * item.quantity).toLocaleString()}</p>
                   </div>
-                ))}
+                </div>
+              ))}
               </div>
 
               <div className="space-y-4 border-t-4 border-black pt-10">
@@ -268,9 +286,9 @@ export default function CheckoutPage() {
                   <span>配送料</span>
                   <span className="tabular-nums">¥850</span>
                 </div>
-                <div className="flex justify-between items-end pt-10 mt-6 border-t border-zinc-100">
+                <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end pt-10 mt-6 border-t border-zinc-100 gap-y-4 md:gap-y-0">
                   <span className="text-lg font-black italic tracking-[0.2em] uppercase font-['Geist',_'Geist_Fallback']">Total</span>
-                  <span className="text-5xl font-black italic text-red-600 leading-none tabular-nums tracking-tighter font-['Geist',_'Geist_Fallback']">
+                  <span className="text-5xl md:text-6xl font-black italic text-red-600 leading-none tabular-nums tracking-tighter font-['Geist',_'Geist_Fallback']">
                     ¥{finalAmount.toLocaleString()}
                   </span>
                 </div>

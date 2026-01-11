@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-white pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-x-hidden">
+    <main className="min-h-screen bg-white pt-24 lg:pt-40 pb-40 px-6 md:px-10 text-black font-sans relative overflow-x-hidden">
       {/* 背景ドット */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]" 
            style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '48px 48px' }} />
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
         </div>
         
         {/* 1. ヘッダー */}
-        <div className="relative mb-24">
+        <div className="relative mb-16 lg:mb-24">
           <div className="relative flex items-end min-h-[64px] md:min-h-[96px]">
             <h1 className="relative z-10 text-6xl md:text-8xl font-black italic tracking-tighter leading-none flex items-baseline bg-white pr-6">
               Privacy<span className="text-red-600 animate-pulse">.</span>
@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
           ))}
 
           {/* 4. お問い合わせ強調エリア */}
-          <div className="bg-zinc-50 relative px-16 py-16 space-y-10 mt-20">
+          <div className="bg-zinc-50 relative px-8 lg:px-16 py-16 space-y-10 mt-20">
             {/* 赤いアクセントバー */}
             <div className="absolute left-0 top-0 w-[6px] h-full bg-red-600" />
             

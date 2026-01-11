@@ -32,11 +32,11 @@ export default function CartDrawer() {
           {/* ヘッダー：日本語メインに変更 */}
           <div className="relative z-10 p-8 border-b-[10px] border-black flex justify-between items-end bg-white">
             <div>
-              <h2 className="text-4xl font-black italic tracking-tighter leading-none text-black">
-                Cart<span className="text-red-600 not-italic">.</span>
+              <h2 className="text-4xl font-black font-sans italic tracking-tighter leading-none text-black">
+                Cart<span className="text-red-600 animate-pulse">.</span>
               </h2>
               <p className="text-[11px] font-bold text-black tracking-[0.2em] mt-4 leading-none">
-                現在のカートの中身 <span className="text-zinc-300 font-mono ml-2 uppercase tracking-[0.4em]">/ Selected Items</span>
+                現在のカートの中身 <span className="text-zinc-300 font-mono ml-2 tracking-[0.4em]">/ Selected Items</span>
               </p>
             </div>
             <button 
@@ -146,7 +146,7 @@ export default function CartDrawer() {
               >
                 <span className="relative z-10 font-black italic tracking-[0.3em] text-sm flex items-center gap-4">
                   ご購入手続きへ
-                  <span className="text-[10px] font-bold not-italic tracking-[0.2em] opacity-40 border-l border-white/30 pl-4">Proceed to Checkout</span>
+                  <span className="hidden lg:inline text-[10px] font-bold not-italic tracking-[0.2em] opacity-40 border-l border-white/30 pl-4">Proceed to Checkout</span>
                 </span>
                 <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.2s] ease-in-out" />
               </Link>

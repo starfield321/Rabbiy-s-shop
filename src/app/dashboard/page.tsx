@@ -152,7 +152,7 @@ export default function DashboardPage() {
                 className="w-full h-16 bg-black text-white font-black italic tracking-[0.3em] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex items-center justify-center group relative overflow-hidden border-2 border-black hover:bg-red-600 hover:border-red-600"
               >
                 <span className="relative z-10 flex items-center gap-4 text-xs">
-                  Edit Profile / 登録情報を編集する
+                  <span className="hidden lg:inline">Edit Profile / </span>登録情報を編集する
                   <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform duration-500" />
                 </span>
                 <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.2s] ease-in-out" />
@@ -163,7 +163,7 @@ export default function DashboardPage() {
 
         {/* 下段：アクションボタン */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <Link href="/goods" className="group border-4 border-black p-10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden h-72 flex flex-col justify-between shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:bg-black hover:text-white translate-y-0 active:translate-y-1">
+          <Link href="/goods" className="group border-4 border-black p-10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden h-56 md:h-72 flex flex-col justify-between shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:bg-black hover:text-white translate-y-0 active:translate-y-1">
             <ShoppingBag size={40} strokeWidth={2.5} />
             <div>
               <h2 className="text-3xl font-black italic leading-none tracking-tighter">Go Shopping</h2>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
             <ArrowRight className="absolute bottom-10 right-10 group-hover:translate-x-3 transition-transform duration-500" />
           </Link>
 
-          <Link href="/dashboard/orders" className="group border-4 border-black p-10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden h-72 flex flex-col justify-between shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:bg-black hover:text-white translate-y-0 active:translate-y-1">
+          <Link href="/dashboard/orders" className="group border-4 border-black p-10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden h-56 md:h-72 flex flex-col justify-between shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:bg-black hover:text-white translate-y-0 active:translate-y-1">
             <Truck size={40} strokeWidth={2.5} />
             <div>
               <h2 className="text-3xl font-black italic leading-none tracking-tighter">Order History</h2>
@@ -183,7 +183,7 @@ export default function DashboardPage() {
 
           <button 
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="group border-4 border-red-600 p-10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden h-72 flex flex-col justify-between text-red-600 shadow-[10px_10px_0px_0px_rgba(220,38,38,1)] hover:shadow-none hover:bg-red-600 hover:text-white translate-y-0 active:translate-y-1"
+            className="group border-4 border-red-600 p-10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden h-56 md:h-72 flex flex-col justify-between text-red-600 shadow-[10px_10px_0px_0px_rgba(220,38,38,1)] hover:shadow-none hover:bg-red-600 hover:text-white translate-y-0 active:translate-y-1"
           >
             <LogOut size={40} strokeWidth={2.5} />
             <div className="text-left">

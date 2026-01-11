@@ -131,7 +131,14 @@ export default function ContactPage() {
                   }`}
               >
                 <span className="relative z-10 flex items-center gap-6 text-xl">
-                  {isSending ? 'Sending...' : 'Send Message / 送信する'}
+                  {isSending ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                    <span className="hidden md:inline">Send Message / </span>
+                    <span>送信する</span>
+                    </>
+                  )}
                   {!isSending && <ArrowRight size={22} className="group-hover:translate-x-3 transition-transform duration-500" />}
                 </span>
 

@@ -184,7 +184,7 @@ export default function CheckoutForm({
             ) : (
               <>
                 注文を確定
-                <span className="text-sm opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter tabular-nums font-bold">
+                <span className="hidden lg:inline text-sm opacity-50 border-l border-white/30 pl-4 not-italic tracking-tighter tabular-nums font-bold">
                   ¥{finalAmount.toLocaleString()}
                 </span>
               </>

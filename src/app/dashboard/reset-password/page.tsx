@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
         </div>
 
         {/* 右側：コンテンツ */}
-        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white relative overflow-y-auto z-20">
+        <div className="w-full md:w-1/2 px-6 py-12 md:p-12 flex flex-col justify-center bg-white relative overflow-y-auto z-20">
           <div className="max-w-sm w-full mx-auto space-y-10">
             
             <div className="space-y-2 relative">

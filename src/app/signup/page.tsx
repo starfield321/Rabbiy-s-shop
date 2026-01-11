@@ -99,7 +99,7 @@ function SignUpForm() {
           </div>
         </div>
 
-        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white relative overflow-y-auto z-20">
+        <div className="w-full md:w-1/2 px-6 py-12 md:p-12 flex flex-col justify-center bg-white relative overflow-y-auto z-20">
           <div className="max-w-sm w-full mx-auto">
             {isRegistered ? (
               <div className="text-center space-y-6 py-20">
