@@ -143,7 +143,7 @@ export default function Header() {
           
           <div className="mt-auto pb-12 space-y-10">
             {/* SNS Links in Hamburger */}
-            <div className="flex items-center gap-6 pt-6 border-t border-zinc-100">
+            <div className="flex items-center gap-6 pt-6">
             {snsLinks.map((sns) => (
               <a key={sns.id} href={sns.url} target="_blank" rel="noopener noreferrer" className="text-black">
                 {sns.icon}

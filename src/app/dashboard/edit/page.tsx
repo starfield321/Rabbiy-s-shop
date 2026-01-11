@@ -249,7 +249,7 @@ export default function EditProfilePage() {
               </div>
             </div>
 
-            <div className="bg-zinc-50 border border-zinc-100 p-10 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="bg-zinc-50 border border-zinc-100 px-6 py-10 md:p-10 flex flex-col md:flex-row justify-between items-center gap-8">
               <div className="space-y-2">
                 <p className="text-[11px] font-bold text-black leading-relaxed italic tracking-wider">
                   セキュリティ保護のため、定期的な更新を推奨します。
@@ -292,7 +292,7 @@ export default function EditProfilePage() {
         </form>
 
         <div className="mt-32 lg:mt-40 pt-16 lg:pt-24 border-t-2 border-zinc-100">
-            <div className="bg-red-50/20 border-2 border-dashed border-red-100 p-12 text-center space-y-6">
+            <div className="bg-red-50/20 border-2 border-dashed border-red-100 px-8 py-12 md:p-12 text-center space-y-6">
                 <div className="flex items-center justify-center gap-4 text-red-600 font-black italic">
                   <AlertTriangle size={24} />
                   <h3>Danger Zone</h3>

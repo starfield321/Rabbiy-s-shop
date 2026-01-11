@@ -99,7 +99,7 @@ export default function DashboardPage() {
               <div className="w-[8px] h-20 bg-red-600 mr-8 flex-shrink-0" />
               <div className="space-y-3 pt-1">
                 <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter leading-tight text-black">
-                  Welcome to, <span className="text-red-600 not-italic">{profile?.name || session.user?.name}</span>！
+                  Welcome to, <br className="md:hidden"></br><span className="text-red-600 not-italic">{profile?.name || session.user?.name}</span>！
                 </h2>
                 <p className="text-[10px] font-bold text-zinc-400 tracking-[0.5em] uppercase leading-none font-mono tracking-widest">
                   現在の登録情報を確認しています

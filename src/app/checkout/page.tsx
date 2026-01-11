@@ -124,7 +124,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-7 space-y-16">
             
             {status === "unauthenticated" ? (
-              <div className="bg-zinc-50 border-2 border-dashed border-zinc-200 p-12 md:p-20 text-center space-y-10">
+              <div className="bg-zinc-50 border-2 border-dashed border-zinc-200 p-6 md:p-20 text-center space-y-10">
                 <div className="flex justify-center">
                   <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center text-white shadow-[8px_8px_0px_0px_rgba(220,38,38,1)]">
                     <Lock size={32} />
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
                   </p>
                 </div>
                 <div className="pt-6 flex flex-col items-center gap-6">
-                  <button onClick={() => setIsLoginModalOpen(true)} className="bg-black text-white px-12 py-6 font-black italic tracking-[0.2em] shadow-[8px_8px_0px_0px_rgba(220,38,38,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-4 group">
+                  <button onClick={() => setIsLoginModalOpen(true)} className="bg-black text-white px-6 md:px-12 py-6 font-black italic tracking-[0.2em] shadow-[8px_8px_0px_0px_rgba(220,38,38,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-4 group">
                     ログインして進む
                     <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                   </button>

@@ -172,7 +172,7 @@ export default function Home() {
                   <Image src="/rabbiy_3d.png" alt="Rabbiy Biography" fill className="object-contain transition-transform duration-700 group-hover:scale-105 group-hover:-translate-y-2" priority />
                 </div>
                 <div className="absolute bottom-4 right-0 z-20 text-right">
-                  <div className="bg-white/10 backdrop-blur-sm p-4 inline-block">
+                  <div className="bg-white/10 md:backdrop-blur-sm p-4 inline-block">
                     <h3 className="text-5xl md:text-6xl font-black italic tracking-tighter leading-none text-black">Biography<span className="text-red-600 not-italic">.</span></h3>
                     <p className="text-gray-400 text-[10px] font-bold tracking-[0.4em] mt-2">Discover the story</p>
                   </div>
@@ -293,12 +293,12 @@ export default function Home() {
 
         {/* --- 5. FEATURE SECTION (デザイン微調整版) --- */}
         {features && features.length > 0 && (
-          <section className="reveal bg-black py-40 text-white overflow-hidden border-y border-zinc-900">
+          <section className="reveal bg-black py-32 lg:py-40 text-white overflow-hidden border-y border-zinc-900">
             <div className="max-w-7xl mx-auto px-6 md:px-10">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
                 
                 {/* 左カラム：見出しとボタンのデザインをよりシャープに */}
-                <div className="lg:col-span-4 lg:sticky lg:top-40 h-fit z-20 bg-black pb-10 lg:pb-0">
+                <div className="lg:col-span-4 lg:sticky lg:top-40 h-fit z-20 bg-black pb-6 lg:pb-10 lg:pb-0">
                   <div className="space-y-12">
                     <div className="space-y-6">
                       <h2 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">
@@ -322,7 +322,7 @@ export default function Home() {
                           const el = document.getElementById('feature-scroll-container');
                           el?.scrollBy({ left: -500, behavior: 'smooth' });
                         }}
-                        className="w-16 h-16 border border-zinc-700 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-300 group rounded-full"
+                        className="w-10 md:w-16 h-10 md:h-16 border border-zinc-700 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-300 group rounded-full"
                         aria-label="Previous"
                       >
                         <ChevronRight size={24} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
@@ -332,7 +332,7 @@ export default function Home() {
                           const el = document.getElementById('feature-scroll-container');
                           el?.scrollBy({ left: 500, behavior: 'smooth' });
                         }}
-                        className="w-16 h-16 border border-zinc-700 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-300 group rounded-full"
+                        className="w-10 md:w-16 h-10 md:h-16 border border-zinc-700 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-300 group rounded-full"
                         aria-label="Next"
                       >
                         <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
