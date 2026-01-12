@@ -6,16 +6,17 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function LegalPage() {
   const legalData = [
-    { label: '販売業者', value: 'dot. CREATION.', icon: <User size={16} /> },
+    { label: '販売業者', value: 'dot. CREATION.（星野 智）', icon: <User size={16} /> },
     { label: '代表責任者', value: '星野 智', icon: <Info size={16} /> },
-    //{ label: '所在地', value: '〒000-0000 〇〇県〇〇市...（正確な住所をご記入ください）', icon: <MapPin size={16} /> },
+    { label: '所在地', value: '274-0825 千葉県船橋市前原西1-13-18-202', icon: <MapPin size={16} /> },
+    { label: '電話番号', value: '080-8740-2920', icon: <MapPin size={16} /> },
     { label: 'メールアドレス', value: 'rabbiy@dotcreation.jp', icon: <Mail size={16} /> },
     { label: '販売価格', value: '各商品詳細ページに税込価格を表示', icon: <Info size={16} /> },
-    { label: '商品代金以外の必要料金', value: '送料（全国一律850円）、銀行振込時の振込手数料', icon: <Info size={16} /> },
+    { label: '商品代金以外の必要料金', value: '送料（全国一律850円）', icon: <Info size={16} /> },
     { label: '支払方法', value: 'クレジットカード決済（Stripe）', icon: <CreditCard size={16} /> },
     { label: '支払時期', value: '注文確定時（クレジットカード決済の場合、即時処理されます）', icon: <CreditCard size={16} /> },
     { label: '商品の引渡時期', value: '決済完了確認後、通常3〜7営業日以内に発送いたします', icon: <Truck size={16} /> },
-    { label: '返品・交換・キャンセル', value: '商品に欠陥がある場合を除き、お客様都合による返品・交換・キャンセルには応じられません', icon: <RefreshCcw size={16} /> },
+    { label: '返品・交換・キャンセル', value: '商品に欠陥がある場合を除き、お客様都合による返品・交換・キャンセルには応じられません。商品の欠陥による返品・交換をご希望の場合は、商品到着後7日以内にメールにてご連絡ください。その際の送料は当方が負担いたします。', icon: <RefreshCcw size={16} /> },
   ];
 
   return (
