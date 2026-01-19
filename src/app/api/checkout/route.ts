@@ -54,6 +54,11 @@ export async function POST(req: Request) {
       shipping_address_collection: {
         allowed_countries: ['JP'],
       },
+      shipping_options: [
+        {
+          shipping_rate: 'shr_1SrKLBPBweQ46o8tokrfp7iE', // ここに 850円で作成した ID を貼り付け
+        },
+      ]
     });
 
     return NextResponse.json({ url: session.url });
