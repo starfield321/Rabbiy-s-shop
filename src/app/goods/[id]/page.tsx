@@ -67,6 +67,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
       id: product.id,
       name: product.name,
       price: product.price,
+      stripe_price_id: product.stripe_price_id,
       image: images[0],
       size: selectedSize as string, 
       quantity: quantity,
