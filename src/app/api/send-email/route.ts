@@ -24,46 +24,52 @@ export async function POST(req: Request) {
 
     const { data, error } = await resend.emails.send({
       // 独自ドメイン info@rabbiy.jp を使用
-      from: 'Rabbiy <order@dotcreation.jp>', 
+      from: 'Rabbiy Store <order@dotcreation.jp>', 
       to: recipients,
-      subject: `【Rabbiy】ご注文ありがとうございます: ${orderId}`,
+      subject: `【Rabbiy Store】ご注文ありがとうございます: ${orderId}`,
       html: `
         <div style="font-family: 'Helvetica', sans-serif; background-color: #ffffff; color: #000000; padding: 40px; max-width: 600px; margin: auto; border: 10px solid #000000;">
           <div style="margin-bottom: 40px;">
-            <p style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5em; color: #a1a1aa; margin-bottom: 5px;">Order_Receipt_v2.5</p>
-            <h1 style="font-size: 56px; font-weight: 900; font-style: italic; letter-spacing: -3px; text-transform: uppercase; line-height: 0.8; margin: 0;">
+            <h1 style="font-size: 56px; font-weight: 900; letter-spacing: -3px; text-transform: uppercase; line-height: 0.8; margin: 0;">
               ご注文内容
             </h1>
           </div>
           
           <div style="border-left: 8px solid #dc2626; padding-left: 20px; margin-bottom: 40px;">
-            <p style="font-size: 14px; font-weight: 900; text-transform: uppercase;">
+            <p style="font-size: 14px; font-weight: 900;">
               ${customerName} 様、ご注文ありがとうございます。
             </p>
             <p style="font-size: 11px; font-weight: bold; color: #71717a; margin-top: 5px; line-height: 1.6;">
-              Rabbiyでのご注文を承りました。<br/>
-              現在、オンデマンド生産の準備段階に入っております。
+              ご注文を承りました。<br/>
+              現在、オンデマンド生産の準備段階に入っておりますので、しばらくお待ちください。<br />
+              出荷いたしましたら改めてご連絡いたします。
             </p>
           </div>
 
           <div style="margin-bottom: 30px;">
-            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; border-bottom: 1px solid #f4f4f5; padding-bottom: 5px;">Transaction_Detail</p>
+            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; border-bottom: 1px solid #f4f4f5; padding-bottom: 5px;">注文内容詳細</p>
             <p style="font-size: 14px; font-weight: 900; font-family: monospace; margin-top: 10px;">ID: #${orderId}</p>
           </div>
 
           <div style="margin-bottom: 40px;">
             <ul style="list-style: none; padding: 0; margin: 0;">
               ${itemsList}
+              <li style="padding: 12px 0; border-bottom: 1px solid #f4f4f5; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: bold; color: #000;">
+                  送料 <span style="font-size: 11px; color: #71717a; margin-left: 8px;">(全国一律)</span>
+                </span>
+                <span style="font-size: 13px; font-weight: 900; font-family: monospace;">¥850</span>
+              </li>
             </ul>
           </div>
 
           <div style="background-color: #f4f4f5; padding: 25px; margin-bottom: 40px;">
-            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; margin-bottom: 8px;">Shipping_To</p>
+            <p style="font-size: 10px; font-weight: 900; color: #a1a1aa; text-transform: uppercase; margin-bottom: 8px;">発送先住所</p>
             <p style="font-size: 12px; font-weight: 900; line-height: 1.6;">${address}</p>
           </div>
 
           <div style="text-align: right; border-top: 6px solid #000; padding-top: 25px;">
-            <p style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #a1a1aa; letter-spacing: 2px;">Total_Paid</p>
+            <p style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #a1a1aa; letter-spacing: 2px;">合計金額</p>
             <p style="font-size: 42px; font-weight: 900; font-style: italic; color: #dc2626; margin: 0;">¥${totalAmount.toLocaleString()}</p>
           </div>
 

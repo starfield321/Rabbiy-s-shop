@@ -218,7 +218,7 @@ export default function GoodsDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
               )}
 
-              <div className="space-y-6 pt-10 border-t border-zinc-100">
+              <div className={`space-y-6 ${isSizeRequired ? 'pt-10 border-t border-zinc-100' : ''}`}>
                 <label className="text-[11px] font-black tracking-[0.4em] text-black uppercase">Quantity / 数量</label>
                 <div className="flex items-center w-full h-16 border-2 border-zinc-200 bg-white focus-within:border-black transition-all mt-2">
                   <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-24 h-full flex items-center justify-center hover:bg-zinc-50 text-2xl font-light">－</button>

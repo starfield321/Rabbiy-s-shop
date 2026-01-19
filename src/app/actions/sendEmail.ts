@@ -17,10 +17,10 @@ export async function sendEmail(formData: FormData) {
       subject: `【ショップに関するお問い合わせ】${name} 様より`,
       html: `
         <div style="font-family: sans-serif; color: #333; padding: 20px; border: 1px solid #eee;">
-          <h2 style="color: #000; font-style: italic; border-bottom: 2px solid #dc2626;">New Message Received_</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
+          <h2 style="color: #000; border-bottom: 2px solid #dc2626;">お問い合わせを受信しました</h2>
+          <p><strong>名前:</strong> ${name}</p>
+          <p><strong>メールアドレス:</strong> ${email}</p>
+          <p><strong>お問い合わせ内容:</strong></p>
           <p style="white-space: pre-wrap;">${message}</p>
         </div>
       `,
@@ -28,18 +28,18 @@ export async function sendEmail(formData: FormData) {
 
     // 2. お客様への自動返信メール
     const customerEmail = resend.emails.send({
-      from: 'Rabbiy Official <rabbiy@dotcreation.jp>', //
+      from: 'Rabbiy Store <rabbiy@dotcreation.jp>', //
       to: email, // フォームに入力されたお客様のアドレス宛
-      subject: `【Rabbiy】お問い合わせを受け付けました`,
+      subject: `【Rabbiy Store】お問い合わせを受け付けました`,
       html: `
         <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee;">
-          <h1 style="font-size: 24px; color: #000; font-style: italic;">Thank you for contacting us_</h1>
+          <h1 style="font-size: 24px; color: #000;">お問い合わせいただきありがとうございます</h1>
           <p>${name} 様</p>
-          <p>この度は Rabbiy へお問い合わせいただき、誠にありがとうございます。</p>
-          <p>内容を確認し、2営業日以内に担当者より折り返しご連絡いたします。今しばらくお待ちくださいませ。</p>
+          <p>この度は Rabbiy Store へお問い合わせいただき、誠にありがとうございます。</p>
+          <p>内容を確認し、担当者より折り返しご連絡いたします。今しばらくお待ちくださいませ。</p>
           
           <div style="background: #f9f9f9; padding: 15px; margin: 20px 0; border-left: 4px solid #dc2626;">
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">ご入力内容の控え：</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">ご入力内容：</p>
             <p style="font-size: 14px; white-space: pre-wrap;">${message}</p>
           </div>
           
