@@ -5,8 +5,8 @@ import Image from 'next/image';
 
 export default function Footer() {
   const othersLink = [
-    {src: "/rabbiy.jpg", alt: "Footer Banner", url: "/goods", disabled: true},
-    {src: "/rabbiy.jpg", alt: "Footer Banner", url: "/a", disabled: true}
+    {src: "/footer/banner_note.webp", alt: "note", url: "https://note.com/sato321_rabbiy", disabled: false},
+    {src: "/footer/banner_zunchan.webp", alt: "ずんちゃん", url: "https://www.tiktok.com/@zun_rabbiy", disabled: false}
   ];
   return (
     <footer className="bg-black border-t border-zinc-900 pt-20 pb-10 px-6 md:px-10 text-white font-sans">
