@@ -69,9 +69,6 @@ export default function Footer() {
                   fill
                   className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                   <span className="text-[8px] font-black italic tracking-[0.3em] bg-black/50 px-2 py-1">Coming Soon...</span>
-                </div>
               </Link>
               );
               })}
