@@ -73,6 +73,18 @@ export default function Header() {
         ), 
         url: 'https://www.mixcloud.com/Rabbiy/' 
     },
+    { 
+        id: 'monogatary.com', 
+        icon: (
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="4"/>
+              <circle cx="35" cy="40" r="6" fill="currentColor"/>
+              <circle cx="65" cy="40" r="6" fill="currentColor"/>
+              <path d="M30 65C35 75 65 75 70 65" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+        ), 
+        url: 'https://monogatary.com/user_page/story/8d308a13-7c15-11eb-90f0-0242ac120003' 
+    },
   ]
 
   return (
